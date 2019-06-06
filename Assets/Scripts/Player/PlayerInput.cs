@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldEngine : MonoBehaviour
+public class PlayerInput : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
