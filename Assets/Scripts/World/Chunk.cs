@@ -6,7 +6,7 @@ public class Chunk
 {
     float x, y, z;
 
-    bool isUntouched = true;
+    bool isUntouched;
 
     string[] blocks = new string[16 * 16 * 16];
 
@@ -21,7 +21,14 @@ public class Chunk
 
     public void Load()
     {
-
+        if (isUntouched)
+        {
+            // Generate
+        }
+        else
+        {
+            // load from file
+        }
     }
 
     public void Save()
