@@ -5,21 +5,36 @@ using UnityEngine;
 
 public class WorldEngine : MonoBehaviour
 {
-    public int renderDistance = 3 * 16;
+    const int CHUNK_DIMENSION = 16;
+    const int WORLD_HEIGHT = CHUNK_DIMENSION * 16;
 
-    public Seed worldSeed;
+    public int renderDistance = 3;
 
-    const int WORLD_HEIGHT = 16 * 16;
+    public Chunk[,,] chunks;
 
+    public Seed seed;
+
+    
     void Start()
     {  
-        worldSeed = new Seed();
+        seed = new Seed();
+    
+        chunks = new Chunk[renderDistance * 2 * 16, 16, renderDistance * 2 * 16];
     }
 
     void UpdatePosition(float x, float y, float z)
     {
-        
+        GetChunkAt(x, y, z);
     }
 
-    
+    private void GetChunkAt(float x, float y, float z)
+    {
+        int ix = Mathf.FloorToInt(x);
+        int iy = Mathf.FloorToInt(y);
+        int iz = Mathf.FloorToInt(z);
+
+        Debug.Log("X: " + x/16 + "Y: " + y/16 + "Z: " + z/16);
+    }
+
+
 }

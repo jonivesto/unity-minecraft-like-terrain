@@ -2,7 +2,7 @@
 
 public class Seed
 {
-    public string value;
+    private string value;
 
     public Seed()
     {
@@ -17,6 +17,16 @@ public class Seed
     public Seed(string value)
     {
         this.value = value;
+    }
+
+    public string Get()
+    {
+        return value;
+    }
+
+    public char GetChar(int index)
+    {
+        return value[index];
     }
 
     public int GetInt(int index)

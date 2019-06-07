@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,15 +7,19 @@ public class PlayerMotor : MonoBehaviour
 {
     WorldEngine worldEngine;
 
-    // Start is called before the first frame update
+    void FixedUpdate()
+    {
+
+    }
+
     void Start()
     {
         worldEngine = GameObject.Find("/Environment/World").GetComponent<WorldEngine>();
     }
 
-    // Update is called once per frame
-    void Update()
+    internal static void Move(float x, float y)
     {
-        
+        throw new NotImplementedException();
     }
+
 }

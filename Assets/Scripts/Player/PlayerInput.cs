@@ -10,9 +10,9 @@ public class PlayerInput : MonoBehaviour
         
     }
 
-    // Update is called once per frame
+    // Get input for each frame
     void Update()
     {
-        
+        PlayerMotor.Move(Input.GetAxis("horizontal"), Input.GetAxis("vertical"));
     }
 }
