@@ -5,36 +5,51 @@ using UnityEngine;
 
 public class WorldEngine : MonoBehaviour
 {
-    const int CHUNK_DIMENSION = 16;
-    const int WORLD_HEIGHT = CHUNK_DIMENSION * 16;
+    const int UNIT = 16;
+    const int WORLD_HEIGHT = UNIT * UNIT;
 
-    public int renderDistance = 3;
-
-    public Chunk[,,] chunks;
+    public int renderDistance, loadDistance;
 
     public Seed seed;
 
+    public Chunk[,,] loadedChunks;
+    public Chunk playerChunk;
+
     
     void Start()
-    {  
-        seed = new Seed();
-    
-        chunks = new Chunk[renderDistance * 2 * 16, 16, renderDistance * 2 * 16];
-    }
-
-    void UpdatePosition(float x, float y, float z)
     {
-        GetChunkAt(x, y, z);
+        seed = new Seed("1234567891123456");
+
+        SetDistance();
+
+        loadedChunks = new Chunk[loadDistance * 2 * UNIT, UNIT, loadDistance * 2 * UNIT];
+
+        print(this.seed.get.Next(14));
+        print(this.seed.get.Next(63));
+        print(this.seed.get.Next(45));
+        print(this.seed.get.Next(66));
     }
 
-    private void GetChunkAt(float x, float y, float z)
+    private void SetDistance()
     {
-        int ix = Mathf.FloorToInt(x);
-        int iy = Mathf.FloorToInt(y);
-        int iz = Mathf.FloorToInt(z);
+        renderDistance = 3;
 
-        Debug.Log("X: " + x/16 + "Y: " + y/16 + "Z: " + z/16);
+        if (renderDistance % 2 == 0)
+        {
+            renderDistance++;
+        }
+
+        loadDistance = renderDistance + 2;
     }
 
+    void UpdatePosition(Vector3 position)
+    {
+        playerChunk = GetChunkAt(position);
+    }
+
+    private Chunk GetChunkAt(Vector3 position)
+    {
+        return null;
+    }
 
 }

@@ -2,41 +2,49 @@
 
 public class Seed
 {
-    private string value;
+    public string origin;
+    public Random get;
 
     public Seed()
     {
-        Random random = new Random();
+        get = new Random();
 
         for (int i = 0; i < 16; i++)
         {
-            value += random.Next(1, 10);
+            origin += get.Next(1, 10);
         }
+
+        Reset();
     }
 
     public Seed(string value)
     {
-        this.value = value;
+        this.origin = value;
+        Reset();
     }
 
-    public string Get()
+    public void Reset()
     {
-        return value;
+        get = new Random(IntegerAt(0));
     }
 
-    public char GetChar(int index)
+    private int IntegerAt(int index)
     {
-        return value[index];
-    }
+        string temp = "";
+        int i = 0;
 
-    public int GetInt(int index)
-    {
-        return value[index] - '0';
-    }
+        while (temp.Length < 8)
+        {
+            i++;
 
-    public float GetFloat(int index)
-    {
-        return (float)value[index] - '0';
-    }
+            if(i > origin.Length)
+            {
+                i = 0;
+            }
 
+            temp += origin[i]; 
+        }
+
+        return int.Parse(temp);
+    }
 }

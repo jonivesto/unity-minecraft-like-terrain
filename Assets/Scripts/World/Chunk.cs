@@ -5,24 +5,22 @@ using UnityEngine;
 
 public class Chunk
 {
-    readonly float x, y, z;
+    readonly int x, y, z;
 
     bool untouched;
 
     WorldEngine worldEngine;
 
-    string[] blocks = new string[16 * 16 * 16];
-    // Item[] items;
-    // Mob[] mobs;
+    int[,,] blocks = new int[16, 16, 16];
 
     public Chunk(WorldEngine worldEngine, float x, float y, float z)
     {
         this.worldEngine = worldEngine;
 
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        
+        this.x = Mathf.FloorToInt(x);
+        this.y = Mathf.FloorToInt(y);
+        this.z = Mathf.FloorToInt(z);
+
         CheckTouchedState();
     }
 
@@ -46,18 +44,19 @@ public class Chunk
         {
             for (float j = z; j < z + 16; j++)
             {
-                float point = seed.GetFloat(0);
-                int terrainNoise = Mathf.FloorToInt(Mathf.PerlinNoise(x + point, y + point) * 125f);
+                int terrainNoise = Mathf.FloorToInt(Mathf.PerlinNoise(x , y) * 125f);
 
                 for (float t = y; t < y + 16; t++)
                 {
-                    if(terrainNoise > y)
+                    if(terrainNoise > t)
                     {
                         // empty block
+                        blocks[x, y, z] = 0;
                     }
                     else
                     {
                         // terrain block
+                        blocks[x, y, z] = 1;
                     }
                 }
             }
@@ -68,7 +67,7 @@ public class Chunk
     {
         if (!untouched)
         {
-
+            throw new NotImplementedException();
         }
     }
 
@@ -83,5 +82,10 @@ public class Chunk
     void CheckTouchedState()
     {
         //TODO: CHECK IF FILE EXIST AND SET untouched
+    }
+
+    public void Render()
+    {
+
     }
 }
