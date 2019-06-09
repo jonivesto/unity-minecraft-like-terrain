@@ -7,8 +7,6 @@ public class Chunk
 {
     readonly int x, y, z;
 
-    bool untouched;
-
     WorldEngine worldEngine;
 
     int[,,] blocks = new int[16, 16, 16];
@@ -20,19 +18,18 @@ public class Chunk
         this.x = Mathf.FloorToInt(x);
         this.y = Mathf.FloorToInt(y);
         this.z = Mathf.FloorToInt(z);
-
-        CheckTouchedState();
+  
     }
 
     public void Load()
     {
-        if (untouched)
+        if (FileExists())
         {
-            Generate();
+            // Load from file
         }
         else
         {
-            // load from file
+            Generate();
         }
     }
 
@@ -63,29 +60,23 @@ public class Chunk
         }
     }
 
-    public void Save()
-    {
-        if (!untouched)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public void Unload()
-    {
-        if (!untouched)
-        {
-            Save();
-        }
-    }
-
-    void CheckTouchedState()
-    {
-        //TODO: CHECK IF FILE EXIST AND SET untouched
-    }
-
     public void Render()
     {
 
     }
+
+    public void Save()
+    {
+        // Save to file
+        // Overwrite if file exists
+    }
+
+
+    bool FileExists()
+    {
+        return false;
+    }
+
+    
+
 }
