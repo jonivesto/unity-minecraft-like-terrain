@@ -5,29 +5,26 @@ using UnityEngine;
 
 public class WorldEngine : MonoBehaviour
 {
-    const int UNIT = 16;
-    const int WORLD_HEIGHT = UNIT * UNIT;
+    const int WORLD_HEIGHT = 16 * 16;
 
     public int renderDistance, loadDistance;
 
+
     public Seed seed;
 
-    public Chunk[,,] loadedChunks;
+    public List<Chunk> loadedChunks = new List<Chunk>();
     public Chunk playerChunk;
 
     
     void Start()
     {
-        seed = new Seed("1234567891123456");
+        //seed = new Seed("1234567891123456");
+        seed = new Seed();
 
         SetDistance();
 
-        loadedChunks = new Chunk[loadDistance * 2 * UNIT, UNIT, loadDistance * 2 * UNIT];
+        
 
-        print(this.seed.get.Next(14));
-        print(this.seed.get.Next(63));
-        print(this.seed.get.Next(45));
-        print(this.seed.get.Next(66));
     }
 
     private void SetDistance()
@@ -49,6 +46,11 @@ public class WorldEngine : MonoBehaviour
 
     private Chunk GetChunkAt(Vector3 position)
     {
+        int x = Mathf.FloorToInt(position.x);
+        int y = Mathf.FloorToInt(position.y);
+        int z = Mathf.FloorToInt(position.z);
+        
+
         return null;
     }
 
