@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chunk
+public class Chunk : MonoBehaviour
 {
     WorldEngine worldEngine;
 
@@ -85,7 +85,10 @@ public class Chunk
 
     public void Render()
     {
-
+        foreach(int block in blocks)
+        {
+            
+        }
     }
 
     public void Save()
