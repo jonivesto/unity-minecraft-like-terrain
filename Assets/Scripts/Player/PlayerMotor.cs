@@ -9,17 +9,16 @@ public class PlayerMotor : MonoBehaviour
 
     void FixedUpdate()
     {
+        // move player
+        transform.Translate(Vector3.left*Time.deltaTime*0.9f);
+        // update world position
+        worldEngine.UpdatePosition(transform.position);
 
     }
 
     void Start()
     {
         worldEngine = GameObject.Find("/Environment/World").GetComponent<WorldEngine>();
-    }
-
-    internal static void Move(float x, float y)
-    {
-        throw new NotImplementedException();
     }
 
 }

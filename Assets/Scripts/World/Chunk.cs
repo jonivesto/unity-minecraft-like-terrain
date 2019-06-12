@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class Chunk
 {
-    readonly int x, y, z;
-
     WorldEngine worldEngine;
+
+    internal readonly int x, y, z;
+    internal readonly string name;
 
     int[,,] blocks = new int[16, 16, 16];
 
@@ -18,7 +19,8 @@ public class Chunk
         this.x = Mathf.FloorToInt(x);
         this.y = Mathf.FloorToInt(y);
         this.z = Mathf.FloorToInt(z);
-  
+
+        this.name = "chunk_" + this.x + "_" + this.y + "_" + this.z;
     }
 
     public void Load()
@@ -33,7 +35,7 @@ public class Chunk
         }
     }
 
-    private void Generate()
+    void Generate()
     {
         Seed seed = worldEngine.seed;
         seed.Reset();
@@ -87,7 +89,8 @@ public class Chunk
     }
 
     public void Save()
-    {
+    {    
+        // TODO
         // Save to file
         // Overwrite if file exists
     }
