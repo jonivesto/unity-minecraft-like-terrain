@@ -5,9 +5,8 @@ public class ChunkTransform
 {
     public readonly int x, z;
 
-    const int SIZE_X = 16;
+    const int SIZE_X = 16, SIZE_Z = 16;
     const int SIZE_Y = 256;
-    const int SIZE_Z = 16;
 
     private const int POPULATION_OFFSET = 7;
 
@@ -15,6 +14,12 @@ public class ChunkTransform
     {
         this.x = chunkX;
         this.z = chunkZ;
+    }
+
+    public ChunkTransform(Vector2Int position)
+    {
+        this.x = position.x;
+        this.z = position.y;
     }
 
     public ChunkTransform(float blockX, float blockZ)
@@ -49,6 +54,11 @@ public class ChunkTransform
     public Vector2Int GetBlockPosition()
     {
         return new Vector2Int(x * SIZE_X, z * SIZE_Z); 
+    }
+
+    public Vector2Int GetChunkPosition()
+    {
+        return new Vector2Int(x, z);
     }
 
     public override string ToString()

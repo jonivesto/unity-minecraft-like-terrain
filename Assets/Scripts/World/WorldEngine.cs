@@ -8,13 +8,11 @@ public class WorldEngine : MonoBehaviour
     public Seed seed;
 
     int renderDistance, loadDistance, sleepDistance;
-    int anchorX, anchorZ;
 
 
-    public Chunk[,,] loadedChunks;
+    public Chunk[,] loadedChunks;
 
-    public Vector3 playerPosition;
-    public Vector3Int playerChunk;
+    public Vector2Int playerChunk = new Vector2Int();
 
 
     void Start()
@@ -37,23 +35,18 @@ public class WorldEngine : MonoBehaviour
         sleepDistance = renderDistance - 1;
         loadDistance = renderDistance + 2;
 
-        loadedChunks = new Chunk[loadDistance * 2 + 1, 16 * 16, loadDistance * 2 + 1];
+        loadedChunks = new Chunk[loadDistance * 2 + 1, loadDistance * 2 + 1];
     }
 
     public void UpdatePosition(Vector3 position)
     {
-        playerPosition = position;
-        playerChunk = GetChunkPosition(position);
+        playerChunk.Set(
+            Mathf.FloorToInt(position.x / 16),
+            Mathf.FloorToInt(position.z / 16));
+
+
     }
 
-    private Vector3Int GetChunkPosition(Vector3 position)
-    {
-        return new Vector3Int
-        (
-            Mathf.FloorToInt(position.x / 16),
-            Mathf.FloorToInt(position.y / 16),
-            Mathf.FloorToInt(position.z / 16)
-        );
-    }
+    
 
 }
