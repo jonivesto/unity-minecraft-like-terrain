@@ -8,7 +8,7 @@ public class Chunk : MonoBehaviour
     WorldEngine worldEngine;
 
     internal readonly int x, y, z;
-    internal readonly string name;
+    internal readonly string id;
 
     int[,,] blocks = new int[16, 16, 16];
 
@@ -20,7 +20,7 @@ public class Chunk : MonoBehaviour
         this.y = Mathf.FloorToInt(y);
         this.z = Mathf.FloorToInt(z);
 
-        this.name = "chunk_" + this.x + "_" + this.y + "_" + this.z;
+        id = "chunk_" + this.x + "_" + this.y + "_" + this.z;
     }
 
     public void Load()
