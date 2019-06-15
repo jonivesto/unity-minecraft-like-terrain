@@ -21,9 +21,9 @@ public class Chunk : MonoBehaviour
 
 
         // Debug
-        //GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        //cylinder.transform.position = transform.position;
-        //cylinder.transform.parent = transform;
+        GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        cylinder.transform.position = transform.position;
+        cylinder.transform.parent = transform;
     }
 
     public void Load()

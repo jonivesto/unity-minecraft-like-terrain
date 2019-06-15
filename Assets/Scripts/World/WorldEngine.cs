@@ -6,7 +6,10 @@ public class WorldEngine : MonoBehaviour
 {
     public Seed seed;
 
-    int renderDistance, sleepDistance;
+    const int RENDER_DISTANCE = 8;
+
+    int renderDistance;
+    float sleepDistance;
 
     public ChunkTransform[] loadedChunks;
     public Vector2Int playerChunk = new Vector2Int();
@@ -25,14 +28,14 @@ public class WorldEngine : MonoBehaviour
 
     void SetDistances()
     {
-        renderDistance = 5;
+        renderDistance = RENDER_DISTANCE;
 
         if (renderDistance % 2 == 0)
         {
             renderDistance++;
         }
 
-        sleepDistance = renderDistance / 3;
+        sleepDistance = renderDistance / 2.5f;
    
         loadDimension = renderDistance * 2 + 1;
     }
@@ -91,8 +94,7 @@ public class WorldEngine : MonoBehaviour
                 chunk.AddComponent<MeshRenderer>();
 
                 Chunk c = chunk.AddComponent<Chunk>();
-                c.Construct(this, chunkTransform);
-                
+                c.Construct(this, chunkTransform);              
             }
 
             // Whitelist these chunks so they dont get destroyed
