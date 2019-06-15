@@ -1,15 +1,16 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Chunk : MonoBehaviour
 {
     WorldEngine worldEngine;
     ChunkTransform chunkTransform;
 
-    internal readonly int x, z;
+    private int x, z;
 
     int[,,] blocks = new int[16, 256, 16];
 
-    public Chunk(WorldEngine worldEngine, ChunkTransform chunkTransform)
+    internal void Construct(WorldEngine worldEngine, ChunkTransform chunkTransform)
     {
         this.worldEngine = worldEngine;
         this.chunkTransform = chunkTransform;
@@ -17,6 +18,12 @@ public class Chunk : MonoBehaviour
         x = chunkTransform.x;
         z = chunkTransform.z;
 
+
+
+        // Debug
+        //GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        //cylinder.transform.position = transform.position;
+        //cylinder.transform.parent = transform;
     }
 
     public void Load()
@@ -79,5 +86,5 @@ public class Chunk : MonoBehaviour
         */
     }
 
-
+    
 }

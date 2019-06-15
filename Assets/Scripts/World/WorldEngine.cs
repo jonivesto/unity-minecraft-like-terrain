@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using UnityEngine;
 
 public class WorldEngine : MonoBehaviour
@@ -7,7 +8,7 @@ public class WorldEngine : MonoBehaviour
 
     int renderDistance, sleepDistance;
 
-    public Vector2Int[] loadedChunks;
+    public ChunkTransform[] loadedChunks;
     public Vector2Int playerChunk = new Vector2Int();
 
     private Vector3 playerAnchor = new Vector3();
@@ -24,7 +25,7 @@ public class WorldEngine : MonoBehaviour
 
     void SetDistances()
     {
-        renderDistance = 15;
+        renderDistance = 5;
 
         if (renderDistance % 2 == 0)
         {
@@ -59,28 +60,60 @@ public class WorldEngine : MonoBehaviour
 
     private void LoadPosition()
     {
-
-        loadedChunks = new Vector2Int[loadDimension * loadDimension];
+        loadedChunks = new ChunkTransform[loadDimension * loadDimension];
 
         // Get chunks surrounding the player position
         int t = 0;
-        for (int i = playerChunk.x - renderDistance; i < playerChunk.x + renderDistance; i++)
+        for (int i = playerChunk.x - renderDistance; i <= playerChunk.x + renderDistance; i++)
         {
-            for (int j = playerChunk.y - renderDistance; j < playerChunk.y + renderDistance; j++)
+            for (int j = playerChunk.y - renderDistance; j <= playerChunk.y + renderDistance; j++)
             {
-                loadedChunks[t] = new Vector2Int(i, j);
+                loadedChunks[t] = new ChunkTransform(i, j);
                 t++;
             }
         }
 
 
-        // Print for debug
-        /*foreach(Vector2Int v2int in loadedChunks)
+        // Render chunks if not already rendered
+        Transform parentOfChunks = GameObject.Find("/Environment/World").transform;
+        List<GameObject> whitelist = new List<GameObject>();
+
+        foreach (ChunkTransform chunkTransform in loadedChunks)
+        {         
+            if (!ChunkRendered(chunkTransform))
+            {
+                GameObject chunk = new GameObject(chunkTransform.ToString());
+
+                chunk.transform.parent = parentOfChunks;
+                chunk.transform.position = chunkTransform.GetBlockPosition();
+
+                chunk.AddComponent<MeshFilter>();
+                chunk.AddComponent<MeshRenderer>();
+
+                Chunk c = chunk.AddComponent<Chunk>();
+                c.Construct(this, chunkTransform);
+                
+            }
+
+            // Whitelist these chunks so they dont get destroyed
+            whitelist.Add(GetRenderedChunk(chunkTransform));
+        }
+
+
+        // Destroy chunks that are not whitelisted
+        for (int i = 0; i < parentOfChunks.childCount; ++i)
         {
-            print(v2int.ToString());
-            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            sphere.transform.position = new Vector3(v2int.x*16, 20f, v2int.y*16);
-        }*/
+            GameObject c = parentOfChunks.GetChild(i).gameObject;
+            if (!whitelist.Contains(c))
+            {
+                Destroy(c);
+            }
+        }
+    }
+
+    private bool ChunkRendered(ChunkTransform chunkTransform)
+    {
+        return GameObject.Find("/Environment/World/" + chunkTransform.ToString());
     }
 
     private GameObject GetRenderedChunk(ChunkTransform chunkTransform)

@@ -50,9 +50,9 @@ public class ChunkTransform
         );
     }
 
-    public Vector2Int GetBlockPosition()
+    public Vector3 GetBlockPosition()
     {
-        return new Vector2Int(x * SIZE_X, z * SIZE_Z); 
+        return new Vector3(x * 16, 0f, z * 16);
     }
 
     public Vector2Int GetChunkPosition()
