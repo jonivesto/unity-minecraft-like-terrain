@@ -1,31 +1,27 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Chunk : MonoBehaviour
 {
     WorldEngine worldEngine;
+    ChunkTransform chunkTransform;
 
-    internal readonly int x, y, z;
-    internal readonly string id;
+    internal readonly int x, z;
 
-    int[,,] blocks = new int[16, 16, 16];
+    int[,,] blocks = new int[16, 256, 16];
 
-    public Chunk(WorldEngine worldEngine, float x, float y, float z)
+    public Chunk(WorldEngine worldEngine, ChunkTransform chunkTransform)
     {
         this.worldEngine = worldEngine;
+        this.chunkTransform = chunkTransform;
 
-        this.x = Mathf.FloorToInt(x);
-        this.y = Mathf.FloorToInt(y);
-        this.z = Mathf.FloorToInt(z);
+        x = chunkTransform.x;
+        z = chunkTransform.z;
 
-        id = "chunk_" + this.x + "_" + this.y + "_" + this.z;
     }
 
     public void Load()
     {
-        if (FileExists())
+        if (false) // Todo
         {
             // Load from file
         }
@@ -39,7 +35,7 @@ public class Chunk : MonoBehaviour
     {
         Seed seed = worldEngine.seed;
         seed.Reset();
-
+        /*
         // Plain sky and terrain
         for (float i = x; i < x + 16; i++)
         {
@@ -80,30 +76,8 @@ public class Chunk : MonoBehaviour
             }
 
         }
-
+        */
     }
 
-    public void Render()
-    {
-        foreach(int block in blocks)
-        {
-            
-        }
-    }
-
-    public void Save()
-    {    
-        // TODO
-        // Save to file
-        // Overwrite if file exists
-    }
-
-
-    bool FileExists()
-    {
-        return false;
-    }
-
-    
 
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ChunkTransform
 {
@@ -63,6 +62,6 @@ public class ChunkTransform
 
     public override string ToString()
     {
-        return x + "," + z;
+        return "Chunk(" + x + ", " + z + ")";
     }
 }

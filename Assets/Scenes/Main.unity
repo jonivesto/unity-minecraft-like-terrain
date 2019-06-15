@@ -1541,8 +1541,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 169a01b6eed51444183553fb53a595ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPosition: {x: 0, y: 0, z: 0}
-  playerChunk: {x: 0, y: 0, z: 0}
+  loadedChunks: []
+  playerChunk: {x: 0, y: 0}
 --- !u!1 &1009957096
 GameObject:
   m_ObjectHideFlags: 0
@@ -1558,7 +1558,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1009957097
 Transform:
   m_ObjectHideFlags: 0

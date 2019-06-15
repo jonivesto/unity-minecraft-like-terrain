@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class WorldEngine : MonoBehaviour
 {
@@ -9,16 +6,18 @@ public class WorldEngine : MonoBehaviour
 
     int renderDistance, loadDistance, sleepDistance;
 
-    public Chunk[,] loadedChunks;
-
+    public Vector2Int[] loadedChunks;
     public Vector2Int playerChunk = new Vector2Int();
+
     private Vector3 playerAnchor = new Vector3();
+    private int loadDimension;
 
     void Start()
     {
         seed = new Seed("1944887891122446");
 
         SetDistances(4);
+        LoadPosition();
 
     }
 
@@ -32,9 +31,9 @@ public class WorldEngine : MonoBehaviour
         }
 
         sleepDistance = renderDistance - 1;
-        loadDistance = renderDistance + 2;
 
-        loadedChunks = new Chunk[loadDistance * 2 + 1, loadDistance * 2 + 1];
+        loadDistance = renderDistance + 2;
+        loadDimension = loadDistance * 2 + 1;
     }
 
     public void UpdatePosition(Vector3 position)
@@ -48,7 +47,7 @@ public class WorldEngine : MonoBehaviour
 
         // Check if player has crossed the sleep distance      
         position.y = 0f;
-        if (Vector3.Distance(position, playerAnchor) > (float)sleepDistance * 16f)
+        if (Vector3.Distance(position, playerAnchor) > sleepDistance * 16f)
         {
             // Get new chunks to display   
             LoadPosition();
@@ -61,5 +60,32 @@ public class WorldEngine : MonoBehaviour
     private void LoadPosition()
     {
         
+        loadedChunks = new Vector2Int[loadDimension * loadDimension];
+
+        // Get chunks surrounding the player position
+        int t = 0;
+        for (int i = playerChunk.x - loadDistance; i < playerChunk.x + loadDistance; i++)
+        {
+            for (int j = playerChunk.y - loadDistance; j < playerChunk.y + loadDistance; j++)
+            {
+                loadedChunks[t] = new Vector2Int(i, j);
+                t++;
+            }
+        }
+        
+
+        // Print for debug
+        /*foreach(Vector2Int v2int in loadedChunks)
+        {
+            print(v2int.ToString());
+
+            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.position = new Vector3(v2int.x*16, 20f, v2int.y*16);
+        }*/
+    }
+
+    private GameObject GetRenderedChunk(ChunkTransform chunkTransform)
+    {
+        return GameObject.Find("/Environment/World/" + chunkTransform.ToString());
     }
 }
