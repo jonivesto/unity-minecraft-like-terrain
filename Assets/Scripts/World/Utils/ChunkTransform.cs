@@ -60,7 +60,7 @@ public class ChunkTransform
         return new Vector2Int(x, z);
     }
 
-    public override string ToString()
+    public new string ToString()
     {
         return "Chunk(" + x + ", " + z + ")";
     }

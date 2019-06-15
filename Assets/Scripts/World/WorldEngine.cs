@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 
 public class WorldEngine : MonoBehaviour
 {
     public Seed seed;
 
-    int renderDistance, loadDistance, sleepDistance;
+    int renderDistance, sleepDistance;
 
     public Vector2Int[] loadedChunks;
     public Vector2Int playerChunk = new Vector2Int();
@@ -16,24 +17,23 @@ public class WorldEngine : MonoBehaviour
     {
         seed = new Seed("1944887891122446");
 
-        SetDistances(4);
+        SetDistances();
         LoadPosition();
 
     }
 
-    void SetDistances(int renderDistance)
+    void SetDistances()
     {
-        this.renderDistance = renderDistance;
+        renderDistance = 15;
 
         if (renderDistance % 2 == 0)
         {
             renderDistance++;
         }
 
-        sleepDistance = renderDistance - 1;
-
-        loadDistance = renderDistance + 2;
-        loadDimension = loadDistance * 2 + 1;
+        sleepDistance = renderDistance / 3;
+   
+        loadDimension = renderDistance * 2 + 1;
     }
 
     public void UpdatePosition(Vector3 position)
@@ -59,26 +59,25 @@ public class WorldEngine : MonoBehaviour
 
     private void LoadPosition()
     {
-        
+
         loadedChunks = new Vector2Int[loadDimension * loadDimension];
 
         // Get chunks surrounding the player position
         int t = 0;
-        for (int i = playerChunk.x - loadDistance; i < playerChunk.x + loadDistance; i++)
+        for (int i = playerChunk.x - renderDistance; i < playerChunk.x + renderDistance; i++)
         {
-            for (int j = playerChunk.y - loadDistance; j < playerChunk.y + loadDistance; j++)
+            for (int j = playerChunk.y - renderDistance; j < playerChunk.y + renderDistance; j++)
             {
                 loadedChunks[t] = new Vector2Int(i, j);
                 t++;
             }
         }
-        
+
 
         // Print for debug
         /*foreach(Vector2Int v2int in loadedChunks)
         {
             print(v2int.ToString());
-
             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphere.transform.position = new Vector3(v2int.x*16, 20f, v2int.y*16);
         }*/
@@ -89,3 +88,4 @@ public class WorldEngine : MonoBehaviour
         return GameObject.Find("/Environment/World/" + chunkTransform.ToString());
     }
 }
+
