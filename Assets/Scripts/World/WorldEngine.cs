@@ -95,7 +95,8 @@ public class WorldEngine : MonoBehaviour
                 chunk.AddComponent<MeshRenderer>();
 
                 Chunk c = chunk.AddComponent<Chunk>();
-                worldGenerator.Generate(c);                           
+                worldGenerator.Generate(c);
+                c.Render();
             }
 
             // Whitelist these chunks so they dont get destroyed

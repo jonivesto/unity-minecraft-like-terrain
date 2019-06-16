@@ -40,7 +40,6 @@ public class TerrainGenerator
 
     private int GetGroundAt(int x, int y)
     {
-        seed.Reset();
-        return Mathf.FloorToInt(Mathf.PerlinNoise(x + seed.get.Next(64), y + seed.get.Next(64)) * 125f);
+        return Mathf.FloorToInt(Mathf.PerlinNoise(x, y) * 185f);       
     }
 }
