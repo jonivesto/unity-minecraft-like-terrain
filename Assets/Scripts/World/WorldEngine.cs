@@ -5,6 +5,7 @@ using UnityEngine;
 public class WorldEngine : MonoBehaviour
 {
     public Seed seed;
+    public TerrainGenerator worldGenerator;
 
     const int RENDER_DISTANCE = 3;
 
@@ -20,10 +21,10 @@ public class WorldEngine : MonoBehaviour
     void Start()
     {
         seed = new Seed("1944887891122446");
+        worldGenerator = new TerrainGenerator(seed);
 
         SetDistances();
         LoadPosition();
-
     }
 
     void SetDistances()
@@ -83,7 +84,7 @@ public class WorldEngine : MonoBehaviour
 
         foreach (ChunkTransform chunkTransform in loadedChunks)
         {         
-            if (!ChunkRendered(chunkTransform))
+            if (GetRenderedChunk(chunkTransform) == null)
             {
                 GameObject chunk = new GameObject(chunkTransform.ToString());
 
@@ -94,7 +95,7 @@ public class WorldEngine : MonoBehaviour
                 chunk.AddComponent<MeshRenderer>();
 
                 Chunk c = chunk.AddComponent<Chunk>();
-                c.Construct(this, chunkTransform);              
+                worldGenerator.Generate(c);                           
             }
 
             // Whitelist these chunks so they dont get destroyed
@@ -111,11 +112,6 @@ public class WorldEngine : MonoBehaviour
                 Destroy(c);
             }
         }
-    }
-
-    private bool ChunkRendered(ChunkTransform chunkTransform)
-    {
-        return GameObject.Find("/Environment/World/" + chunkTransform.ToString());
     }
 
     private GameObject GetRenderedChunk(ChunkTransform chunkTransform)
