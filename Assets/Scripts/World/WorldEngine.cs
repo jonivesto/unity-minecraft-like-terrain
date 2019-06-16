@@ -6,7 +6,7 @@ public class WorldEngine : MonoBehaviour
 {
     public Seed seed;
 
-    const int RENDER_DISTANCE = 8;
+    const int RENDER_DISTANCE = 3;
 
     int renderDistance;
     float sleepDistance;

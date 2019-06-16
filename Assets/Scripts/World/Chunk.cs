@@ -18,17 +18,11 @@ public class Chunk : MonoBehaviour
         x = chunkTransform.x;
         z = chunkTransform.z;
 
+        //GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        //cylinder.transform.position = transform.position;
+        //cylinder.transform.parent = transform;
 
-
-        // Debug
-        GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        cylinder.transform.position = transform.position;
-        cylinder.transform.parent = transform;
-    }
-
-    public void Load()
-    {
-        if (false) // Todo
+        if (false) // Check if this chunk is saved to a file
         {
             // Load from file
         }
@@ -42,48 +36,42 @@ public class Chunk : MonoBehaviour
     {
         Seed seed = worldEngine.seed;
         seed.Reset();
-        /*
+        
         // Plain sky and terrain
-        for (float i = x; i < x + 16; i++)
+        for (int i = 0; i < 16; i++) // local x
         {
-            for (float j = z; j < z + 16; j++)
+            for (int j = 0; j < 16; j++) // local z
             {
-                int terrainNoise = Mathf.FloorToInt(Mathf.PerlinNoise(x + seed.get.Next(64), y + seed.get.Next(64)) * 125f);
+                int terrainNoise = Mathf.FloorToInt(Mathf.PerlinNoise(i + seed.get.Next(64), j + seed.get.Next(64)) * 125f);
 
-                for (float t = y; t < y + 16; t++)
+                for (int y = 0; y < 256; y++) // local y
                 {
-                    if (terrainNoise > t)
+                    if (terrainNoise < y)
                     {
-                        // empty block
-                        blocks[x, y, z] = 0;
+                        // Empty block
+                        blocks[i, y, j] = 0;
                     }
                     else
                     {
-                        // stone block
-                        blocks[x, y, z] = 1;
+                        // Stone block
+                        blocks[i, y, j] = 1;
+
+                        // Bedrock
+                        if (y == 0)
+                        {                       
+                            blocks[i, 0, j] = 2;
+
+                            if (terrainNoise > 0.4)
+                            {
+                                blocks[i, 1, j] = 2;
+                            }
+                             
+                        }
                     }
                 }
             }
         }
 
-        // Bedrock
-        if (y == 0) {
-
-            for (float i = x; i < x + 16; i++)
-            {
-                for (float j = z; j < z + 16; j++)
-                {
-                    blocks[x, 0, z] = 2;
-
-                    if (Mathf.PerlinNoise(x + seed.get.Next(64), y + seed.get.Next(64)) > 0.4)
-                    {
-                        blocks[x, 1, z] = 2;
-                    }
-                }
-            }
-
-        }
-        */
     }
 
     

@@ -9,8 +9,6 @@ public class PlayerMotor : MonoBehaviour
 
     void FixedUpdate()
     {
-        // move player
-        transform.Translate(Vector3.left*Time.deltaTime*0.9f);
         // update world position
         worldEngine.UpdatePosition(transform.position);
 
