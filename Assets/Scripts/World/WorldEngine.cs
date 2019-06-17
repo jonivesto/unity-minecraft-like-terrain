@@ -93,6 +93,7 @@ public class WorldEngine : MonoBehaviour
 
                 chunk.AddComponent<MeshFilter>();
                 chunk.AddComponent<MeshRenderer>();
+                chunk.AddComponent<MeshCollider>();
 
                 Chunk c = chunk.AddComponent<Chunk>();
                 c.SetChunkTransform(chunkTransform);

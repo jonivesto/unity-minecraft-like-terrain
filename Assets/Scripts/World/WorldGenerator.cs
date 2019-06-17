@@ -45,6 +45,6 @@ public class TerrainGenerator
     {
         x += wX;
         y += wY;
-        return Mathf.FloorToInt(Mathf.PerlinNoise(x/10f, y/10f) * 12f);       
+        return Mathf.FloorToInt(Mathf.PerlinNoise(x/10f, y/10f) * 8f);       
     }
 }

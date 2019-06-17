@@ -30,52 +30,128 @@ public class Chunk : MonoBehaviour
             {
                 for (int y = 0; y < 256; y++)
                 {
-                    if(blocks[x, y, z] != 0 && blocks[x, y+1, z]==0)
+                    if(blocks[x, y, z] != 0)
                     {
-                        verts.Add(new Vector3(x, y, z));
-                        verts.Add(new Vector3(x+1, y, z));
-                        verts.Add(new Vector3(x+1, y, z+1));
-                        verts.Add(new Vector3(x, y, z+1));
+                        // Top
+                        if (y + 1 < 256 && blocks[x, y + 1, z] == 0)
+                        {
+                            verts.Add(new Vector3(x, y + 1, z));
+                            verts.Add(new Vector3(x + 1, y + 1, z));
+                            verts.Add(new Vector3(x + 1, y + 1, z + 1));
+                            verts.Add(new Vector3(x, y + 1, z + 1));
 
-                        tris.Add(verts.Count - 4 + 0);
-                        tris.Add(verts.Count - 4 + 2);
-                        tris.Add(verts.Count - 4 + 1);
+                            int i = verts.Count - 4;
+                            tris.Add(i + 0);
+                            tris.Add(i + 2);
+                            tris.Add(i + 1);
 
-                        tris.Add(verts.Count - 4 + 0);
-                        tris.Add(verts.Count - 4 + 3);
-                        tris.Add(verts.Count - 4 + 2);
+                            tris.Add(i + 0);
+                            tris.Add(i + 3);
+                            tris.Add(i + 2);
+                        }
+                        
+                        
+                        // Bottom
+                        if (y - 1 >= 0 && blocks[x, y - 1, z] == 0)
+                        {
+                            verts.Add(new Vector3(x, y, z));
+                            verts.Add(new Vector3(x + 1, y, z));
+                            verts.Add(new Vector3(x + 1, y, z + 1));
+                            verts.Add(new Vector3(x, y, z + 1));
+
+                            int i = verts.Count - 4;
+                            tris.Add(i + 0);
+                            tris.Add(i + 1);
+                            tris.Add(i + 2);
+
+                            tris.Add(i + 0);
+                            tris.Add(i + 2);
+                            tris.Add(i + 3);
+                        }
+                        
+                        // Right
+                        if (x + 1 < 16 && blocks[x + 1, y, z] == 0)
+                        {
+                            verts.Add(new Vector3(x + 1, y, z));
+                            verts.Add(new Vector3(x + 1, y + 1, z));
+                            verts.Add(new Vector3(x + 1, y + 1, z + 1));
+                            verts.Add(new Vector3(x + 1, y, z + 1));
+
+                            int i = verts.Count - 4;
+                            tris.Add(i + 0);
+                            tris.Add(i + 1);
+                            tris.Add(i + 2);
+
+                            tris.Add(i + 0);
+                            tris.Add(i + 2);
+                            tris.Add(i + 3);
+                        }
+                        
+                        // Left
+                        if (x - 1 >= 0 && blocks[x - 1, y, z] == 0)
+                        {                          
+                            verts.Add(new Vector3(x, y, z));
+                            verts.Add(new Vector3(x, y + 1, z));
+                            verts.Add(new Vector3(x, y + 1, z + 1));
+                            verts.Add(new Vector3(x, y, z + 1));
+
+                            int i = verts.Count - 4;
+                            tris.Add(i + 0);
+                            tris.Add(i + 2);
+                            tris.Add(i + 1);
+
+                            tris.Add(i + 0);
+                            tris.Add(i + 3);
+                            tris.Add(i + 2);
+                        }
+                        
+                        // Front
+                        if (z + 1 < 16 && blocks[x, y, z + 1] == 0)
+                        {
+                            verts.Add(new Vector3(x, y, z + 1));
+                            verts.Add(new Vector3(x, y + 1, z + 1));
+                            verts.Add(new Vector3(x + 1, y + 1, z + 1));
+                            verts.Add(new Vector3(x + 1, y, z + 1));
+
+                            int i = verts.Count - 4;
+                            tris.Add(i + 0);
+                            tris.Add(i + 2);
+                            tris.Add(i + 1);
+
+                            tris.Add(i + 0);
+                            tris.Add(i + 3);
+                            tris.Add(i + 2);
+                        }
+                        
+                        // Back
+                        if (z - 1 >= 0 && blocks[x , y, z - 1] == 0)
+                        {
+                            verts.Add(new Vector3(x, y, z));
+                            verts.Add(new Vector3(x, y + 1, z));
+                            verts.Add(new Vector3(x + 1, y + 1, z));
+                            verts.Add(new Vector3(x + 1, y, z));
+
+                            int i = verts.Count - 4;
+                            tris.Add(i + 0);
+                            tris.Add(i + 1);
+                            tris.Add(i + 2);
+
+                            tris.Add(i + 0);
+                            tris.Add(i + 2);
+                            tris.Add(i + 3);
+                        }
+                        
+
                     }
+
+
                 }
             }
         }
         Vector3[] vertices = verts.ToArray();
         int[] triangles = tris.ToArray();
 
-        /*Vector3[] vertices = {
-            new Vector3 (0, 0, 0),
-            new Vector3 (1, 0, 0),
-            new Vector3 (1, 1, 0),
-            new Vector3 (0, 1, 0),
-            new Vector3 (0, 1, 1),
-            new Vector3 (1, 1, 1),
-            new Vector3 (1, 0, 1),
-            new Vector3 (0, 0, 1),
-        };
 
-        int[] triangles = {
-            0, 2, 1, //face front
-			0, 3, 2,
-            2, 3, 4, //face top
-			2, 4, 5,
-            1, 2, 5, //face right
-			1, 5, 6,
-            0, 7, 4, //face left
-			0, 4, 3,
-            5, 4, 7, //face back
-			5, 7, 6,
-            0, 6, 7, //face bottom
-			0, 1, 6
-        };*/
 
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         mesh.Clear();
@@ -83,6 +159,11 @@ public class Chunk : MonoBehaviour
         mesh.triangles = triangles;
         mesh.Optimize();
         mesh.RecalculateNormals();
+
+        GetComponent<MeshCollider>().sharedMesh = mesh;
+
+        MeshRenderer renderer = GetComponent<MeshRenderer>();
+        renderer.material = new Material(Shader.Find("Specular"));
     }
 
     internal void SetChunkTransform(ChunkTransform chunkTransform)
