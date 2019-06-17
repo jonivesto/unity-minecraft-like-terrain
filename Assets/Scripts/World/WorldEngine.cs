@@ -7,7 +7,7 @@ public class WorldEngine : MonoBehaviour
     public Seed seed;
     public TerrainGenerator worldGenerator;
 
-    const int RENDER_DISTANCE = 3;
+    const int RENDER_DISTANCE = 6;
 
     int renderDistance;
     float sleepDistance;
@@ -21,7 +21,7 @@ public class WorldEngine : MonoBehaviour
     void Start()
     {
         seed = new Seed("1944887891122446");
-        worldGenerator = new TerrainGenerator(seed);
+        worldGenerator = new TerrainGenerator(this);
 
         SetDistances();
         LoadPosition();
@@ -95,6 +95,7 @@ public class WorldEngine : MonoBehaviour
                 chunk.AddComponent<MeshRenderer>();
 
                 Chunk c = chunk.AddComponent<Chunk>();
+                c.SetChunkTransform(chunkTransform);
                 worldGenerator.Generate(c);
                 c.Render();
             }

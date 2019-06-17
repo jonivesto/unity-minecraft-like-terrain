@@ -7,6 +7,7 @@ public class Chunk : MonoBehaviour
     Seed seed;
 
     int[,,] blocks = new int[16, 256, 16];
+    internal ChunkTransform chunkTransform;
 
     public void SetBlock(int x, int y, int z, int blockId)
     {
@@ -82,5 +83,10 @@ public class Chunk : MonoBehaviour
         mesh.triangles = triangles;
         mesh.Optimize();
         mesh.RecalculateNormals();
+    }
+
+    internal void SetChunkTransform(ChunkTransform chunkTransform)
+    {
+        this.chunkTransform = chunkTransform;
     }
 }

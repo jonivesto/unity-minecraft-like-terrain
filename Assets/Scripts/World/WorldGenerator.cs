@@ -8,20 +8,23 @@ public class TerrainGenerator
     const int CHUNK_Y = 256;
     const int CHUNK_Z = 16;
 
-    private Seed seed;
+    private WorldEngine worldEngine;
 
-    public TerrainGenerator(Seed seed)
+    public TerrainGenerator(WorldEngine worldEngine)
     {
-        this.seed = seed;
+        this.worldEngine = worldEngine;
     }
 
     public void Generate(Chunk chunk)
     {
+        int worldX = chunk.chunkTransform.x * CHUNK_X;
+        int worldZ = chunk.chunkTransform.z * CHUNK_Z;
+
         for (int x = 0; x < CHUNK_X; x++) // local x
         {
             for (int z = 0; z < CHUNK_Z; z++) // local z
             {
-                int ground = GetGroundAt(x, z);
+                int ground = GetGroundAt(x, z, worldX, worldZ);
 
                 for (int y = 0; y < CHUNK_Y; y++) // local y
                 {
@@ -38,8 +41,10 @@ public class TerrainGenerator
         }
     }
 
-    private int GetGroundAt(int x, int y)
+    private int GetGroundAt(int x, int y, int wX, int wY)
     {
-        return Mathf.FloorToInt(Mathf.PerlinNoise(x, y) * 185f);       
+        x += wX;
+        y += wY;
+        return Mathf.FloorToInt(Mathf.PerlinNoise(x/10f, y/10f) * 12f);       
     }
 }
