@@ -43,8 +43,10 @@ public class TerrainGenerator
 
     private int GetGroundAt(int x, int y, int wX, int wY)
     {
+        Seed seed = worldEngine.seed;
+        seed.Reset();
         x += wX;
         y += wY;
-        return Mathf.FloorToInt(Mathf.PerlinNoise(x/10f, y/10f) * 8f);       
+        return Mathf.FloorToInt(Mathf.PerlinNoise(x/10f + seed.get.Next(64), y/ 10f + seed.get.Next(64)) * 9f + 1f);       
     }
 }

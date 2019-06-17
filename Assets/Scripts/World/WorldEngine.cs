@@ -20,7 +20,8 @@ public class WorldEngine : MonoBehaviour
 
     void Start()
     {
-        seed = new Seed("1944887891122446");
+        //seed = new Seed();
+        seed = new Seed("0004887891122446");
         worldGenerator = new TerrainGenerator(this);
 
         SetDistances();
@@ -86,24 +87,26 @@ public class WorldEngine : MonoBehaviour
         {         
             if (GetRenderedChunk(chunkTransform) == null)
             {
-                GameObject chunk = new GameObject(chunkTransform.ToString());
+                GameObject obj = new GameObject(chunkTransform.ToString());
 
-                chunk.transform.parent = parentOfChunks;
-                chunk.transform.position = chunkTransform.GetBlockPosition();
+                obj.transform.parent = parentOfChunks;
+                obj.transform.position = chunkTransform.GetBlockPosition();
 
-                chunk.AddComponent<MeshFilter>();
-                chunk.AddComponent<MeshRenderer>();
-                chunk.AddComponent<MeshCollider>();
+                obj.AddComponent<MeshFilter>();
+                obj.AddComponent<MeshRenderer>();
+                obj.AddComponent<MeshCollider>();
 
-                Chunk c = chunk.AddComponent<Chunk>();
-                c.SetChunkTransform(chunkTransform);
-                worldGenerator.Generate(c);
-                c.Render();
+                Chunk chunk = obj.AddComponent<Chunk>();
+                chunk.chunkTransform = chunkTransform;
+
+                worldGenerator.Generate(chunk);
+                chunk.Render();
             }
 
             // Whitelist these chunks so they dont get destroyed
             whitelist.Add(GetRenderedChunk(chunkTransform));
         }
+
 
 
         // Destroy chunks that are not whitelisted
