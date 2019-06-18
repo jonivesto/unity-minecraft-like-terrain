@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using System;
 
 public class WorldEngine : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class WorldEngine : MonoBehaviour
     private Vector3 playerAnchor = new Vector3();
     private int loadDimension;
     private Coroutine load;
+
+
 
     void Start()
     {
@@ -39,7 +42,7 @@ public class WorldEngine : MonoBehaviour
             renderDistance++;
         }
 
-        sleepDistance = renderDistance / 2.5f;
+        sleepDistance = renderDistance / 2f;
 
         unloadDistance = renderDistance * 2;
 
@@ -69,7 +72,7 @@ public class WorldEngine : MonoBehaviour
 
     private void LoadPosition()
     {
-        loadedChunks = new ChunkTransform[loadDimension * loadDimension];
+        /*loadedChunks = new ChunkTransform[loadDimension * loadDimension];
 
         // Get chunks surrounding the player position
         int t = 0;
@@ -80,18 +83,46 @@ public class WorldEngine : MonoBehaviour
                 loadedChunks[t] = new ChunkTransform(i, j);
                 t++;
             }
+        }*/
+
+        // Get chunks surrounding the player position in spiral order
+        List<ChunkTransform> cts = new List<ChunkTransform>();
+        cts.Add(new ChunkTransform(playerChunk));
+
+        int[] patternX = new int[] {1, 0, 0, -1, -1, 0, 0, 1};
+        int[] patternY = new int[] {0, -1, -1, 0, 0, 1, 1, 0};
+
+        int x, y;
+        
+        for (int step = 1; step <= renderDistance; step++) // Levels
+        {
+            x = playerChunk.x;
+            y = playerChunk.y + step;
+
+            for (int p = 0; p < 8; p++) // Patterns
+            {
+                for (int i = 1; i <= step; i++) // Steps
+                {
+                    x += patternX[p] * 1;
+                    y += patternY[p] * 1;
+
+                    cts.Add(new ChunkTransform(x, y));
+                }
+            }
+
         }
 
+        loadedChunks = cts.ToArray();
+
         // Stop load if it is in progress
-        if(load != null)
+        if (load != null)
         {
             StopCoroutine(load);
         }
-        
+
         // Choose load performance type
         // If current Player chunk is not rendered, use hard load      
         load = StartCoroutine("LoadChunks", GetRenderedChunk(new ChunkTransform(playerChunk)) != null);
-        
     }
 
     IEnumerator LoadChunks(bool async)
@@ -119,17 +150,17 @@ public class WorldEngine : MonoBehaviour
                 chunk.Render();
             }
 
-
+            
             // Destroy chunks that are not in range
             for (int i = 0; i < parentOfChunks.childCount; ++i)
             {
                 Vector3 t = parentOfChunks.GetChild(i).position;
-                if (Vector2Int.Distance(playerChunk, new Vector2Int((int)t.x, (int)t.z)) > unloadDistance * 16)
+                if (Vector2Int.Distance(playerChunk * 16, new Vector2Int((int)t.x, (int)t.z)) > unloadDistance * 16)
                 {
                     Destroy(parentOfChunks.GetChild(i).gameObject);
                 }
             }
-
+            
             if (async)
             {
                 yield return null;

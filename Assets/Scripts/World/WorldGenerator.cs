@@ -47,6 +47,6 @@ public class TerrainGenerator
         seed.Reset();
         x += wX;
         y += wY;
-        return Mathf.FloorToInt(Mathf.PerlinNoise(x/10f + seed.get.Next(64), y/ 10f + seed.get.Next(64)) * 9f + 1f);       
+        return Mathf.FloorToInt(Mathf.PerlinNoise(x/10f + seed.get.Next(64), y/ 10f + seed.get.Next(64)) * 3f + 1f);       
     }
 }
