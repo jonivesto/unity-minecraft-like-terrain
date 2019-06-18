@@ -39,6 +39,7 @@ public class TerrainGenerator
                 }
             }
         }
+        chunk.SetBlock(0, 10, 0, 1);
     }
 
     private int GetGroundAt(int x, int y, int wX, int wY)

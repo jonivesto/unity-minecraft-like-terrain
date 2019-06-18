@@ -22,7 +22,6 @@ public class WorldEngine : MonoBehaviour
     private Coroutine load;
 
 
-
     void Start()
     {
         //seed = new Seed();
@@ -72,19 +71,6 @@ public class WorldEngine : MonoBehaviour
 
     private void LoadPosition()
     {
-        /*loadedChunks = new ChunkTransform[loadDimension * loadDimension];
-
-        // Get chunks surrounding the player position
-        int t = 0;
-        for (int i = playerChunk.x - renderDistance; i <= playerChunk.x + renderDistance; i++)
-        {
-            for (int j = playerChunk.y - renderDistance; j <= playerChunk.y + renderDistance; j++)
-            {
-                loadedChunks[t] = new ChunkTransform(i, j);
-                t++;
-            }
-        }*/
-
         // Get chunks surrounding the player position in spiral order
         List<ChunkTransform> cts = new List<ChunkTransform>();
         cts.Add(new ChunkTransform(playerChunk));
@@ -94,14 +80,14 @@ public class WorldEngine : MonoBehaviour
 
         int x, y;
         
-        for (int step = 1; step <= renderDistance; step++) // Levels
+        for (int radius = 1; radius <= renderDistance; radius++) // Levels
         {
             x = playerChunk.x;
-            y = playerChunk.y + step;
+            y = playerChunk.y + radius;
 
             for (int p = 0; p < 8; p++) // Patterns
             {
-                for (int i = 1; i <= step; i++) // Steps
+                for (int i = 1; i <= radius; i++) // Steps
                 {
                     x += patternX[p] * 1;
                     y += patternY[p] * 1;

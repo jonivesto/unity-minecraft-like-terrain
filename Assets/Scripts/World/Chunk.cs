@@ -23,6 +23,7 @@ public class Chunk : MonoBehaviour
     {
         List<Vector3> verts = new List<Vector3>();
         List<int> tris = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
 
         for (int x = 0; x < 16; x++)
         {
@@ -42,6 +43,11 @@ public class Chunk : MonoBehaviour
 
                             int vCount = verts.Count - 4;
                             tris = AddTriangles(tris, vCount, true);
+
+                            uvs.Add(new Vector2(0, 0));
+                            uvs.Add(new Vector2(0, 1));
+                            uvs.Add(new Vector2(1, 1));
+                            uvs.Add(new Vector2(1, 0));
                         }
                         
                         
@@ -55,6 +61,11 @@ public class Chunk : MonoBehaviour
 
                             int vCount = verts.Count - 4;
                             tris = AddTriangles(tris, vCount, false);
+
+                            uvs.Add(new Vector2(0, 0));
+                            uvs.Add(new Vector2(0, 1));
+                            uvs.Add(new Vector2(1, 1));
+                            uvs.Add(new Vector2(1, 0));
                         }
 
                         // Right
@@ -68,6 +79,11 @@ public class Chunk : MonoBehaviour
 
                             int vCount = verts.Count - 4;
                             tris = AddTriangles(tris, vCount, false);
+
+                            uvs.Add(new Vector2(0, 0));
+                            uvs.Add(new Vector2(0, 1));
+                            uvs.Add(new Vector2(1, 1));
+                            uvs.Add(new Vector2(1, 0));
                         }
 
                         // Left
@@ -81,6 +97,11 @@ public class Chunk : MonoBehaviour
 
                             int vCount = verts.Count - 4;
                             tris = AddTriangles(tris, vCount, true);
+
+                            uvs.Add(new Vector2(0, 0));
+                            uvs.Add(new Vector2(0, 1));
+                            uvs.Add(new Vector2(1, 1));
+                            uvs.Add(new Vector2(1, 0));
                         }
 
                         // Front
@@ -94,6 +115,11 @@ public class Chunk : MonoBehaviour
 
                             int vCount = verts.Count - 4;
                             tris = AddTriangles(tris, vCount, true);
+
+                            uvs.Add(new Vector2(0, 0));
+                            uvs.Add(new Vector2(0, 1));
+                            uvs.Add(new Vector2(1, 1));
+                            uvs.Add(new Vector2(1, 0));
                         }
 
                         // Back
@@ -107,6 +133,11 @@ public class Chunk : MonoBehaviour
 
                             int vCount = verts.Count - 4;
                             tris = AddTriangles(tris, vCount, false);
+
+                            uvs.Add(new Vector2(0, 0));
+                            uvs.Add(new Vector2(0, 1));
+                            uvs.Add(new Vector2(1, 1));
+                            uvs.Add(new Vector2(1, 0));
                         }
 
 
@@ -118,6 +149,7 @@ public class Chunk : MonoBehaviour
         }
         Vector3[] vertices = verts.ToArray();
         int[] triangles = tris.ToArray();
+        Vector2[] mapping = uvs.ToArray();
 
 
 
@@ -125,6 +157,7 @@ public class Chunk : MonoBehaviour
         mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+        mesh.uv = mapping;
         mesh.Optimize();
         mesh.RecalculateNormals();
 
