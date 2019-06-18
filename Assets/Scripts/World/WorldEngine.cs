@@ -1,5 +1,5 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class WorldEngine : MonoBehaviour
@@ -11,12 +11,14 @@ public class WorldEngine : MonoBehaviour
 
     int renderDistance;
     float sleepDistance;
+    int unloadDistance;
 
     public ChunkTransform[] loadedChunks;
     public Vector2Int playerChunk = new Vector2Int();
 
     private Vector3 playerAnchor = new Vector3();
     private int loadDimension;
+    private Coroutine load;
 
     void Start()
     {
@@ -38,7 +40,9 @@ public class WorldEngine : MonoBehaviour
         }
 
         sleepDistance = renderDistance / 2.5f;
-   
+
+        unloadDistance = renderDistance * 2;
+
         loadDimension = renderDistance * 2 + 1;
     }
 
@@ -78,13 +82,25 @@ public class WorldEngine : MonoBehaviour
             }
         }
 
+        // Stop load if it is in progress
+        if(load != null)
+        {
+            StopCoroutine(load);
+        }
+        
+        // Choose load performance type
+        // If current Player chunk is not rendered, use hard load      
+        load = StartCoroutine("LoadChunks", GetRenderedChunk(new ChunkTransform(playerChunk)) != null);
+        
+    }
 
+    IEnumerator LoadChunks(bool async)
+    {
         // Render chunks if not already rendered
         Transform parentOfChunks = GameObject.Find("/Environment/World").transform;
-        List<GameObject> whitelist = new List<GameObject>();
 
         foreach (ChunkTransform chunkTransform in loadedChunks)
-        {         
+        {
             if (GetRenderedChunk(chunkTransform) == null)
             {
                 GameObject obj = new GameObject(chunkTransform.ToString());
@@ -103,21 +119,23 @@ public class WorldEngine : MonoBehaviour
                 chunk.Render();
             }
 
-            // Whitelist these chunks so they dont get destroyed
-            whitelist.Add(GetRenderedChunk(chunkTransform));
-        }
 
-
-
-        // Destroy chunks that are not whitelisted
-        for (int i = 0; i < parentOfChunks.childCount; ++i)
-        {
-            GameObject c = parentOfChunks.GetChild(i).gameObject;
-            if (!whitelist.Contains(c))
+            // Destroy chunks that are not in range
+            for (int i = 0; i < parentOfChunks.childCount; ++i)
             {
-                Destroy(c);
+                Vector3 t = parentOfChunks.GetChild(i).position;
+                if (Vector2Int.Distance(playerChunk, new Vector2Int((int)t.x, (int)t.z)) > unloadDistance * 16)
+                {
+                    Destroy(parentOfChunks.GetChild(i).gameObject);
+                }
+            }
+
+            if (async)
+            {
+                yield return null;
             }
         }
+
     }
 
     private GameObject GetRenderedChunk(ChunkTransform chunkTransform)

@@ -131,7 +131,7 @@ public class Chunk : MonoBehaviour
         GetComponent<MeshCollider>().sharedMesh = mesh;
 
         MeshRenderer renderer = GetComponent<MeshRenderer>();
-        renderer.material = new Material(Shader.Find("Specular"));
+        renderer.material = new Material(Shader.Find("Diffuse"));
     }
 
     private List<int> AddTriangles(List<int> triangles, int vertices, bool clockwise)
