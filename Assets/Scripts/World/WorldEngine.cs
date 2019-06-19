@@ -6,7 +6,7 @@ using System;
 public class WorldEngine : MonoBehaviour
 {
     public Seed seed;
-    public TerrainGenerator worldGenerator;
+    public TerrainGenerator terrainGenerator;
     public ChunkTransform[] loadedChunks;
     public Vector2Int playerChunk = new Vector2Int();
 
@@ -24,7 +24,7 @@ public class WorldEngine : MonoBehaviour
     {
         //seed = new Seed();
         seed = new Seed("0004887891122446");
-        worldGenerator = new TerrainGenerator(this);
+        terrainGenerator = new TerrainGenerator(this);
 
         SetDistances(4);
         LoadPosition();
@@ -94,7 +94,7 @@ public class WorldEngine : MonoBehaviour
             // Do each pattern for each layer (phase = index in patternX[] and patternY[])
             for (int phase = 0; phase < 8; phase++) 
             {
-                // Split each pattern into steps of (1 step = 1 chunk)
+                // Split each pattern into steps (1 step = 1 chunk)
                 for (int step = 1; step <= layer; step++) 
                 {
                     // Set current position
@@ -141,11 +141,11 @@ public class WorldEngine : MonoBehaviour
                 Chunk chunk = obj.AddComponent<Chunk>();
                 chunk.chunkTransform = chunkTransform;
 
-                worldGenerator.Generate(chunk);
+                terrainGenerator.Generate(chunk);
                 chunk.Render();
             }
           
-            // Destroy chunks that too far away
+            // Destroy chunks that are too far away
             for (int i = 0; i < parentOfChunks.childCount; ++i)
             {
                 Vector3 t = parentOfChunks.GetChild(i).position;

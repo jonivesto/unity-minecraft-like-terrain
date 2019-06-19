@@ -45,9 +45,9 @@ public class Chunk : MonoBehaviour
                             verts.Add(new Vector3(x, y + 1, z + 1));
 
                             int vCount = verts.Count - 4;
-                            tris = AddTriangles(tris, vCount, true);
+                            AddTriangles(tris, vCount, true);
 
-                            uvs = AddUvs(uvs, blocks[x, y, z], 0);
+                            AddUvs(uvs, blocks[x, y, z], 0);
                         }
                         
                         
@@ -60,9 +60,9 @@ public class Chunk : MonoBehaviour
                             verts.Add(new Vector3(x, y, z + 1));
 
                             int vCount = verts.Count - 4;
-                            tris = AddTriangles(tris, vCount, false);
+                            AddTriangles(tris, vCount, false);
 
-                            uvs = AddUvs(uvs, blocks[x, y, z], 1);
+                            AddUvs(uvs, blocks[x, y, z], 1);
                         }
 
                         // Right
@@ -75,9 +75,9 @@ public class Chunk : MonoBehaviour
                             verts.Add(new Vector3(x + 1, y, z + 1));
 
                             int vCount = verts.Count - 4;
-                            tris = AddTriangles(tris, vCount, false);
+                            AddTriangles(tris, vCount, false);
 
-                            uvs = AddUvs(uvs, blocks[x, y, z], 2);
+                            AddUvs(uvs, blocks[x, y, z], 2);
                         }
 
                         // Left
@@ -90,9 +90,9 @@ public class Chunk : MonoBehaviour
                             verts.Add(new Vector3(x, y, z + 1));
 
                             int vCount = verts.Count - 4;
-                            tris = AddTriangles(tris, vCount, true);
+                            AddTriangles(tris, vCount, true);
 
-                            uvs = AddUvs(uvs, blocks[x, y, z], 3);
+                            AddUvs(uvs, blocks[x, y, z], 3);
                         }
 
                         // Front
@@ -105,9 +105,9 @@ public class Chunk : MonoBehaviour
                             verts.Add(new Vector3(x + 1, y, z + 1));
 
                             int vCount = verts.Count - 4;
-                            tris = AddTriangles(tris, vCount, true);
+                            AddTriangles(tris, vCount, true);
 
-                            uvs = AddUvs(uvs, blocks[x, y, z], 4);
+                            AddUvs(uvs, blocks[x, y, z], 4);
                         }
 
                         // Back
@@ -120,9 +120,9 @@ public class Chunk : MonoBehaviour
                             verts.Add(new Vector3(x + 1, y, z));
 
                             int vCount = verts.Count - 4;
-                            tris = AddTriangles(tris, vCount, false);
+                            AddTriangles(tris, vCount, false);
 
-                            uvs = AddUvs(uvs, blocks[x, y, z], 5);
+                            AddUvs(uvs, blocks[x, y, z], 5);
                         }
 
                     }
@@ -151,6 +151,7 @@ public class Chunk : MonoBehaviour
     }
 
     /*
+     * @param side:
      * 0 - top
      * 1 - bottom
      * 2 - right
@@ -158,28 +159,34 @@ public class Chunk : MonoBehaviour
      * 4 - front
      * 5 - back
      */
-    private List<Vector2> AddUvs(List<Vector2> uvs, int id, byte side)
+    private void AddUvs(List<Vector2> uvs, int id, byte side)
     {
         //TODO: Get info from block and ad UVs to its coords
         // dont forget sides
-        
-        float uv = 0.0625f;
 
-        float x = uv * 8;
-        float y = uv * 9;
+        // One texture unit (1/16=0.0625)
+        const float uv = 0.0625f;
 
+        // texture coordinates in the 16x16 grid
+        float x = 15;
+        float y = 15;
 
-        
-        uvs.Add(new Vector2(x, x)); // left bottom
-        uvs.Add(new Vector2(x, y)); // left top
-        uvs.Add(new Vector2(y, y)); // right top
-        uvs.Add(new Vector2(y, x)); // right bottom
-        
+        x *= uv;
+        y *= uv;
 
-        return uvs;
+        // Illegal coords warning
+        if(x > 15 || x < 0 || y > 15 || y < 0)
+        {
+            Debug.LogWarning("Block's texture coordinates are out of range [0, 15]");
+        }
+
+        uvs.Add(new Vector2(x, y)); // left bottom
+        uvs.Add(new Vector2(x, y+uv)); // left top
+        uvs.Add(new Vector2(x+uv, y+uv)); // right top
+        uvs.Add(new Vector2(x+uv, y)); // right bottom
     }
 
-    private List<int> AddTriangles(List<int> triangles, int vertices, bool clockwise)
+    private void AddTriangles(List<int> triangles, int vertices, bool clockwise)
     {
         byte[] pattern;
 
@@ -196,7 +203,5 @@ public class Chunk : MonoBehaviour
         {
             triangles.Add(vertices + pattern[i]);
         }
-
-        return triangles;
     }
 }
