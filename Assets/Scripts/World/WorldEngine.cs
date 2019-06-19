@@ -5,10 +5,15 @@ using System;
 
 public class WorldEngine : MonoBehaviour
 {
-    public Seed seed;
-    public TerrainGenerator terrainGenerator;
-    public ChunkTransform[] loadedChunks;
+    public Seed seed;   
     public Vector2Int playerChunk = new Vector2Int();
+
+    private TerrainGenerator terrainGenerator;
+    private ChunkRenderer chunkRenderer = new ChunkRenderer();
+    private ChunkTransform[] loadedChunks;
+    private Vector3 playerAnchor;
+    private Vector3 facingDirection;
+    private Coroutine load;
 
     int renderDistance;  
     int unloadDistance;
@@ -16,9 +21,6 @@ public class WorldEngine : MonoBehaviour
 
     float sleepDistance;
 
-    private Vector3 playerAnchor;
-    private Vector3 facingDirection;
-    private Coroutine load;
 
     void Start()
     {
@@ -127,7 +129,7 @@ public class WorldEngine : MonoBehaviour
         // Render chunks if not already rendered
         foreach (ChunkTransform chunkTransform in loadedChunks)
         {
-            if (GetRenderedChunk(chunkTransform) == null)
+            if (GetChunk(chunkTransform) == null)
             {
                 GameObject obj = new GameObject(chunkTransform.ToString());
 
@@ -139,10 +141,10 @@ public class WorldEngine : MonoBehaviour
                 obj.AddComponent<MeshCollider>();
 
                 Chunk chunk = obj.AddComponent<Chunk>();
-                chunk.chunkTransform = chunkTransform;
+                chunk.Init(chunkTransform);
 
                 terrainGenerator.Generate(chunk);
-                chunk.Render();
+                chunkRenderer.Render(chunk);
             }
           
             // Destroy chunks that are too far away
@@ -163,9 +165,9 @@ public class WorldEngine : MonoBehaviour
         }
     }
 
-    // Returns chunk GameObject that is currently visible in the game
-    // Return value can be null
-    private GameObject GetRenderedChunk(ChunkTransform chunkTransform)
+    // Returns chunk GameObject that is currently in the game hierarchy
+    // Returns null if the chunk is not loaded
+    private GameObject GetChunk(ChunkTransform chunkTransform)
     {
         return GameObject.Find("/Environment/World/" + chunkTransform.ToString());
     }
