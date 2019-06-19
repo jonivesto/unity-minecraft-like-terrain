@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AirBlock : BlockComposer
+public class AirBlock : BlockProvider
 {
     public static readonly int id = 0;
 
-    public override bool SeamlessAndOpaque { get { return false; } }
+    public override bool CoverNeighbors { get { return false; } }
 }

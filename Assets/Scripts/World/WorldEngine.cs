@@ -7,20 +7,18 @@ public class WorldEngine : MonoBehaviour
 {
     public Seed seed;
     public TerrainGenerator worldGenerator;
-
-    const int RENDER_DISTANCE = 6;
-
-    int renderDistance;
-    float sleepDistance;
-    int unloadDistance;
-
     public ChunkTransform[] loadedChunks;
     public Vector2Int playerChunk = new Vector2Int();
 
-    private Vector3 playerAnchor = new Vector3();
-    private int loadDimension;
-    private Coroutine load;
+    int renderDistance;  
+    int unloadDistance;
+    int loadDimension;
 
+    float sleepDistance;
+
+    private Vector3 playerAnchor;
+    private Vector3 facingDirection;
+    private Coroutine load;
 
     void Start()
     {
@@ -28,13 +26,13 @@ public class WorldEngine : MonoBehaviour
         seed = new Seed("0004887891122446");
         worldGenerator = new TerrainGenerator(this);
 
-        SetDistances();
+        SetDistances(6);
         LoadPosition();
     }
 
-    void SetDistances()
+    void SetDistances(int renderDistance)
     {
-        renderDistance = RENDER_DISTANCE;
+        this.renderDistance = renderDistance;
 
         if (renderDistance % 2 == 0)
         {
@@ -48,7 +46,7 @@ public class WorldEngine : MonoBehaviour
         loadDimension = renderDistance * 2 + 1;
     }
 
-    public void UpdatePosition(Vector3 position)
+    public void UpdatePosition(Vector3 position, Vector3 rotation)
     {
         // Get chunk position player is in
         playerChunk.Set
@@ -67,38 +65,48 @@ public class WorldEngine : MonoBehaviour
             // Update player anchor so the load will not happen again
             playerAnchor = position;
         }
+
+        // Update Rotation
+        facingDirection = rotation;
     }
 
     private void LoadPosition()
     {
-        // Get chunks surrounding the player position in spiral order
-        List<ChunkTransform> cts = new List<ChunkTransform>();
-        cts.Add(new ChunkTransform(playerChunk));
+        // Chunks around the player chunk in spiral order
+        List<ChunkTransform> chunkTransforms = new List<ChunkTransform>();
 
+        // Add player chunk (the center of the spiral)
+        chunkTransforms.Add(new ChunkTransform(playerChunk));
+
+        // X and Y directions that define the spiral pattern
         int[] patternX = new int[] {1, 0, 0, -1, -1, 0, 0, 1};
         int[] patternY = new int[] {0, -1, -1, 0, 0, 1, 1, 0};
 
+        // Current position when drawing the spiral
         int x, y;
         
-        for (int radius = 1; radius <= renderDistance; radius++) // Levels
+        for (int layer = 1; layer <= renderDistance; layer++) // Spiral layers aroud the player
         {
+            // Set starting point for each layer
             x = playerChunk.x;
-            y = playerChunk.y + radius;
+            y = playerChunk.y + layer;
 
-            for (int p = 0; p < 8; p++) // Patterns
+            // Do each pattern for each layer (phase = index in patternX[] and patternY[])
+            for (int phase = 0; phase < 8; phase++) 
             {
-                for (int i = 1; i <= radius; i++) // Steps
+                // Split each pattern into steps of (1 step = 1 chunk)
+                for (int step = 1; step <= layer; step++) 
                 {
-                    x += patternX[p] * 1;
-                    y += patternY[p] * 1;
+                    // Set current position
+                    x += patternX[phase] * 1;
+                    y += patternY[phase] * 1;
 
-                    cts.Add(new ChunkTransform(x, y));
+                    chunkTransforms.Add(new ChunkTransform(x, y));
                 }
             }
-
         }
 
-        loadedChunks = cts.ToArray();
+        loadedChunks = chunkTransforms.ToArray();
 
         // Stop load if it is in progress
         if (load != null)
@@ -106,16 +114,17 @@ public class WorldEngine : MonoBehaviour
             StopCoroutine(load);
         }
 
-        // Choose load performance type
-        // If current Player chunk is not rendered, use hard load      
-        load = StartCoroutine("LoadChunks", GetRenderedChunk(new ChunkTransform(playerChunk)) != null);
+        // Start new load
+        // true = load chunks smoothly in a spiral order
+        // false = load all chunks at once. This causes lag.
+        load = StartCoroutine("LoadChunks", true);
     }
 
     IEnumerator LoadChunks(bool async)
-    {
-        // Render chunks if not already rendered
+    {      
         Transform parentOfChunks = GameObject.Find("/Environment/World").transform;
 
+        // Render chunks if not already rendered
         foreach (ChunkTransform chunkTransform in loadedChunks)
         {
             if (GetRenderedChunk(chunkTransform) == null)
@@ -135,9 +144,8 @@ public class WorldEngine : MonoBehaviour
                 worldGenerator.Generate(chunk);
                 chunk.Render();
             }
-
-            
-            // Destroy chunks that are not in range
+          
+            // Destroy chunks that too far away
             for (int i = 0; i < parentOfChunks.childCount; ++i)
             {
                 Vector3 t = parentOfChunks.GetChild(i).position;
@@ -147,14 +155,16 @@ public class WorldEngine : MonoBehaviour
                 }
             }
             
+            // If true, load only one chunk and continue on next frame
             if (async)
             {
                 yield return null;
             }
         }
-
     }
 
+    // Returns chunk GameObject that is currently visible in the game
+    // Return value can be null
     private GameObject GetRenderedChunk(ChunkTransform chunkTransform)
     {
         return GameObject.Find("/Environment/World/" + chunkTransform.ToString());

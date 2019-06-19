@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StoneBlock : BlockComposer
+public class StoneBlock : BlockProvider
 {
     public static readonly int id = 1;
 
-    public override bool SeamlessAndOpaque { get { return true; } }
+    public override bool CoverNeighbors { get { return true; } }
 }

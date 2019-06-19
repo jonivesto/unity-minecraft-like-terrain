@@ -41,7 +41,7 @@ public class PlayerMotor : MonoBehaviour
         rigidBody.AddForce(transform.TransformDirection(movement) * 13f * 5f);
 
         // Load world around the new position
-        worldEngine.UpdatePosition(transform.position);
+        worldEngine.UpdatePosition(transform.position, transform.rotation.eulerAngles);
     }
 
 
