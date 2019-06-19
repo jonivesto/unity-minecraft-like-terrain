@@ -26,7 +26,7 @@ public class WorldEngine : MonoBehaviour
         seed = new Seed("0004887891122446");
         worldGenerator = new TerrainGenerator(this);
 
-        SetDistances(6);
+        SetDistances(4);
         LoadPosition();
     }
 

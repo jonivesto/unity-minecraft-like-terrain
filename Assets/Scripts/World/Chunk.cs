@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
+using System;
 
 public class Chunk : MonoBehaviour
 {
@@ -31,6 +32,8 @@ public class Chunk : MonoBehaviour
             {
                 for (int y = 0; y < 256; y++)
                 {
+                    if (blocks[x, y, z] == 0) continue; // SKIP IF BLANK AIR
+
                     if(blocks[x, y, z] != 0)
                     {
                         // Top
@@ -44,10 +47,7 @@ public class Chunk : MonoBehaviour
                             int vCount = verts.Count - 4;
                             tris = AddTriangles(tris, vCount, true);
 
-                            uvs.Add(new Vector2(0, 0));
-                            uvs.Add(new Vector2(0, 1));
-                            uvs.Add(new Vector2(1, 1));
-                            uvs.Add(new Vector2(1, 0));
+                            uvs = AddUvs(uvs, blocks[x, y, z], 0);
                         }
                         
                         
@@ -62,10 +62,7 @@ public class Chunk : MonoBehaviour
                             int vCount = verts.Count - 4;
                             tris = AddTriangles(tris, vCount, false);
 
-                            uvs.Add(new Vector2(0, 0));
-                            uvs.Add(new Vector2(0, 1));
-                            uvs.Add(new Vector2(1, 1));
-                            uvs.Add(new Vector2(1, 0));
+                            uvs = AddUvs(uvs, blocks[x, y, z], 1);
                         }
 
                         // Right
@@ -80,10 +77,7 @@ public class Chunk : MonoBehaviour
                             int vCount = verts.Count - 4;
                             tris = AddTriangles(tris, vCount, false);
 
-                            uvs.Add(new Vector2(0, 0));
-                            uvs.Add(new Vector2(0, 1));
-                            uvs.Add(new Vector2(1, 1));
-                            uvs.Add(new Vector2(1, 0));
+                            uvs = AddUvs(uvs, blocks[x, y, z], 2);
                         }
 
                         // Left
@@ -98,10 +92,7 @@ public class Chunk : MonoBehaviour
                             int vCount = verts.Count - 4;
                             tris = AddTriangles(tris, vCount, true);
 
-                            uvs.Add(new Vector2(0, 0));
-                            uvs.Add(new Vector2(0, 1));
-                            uvs.Add(new Vector2(1, 1));
-                            uvs.Add(new Vector2(1, 0));
+                            uvs = AddUvs(uvs, blocks[x, y, z], 3);
                         }
 
                         // Front
@@ -116,10 +107,7 @@ public class Chunk : MonoBehaviour
                             int vCount = verts.Count - 4;
                             tris = AddTriangles(tris, vCount, true);
 
-                            uvs.Add(new Vector2(0, 0));
-                            uvs.Add(new Vector2(0, 1));
-                            uvs.Add(new Vector2(1, 1));
-                            uvs.Add(new Vector2(1, 0));
+                            uvs = AddUvs(uvs, blocks[x, y, z], 4);
                         }
 
                         // Back
@@ -134,23 +122,18 @@ public class Chunk : MonoBehaviour
                             int vCount = verts.Count - 4;
                             tris = AddTriangles(tris, vCount, false);
 
-                            uvs.Add(new Vector2(0, 0));
-                            uvs.Add(new Vector2(0, 1));
-                            uvs.Add(new Vector2(1, 1));
-                            uvs.Add(new Vector2(1, 0));
+                            uvs = AddUvs(uvs, blocks[x, y, z], 5);
                         }
 
-
                     }
-
 
                 }
             }
         }
+
         Vector3[] vertices = verts.ToArray();
         int[] triangles = tris.ToArray();
         Vector2[] mapping = uvs.ToArray();
-
 
 
         Mesh mesh = GetComponent<MeshFilter>().mesh;
@@ -164,20 +147,49 @@ public class Chunk : MonoBehaviour
         GetComponent<MeshCollider>().sharedMesh = mesh;
 
         MeshRenderer renderer = GetComponent<MeshRenderer>();
-        renderer.material = new Material(Shader.Find("Diffuse"));
+        renderer.material = new Material(Resources.Load<Material>("Textures/Blocks"));
+    }
+
+    /*
+     * 0 - top
+     * 1 - bottom
+     * 2 - right
+     * 3 - left
+     * 4 - front
+     * 5 - back
+     */
+    private List<Vector2> AddUvs(List<Vector2> uvs, int id, byte side)
+    {
+        //TODO: Get info from block and ad UVs to its coords
+        // dont forget sides
+        
+        float uv = 0.0625f;
+
+        float x = uv * 8;
+        float y = uv * 9;
+
+
+        
+        uvs.Add(new Vector2(x, x)); // left bottom
+        uvs.Add(new Vector2(x, y)); // left top
+        uvs.Add(new Vector2(y, y)); // right top
+        uvs.Add(new Vector2(y, x)); // right bottom
+        
+
+        return uvs;
     }
 
     private List<int> AddTriangles(List<int> triangles, int vertices, bool clockwise)
     {
-        int[] pattern;
+        byte[] pattern;
 
         if (!clockwise)
         {
-            pattern = new int[] { 0, 1, 2, 0, 2, 3 };
+            pattern = new byte[] { 0, 1, 2, 0, 2, 3 };
         }
         else
         {
-            pattern = new int[] { 0, 2, 1, 0, 3, 2 };
+            pattern = new byte[] { 0, 2, 1, 0, 3, 2 };
         }
 
         for (int i = 0; i < pattern.Length; i++)
