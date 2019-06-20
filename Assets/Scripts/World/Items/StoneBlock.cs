@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StoneBlock : BlockProvider
+public class StoneBlock : Block
 {
     public static readonly int id = 1;
 

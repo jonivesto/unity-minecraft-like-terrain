@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerMotor : MonoBehaviour
 {
-    WorldEngine worldEngine;
+    TerrainEngine terrainEngine;
     Rigidbody rigidBody;
 
     private Transform playerCamera;
@@ -17,7 +17,7 @@ public class PlayerMotor : MonoBehaviour
 
     void Start()
     {
-        worldEngine = GameObject.Find("/Environment/World").GetComponent<WorldEngine>();
+        terrainEngine = GameObject.Find("/Environment/World").GetComponent<TerrainEngine>();
         rigidBody = GetComponent<Rigidbody>();
         playerCamera = transform.Find("Player Camera");
 
@@ -41,7 +41,7 @@ public class PlayerMotor : MonoBehaviour
         rigidBody.AddForce(transform.TransformDirection(movement) * 13f * 5f);
 
         // Load world around the new position
-        worldEngine.UpdatePosition(transform.position, transform.rotation.eulerAngles);
+        terrainEngine.UpdatePosition(transform.position, transform.rotation.eulerAngles);
     }
 
 

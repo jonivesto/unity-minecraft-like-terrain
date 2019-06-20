@@ -133,7 +133,7 @@ public class ChunkRenderer
         chunk.gameObject.GetComponent<MeshCollider>().sharedMesh = mesh;
 
         MeshRenderer renderer = chunk.gameObject.GetComponent<MeshRenderer>();
-        renderer.material = new Material(Resources.Load<Material>("Textures/Blocks"));
+        renderer.material = new Material(Resources.Load<Material>("Materials/Terrain"));
     }
 
     /*
@@ -146,17 +146,18 @@ public class ChunkRenderer
      * 5 - back
      */
     private void AddUvs(List<Vector2> uvs, int id, byte side)
-    {
-        //TODO: Get info from block and add UVs to its coords
-        // dont forget sides
-
+    {       
         // One texture unit (1/16=0.0625)
         const float uv = 0.0625f;
 
-        // texture coordinates in the 16x16 grid
-        float x = 2;
-        float y = 15;
+        // Get texture coordinates for this side
+        Vector2 thisBlockSide = Item.GetBlockUV(id, side);////////////////////TODO
 
+        // Texture coordinates in the 16x16 grid
+        float x = thisBlockSide.x;
+        float y = thisBlockSide.y;
+
+        // Convert to texture units
         x *= uv;
         y *= uv;
 
@@ -166,10 +167,11 @@ public class ChunkRenderer
             Debug.LogWarning("Block's texture coordinates are out of range [0, 15]");
         }
 
-        uvs.Add(new Vector2(x, y)); // left bottom
-        uvs.Add(new Vector2(x, y + uv)); // left top
-        uvs.Add(new Vector2(x + uv, y + uv)); // right top
-        uvs.Add(new Vector2(x + uv, y)); // right bottom
+        // Add UVs
+        uvs.Add(new Vector2(x, y));             // left bottom
+        uvs.Add(new Vector2(x, y + uv));        // left top
+        uvs.Add(new Vector2(x + uv, y + uv));   // right top
+        uvs.Add(new Vector2(x + uv, y));        // right bottom
     }
 
     private void AddTriangles(List<int> triangles, int vertices, bool clockwise)

@@ -8,11 +8,11 @@ public class TerrainGenerator
     const int CHUNK_Y = 256;
     const int CHUNK_Z = 16;
 
-    private WorldEngine worldEngine;
+    private TerrainEngine terrainEngine;
 
-    public TerrainGenerator(WorldEngine worldEngine)
+    public TerrainGenerator(TerrainEngine terrainEngine)
     {
-        this.worldEngine = worldEngine;
+        this.terrainEngine = terrainEngine;
     }
 
     public void Generate(Chunk chunk)
@@ -44,7 +44,7 @@ public class TerrainGenerator
 
     private int GetGroundAt(int x, int y, int wX, int wY)
     {
-        Seed seed = worldEngine.seed;
+        Seed seed = terrainEngine.seed;
         seed.Reset();
         x += wX;
         y += wY;

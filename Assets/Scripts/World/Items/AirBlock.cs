@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AirBlock : BlockProvider
+public class AirBlock : Block
 {
     public static readonly int id = 0;
 

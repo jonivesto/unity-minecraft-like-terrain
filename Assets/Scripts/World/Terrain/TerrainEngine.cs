@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using System;
 
-public class WorldEngine : MonoBehaviour
+public class TerrainEngine : MonoBehaviour
 {
     public string worldName;
     public Seed seed;
@@ -196,7 +196,7 @@ public class WorldEngine : MonoBehaviour
     }
 
     // Save all loaded chunks to files
-    // Call this quit the world
+    // Call this before quit the world
     private void SaveLoadedChunks()
     {
         Transform parentOfChunks = GameObject.Find("/Environment/World").transform;
