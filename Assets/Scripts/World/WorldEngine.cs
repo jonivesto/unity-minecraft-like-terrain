@@ -5,7 +5,8 @@ using System;
 
 public class WorldEngine : MonoBehaviour
 {
-    public Seed seed;   
+    public string worldName;
+    public Seed seed;
     public Vector2Int playerChunk = new Vector2Int();
 
     private TerrainGenerator terrainGenerator;
@@ -14,6 +15,7 @@ public class WorldEngine : MonoBehaviour
     private Vector3 playerAnchor;
     private Vector3 facingDirection;
     private Coroutine load;
+    private Save save;
 
     int renderDistance;  
     int unloadDistance;
@@ -24,8 +26,11 @@ public class WorldEngine : MonoBehaviour
 
     void Start()
     {
+        worldName = "My world";
         //seed = new Seed();
         seed = new Seed("0004887891122446");
+
+        save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
         SetDistances(4);
@@ -126,7 +131,7 @@ public class WorldEngine : MonoBehaviour
     {      
         Transform parentOfChunks = GameObject.Find("/Environment/World").transform;
 
-        // Render chunks if not already rendered
+        // Load chunks if not already in game
         foreach (ChunkTransform chunkTransform in loadedChunks)
         {
             if (GetChunk(chunkTransform) == null)
@@ -143,8 +148,20 @@ public class WorldEngine : MonoBehaviour
                 Chunk chunk = obj.AddComponent<Chunk>();
                 chunk.Init(chunkTransform);
 
-                terrainGenerator.Generate(chunk);
-                chunkRenderer.Render(chunk);
+                // Check if file exists
+                if (save.ChunkFileExists(chunkTransform))
+                {
+                    // Load chunk from file
+                    chunk.chunkData = save.LoadChunk(chunkTransform);
+                }
+                else
+                {
+                    // Generate and save chunk to file
+                    terrainGenerator.Generate(chunk);
+                    save.SaveChunk(chunk);
+                }
+              
+                chunkRenderer.Render(chunk);           
             }
           
             // Destroy chunks that are too far away
@@ -153,7 +170,8 @@ public class WorldEngine : MonoBehaviour
                 Vector3 t = parentOfChunks.GetChild(i).position;
                 if (Vector2Int.Distance(playerChunk * 16, new Vector2Int((int)t.x, (int)t.z)) > unloadDistance * 16)
                 {
-                    Destroy(parentOfChunks.GetChild(i).gameObject);
+                    GameObject chunkObj = parentOfChunks.GetChild(i).gameObject;
+                    Destroy(chunkObj);
                 }
             }
             

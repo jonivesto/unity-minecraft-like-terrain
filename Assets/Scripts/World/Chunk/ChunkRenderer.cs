@@ -147,7 +147,7 @@ public class ChunkRenderer
      */
     private void AddUvs(List<Vector2> uvs, int id, byte side)
     {
-        //TODO: Get info from block and ad UVs to its coords
+        //TODO: Get info from block and add UVs to its coords
         // dont forget sides
 
         // One texture unit (1/16=0.0625)

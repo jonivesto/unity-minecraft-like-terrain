@@ -47,4 +47,9 @@ public class Seed
 
         return int.Parse(temp);
     }
+
+    public new string ToString()
+    {
+        return origin;
+    }
 }

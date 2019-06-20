@@ -23,5 +23,4 @@ public class Chunk : MonoBehaviour
     {
         return chunkData.blocks[x, y, z];
     }
-
 }
