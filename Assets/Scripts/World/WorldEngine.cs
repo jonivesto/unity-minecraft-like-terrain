@@ -9,13 +9,13 @@ public class WorldEngine : MonoBehaviour
     public Seed seed;
     public Vector2Int playerChunk = new Vector2Int();
 
-    private TerrainGenerator terrainGenerator;
-    private ChunkRenderer chunkRenderer = new ChunkRenderer();
-    private ChunkTransform[] loadedChunks;
-    private Vector3 playerAnchor;
-    private Vector3 facingDirection;
-    private Coroutine load;
-    private Save save;
+    TerrainGenerator terrainGenerator;
+    ChunkRenderer chunkRenderer = new ChunkRenderer();
+    ChunkTransform[] loadedChunks;
+    Vector3 playerAnchor;
+    Vector3 facingDirection;
+    Coroutine load;
+    Save save;
 
     int renderDistance;  
     int unloadDistance;
@@ -37,19 +37,27 @@ public class WorldEngine : MonoBehaviour
         LoadPosition();
     }
 
+    // Set all distances to the according to the renderdistance
+    // Call this on init
+    // call this on render distance setting changes
     void SetDistances(int renderDistance)
     {
         this.renderDistance = renderDistance;
 
+        // Make sure renderDistance is odd
         if (renderDistance % 2 == 0)
         {
             renderDistance++;
         }
 
+        // Distance required between player and anchor to start new chunk to load
         sleepDistance = renderDistance / 2f;
 
+        // Distance between player and chunks
+        // When out of range, chunks will be unloaded
         unloadDistance = renderDistance * 2;
 
+        // x and y lenghts of the loadedChunks[] array
         loadDimension = renderDistance * 2 + 1;
     }
 
@@ -113,6 +121,7 @@ public class WorldEngine : MonoBehaviour
             }
         }
 
+        // List to array
         loadedChunks = chunkTransforms.ToArray();
 
         // Stop load if it is in progress
@@ -121,12 +130,13 @@ public class WorldEngine : MonoBehaviour
             StopCoroutine(load);
         }
 
-        // Start new load
-        // true = load chunks smoothly in a spiral order
-        // false = load all chunks at once. This causes lag.
+        // Start new load      
         load = StartCoroutine("LoadChunks", true);
     }
 
+    // Load all chunks defined in loadedChunks[] array
+    // true = load chunks smoothly in a spiral order
+    // false = load all chunks at once. This causes high lag.
     IEnumerator LoadChunks(bool async)
     {      
         Transform parentOfChunks = GameObject.Find("/Environment/World").transform;
@@ -156,21 +166,23 @@ public class WorldEngine : MonoBehaviour
                 }
                 else
                 {
-                    // Generate and save chunk to file
-                    terrainGenerator.Generate(chunk);
-                    save.SaveChunk(chunk);
+                    // Generate chunk
+                    terrainGenerator.Generate(chunk);                   
                 }
-              
+                
+                // Render chunk
                 chunkRenderer.Render(chunk);           
             }
           
             // Destroy chunks that are too far away
+            // Before that, save them to file
             for (int i = 0; i < parentOfChunks.childCount; ++i)
             {
                 Vector3 t = parentOfChunks.GetChild(i).position;
                 if (Vector2Int.Distance(playerChunk * 16, new Vector2Int((int)t.x, (int)t.z)) > unloadDistance * 16)
                 {
                     GameObject chunkObj = parentOfChunks.GetChild(i).gameObject;
+                    save.SaveChunk(chunkObj.GetComponent<Chunk>());
                     Destroy(chunkObj);
                 }
             }
@@ -180,6 +192,19 @@ public class WorldEngine : MonoBehaviour
             {
                 yield return null;
             }
+        }
+    }
+
+    // Save all loaded chunks to files
+    // Call this quit the world
+    private void SaveLoadedChunks()
+    {
+        Transform parentOfChunks = GameObject.Find("/Environment/World").transform;
+
+        for (int i = 0; i < parentOfChunks.childCount; ++i)
+        {        
+            Chunk chunk = parentOfChunks.GetChild(i).gameObject.GetComponent<Chunk>();
+            save.SaveChunk(chunk);          
         }
     }
 

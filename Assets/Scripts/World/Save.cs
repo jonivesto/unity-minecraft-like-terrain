@@ -21,7 +21,7 @@ public class Save
         // Create folders for this world if they do not exist
         string path = Path.Combine(Application.persistentDataPath, worldName);
         if (!Directory.Exists(path))
-        {           
+        {
             // Main directory
             Directory.CreateDirectory(path);
 
@@ -36,7 +36,11 @@ public class Save
             }
 
             Debug.Log("World save created at: " + path);
-        }      
+        }
+        else
+        {
+            Debug.Log("World save exists at: " + path);
+        }     
     }
 
     public void SaveChunk(Chunk chunk)
