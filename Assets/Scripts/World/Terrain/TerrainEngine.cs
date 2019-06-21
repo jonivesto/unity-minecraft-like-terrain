@@ -7,8 +7,9 @@ public class TerrainEngine : MonoBehaviour
 {
     public string worldName;
     public Seed seed;
+    public Config config = new Config();
     public Vector2Int playerChunk = new Vector2Int();
-
+    
     TerrainGenerator terrainGenerator;
     ChunkRenderer chunkRenderer = new ChunkRenderer();
     ChunkTransform[] loadedChunks;

@@ -4,8 +4,16 @@ using UnityEngine;
 
 public abstract class Item
 {
-    public static Vector2 GetBlockUV(int id, byte side)
+    public abstract string GetName();
+
+    public int GetID()
     {
-        return new Vector2();
+        for(int i = 1; i < Config.ID.Length; i++)
+        {
+            if (Config.ID[i].Equals(this)) return i;
+        }
+
+        return 0;
     }
+
 }

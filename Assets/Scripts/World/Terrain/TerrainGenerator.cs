@@ -34,7 +34,16 @@ public class TerrainGenerator
                     }
                     else
                     {
-                        chunk.SetBlock(x, y, z, 1); // Stone block                      
+                        if (y == 0)
+                        {
+                            chunk.SetBlock(x, y, z, 2); // Bedrock block 
+                        }
+                        else
+                        {
+                            chunk.SetBlock(x, y, z, 1); // Stone block 
+                        }
+
+                                             
                     }
                 }
             }

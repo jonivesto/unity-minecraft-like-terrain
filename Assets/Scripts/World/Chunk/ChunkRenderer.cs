@@ -148,18 +148,18 @@ public class ChunkRenderer
     private void AddUvs(List<Vector2> uvs, int id, byte side)
     {       
         // One texture unit (1/16=0.0625)
-        const float uv = 0.0625f;
+        const float unit = 0.0625f;
 
         // Get texture coordinates for this side
-        Vector2 thisBlockSide = Item.GetBlockUV(id, side);////////////////////TODO
+        Vector2 uv = ((Block)Config.ID[id]).GetUV(side);
 
         // Texture coordinates in the 16x16 grid
-        float x = thisBlockSide.x;
-        float y = thisBlockSide.y;
+        float x = uv.x;
+        float y = uv.y;
 
         // Convert to texture units
-        x *= uv;
-        y *= uv;
+        x *= unit;
+        y *= unit;
 
         // Illegal coords warning
         if (x > 15 || x < 0 || y > 15 || y < 0)
@@ -168,10 +168,10 @@ public class ChunkRenderer
         }
 
         // Add UVs
-        uvs.Add(new Vector2(x, y));             // left bottom
-        uvs.Add(new Vector2(x, y + uv));        // left top
-        uvs.Add(new Vector2(x + uv, y + uv));   // right top
-        uvs.Add(new Vector2(x + uv, y));        // right bottom
+        uvs.Add(new Vector2(x, y));                 // left bottom
+        uvs.Add(new Vector2(x, y + unit));          // left top
+        uvs.Add(new Vector2(x + unit, y + unit));   // right top
+        uvs.Add(new Vector2(x + unit, y));          // right bottom
     }
 
     private void AddTriangles(List<int> triangles, int vertices, bool clockwise)
