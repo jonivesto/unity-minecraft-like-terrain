@@ -1,5 +1,4 @@
-﻿
-public class Config
+﻿public class Config
 {
     // List of items in the game
     // Index is item ID

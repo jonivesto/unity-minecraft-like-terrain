@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Collections;
-using UnityEngine;
-using System;
+﻿using UnityEngine;
 
 public class Chunk : MonoBehaviour
 {
     public bool generated = false;
     public bool rendered = false;
+    public bool unsaved = false;
 
     internal ChunkTransform chunkTransform;   
     internal ChunkData chunkData;

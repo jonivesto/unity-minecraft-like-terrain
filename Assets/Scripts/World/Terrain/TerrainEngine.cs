@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using System;
 
 public class TerrainEngine : MonoBehaviour
 {
@@ -51,7 +50,7 @@ public class TerrainEngine : MonoBehaviour
         }
 
         // Distance required between player and anchor to start new chunk to load
-        sleepDistance = renderDistance / 2f - 1f;
+        sleepDistance = renderDistance / 2f;
 
         // Distance between player and chunks
         // When out of range, chunks will be unloaded
@@ -142,10 +141,11 @@ public class TerrainEngine : MonoBehaviour
         Debug.Log("Chunk loading started");
         Transform parentOfChunks = GameObject.Find("/Environment/World").transform;
 
-        // Load chunks if not already in game
         foreach (ChunkTransform chunkTransform in loadedChunks)
         {
+            Chunk chunk;
 
+            // Create gameObject if not exists
             if (GetChunk(chunkTransform) == null)
             {
                 GameObject obj = new GameObject(chunkTransform.ToString());
@@ -157,9 +157,17 @@ public class TerrainEngine : MonoBehaviour
                 obj.AddComponent<MeshRenderer>();
                 obj.AddComponent<MeshCollider>();
 
-                Chunk chunk = obj.AddComponent<Chunk>();
-                chunk.Init(chunkTransform);
+                chunk = obj.AddComponent<Chunk>();
+                chunk.Init(chunkTransform);        
+            }
+            else
+            {
+                chunk = GetChunk(chunkTransform);
+            }
 
+            // Generate / load from file
+            if (!chunk.generated)
+            {
                 // Check if file exists
                 if (save.ChunkFileExists(chunkTransform))
                 {
@@ -168,29 +176,37 @@ public class TerrainEngine : MonoBehaviour
                 }
                 else
                 {
-                    // Generate chunk
+                    // Generate and save to file
                     terrainGenerator.Generate(chunk);
+                    save.SaveChunk(chunk);
                 }
 
-                // Mark as generated
                 chunk.generated = true;
-       
             }
+
 
             // Destroy chunks that are too far away
-            // Before that, save them to file
             for (int i = 0; i < parentOfChunks.childCount; ++i)
             {
+                // Chunk's world position
                 Vector3 t = parentOfChunks.GetChild(i).position;
+
                 if (Vector2Int.Distance(playerChunk * 16, new Vector2Int((int)t.x, (int)t.z)) > unloadDistance * 16)
                 {
-                    GameObject chunkObj = parentOfChunks.GetChild(i).gameObject;
-                    save.SaveChunk(chunkObj.GetComponent<Chunk>());
-                    Destroy(chunkObj);
+                    Chunk unload = parentOfChunks.GetChild(i).gameObject.GetComponent<Chunk>();
+
+                    // Save if there are unsaved changes
+                    if (chunk.unsaved)
+                    {
+                        save.SaveChunk(unload);
+                    }
+
+                    // Unload
+                    Destroy(unload.gameObject);
                 }
             }
 
-            // If true, load/generate only one chunk and continue on next frame
+            // If true, load one chunk and continue at next frame
             if (async)
             {
                 yield return null;
@@ -199,28 +215,26 @@ public class TerrainEngine : MonoBehaviour
 
         Debug.Log("Chunks generated, rendering..");
 
-
         // Render chunks
-        int outer = loadDimension * 4 - 4;
-        for (int i = 0; i < loadedChunks.Length - outer; i++)
+        for (int i = 0; i < loadedChunks.Length; i++)
         {
-            if(GetChunk(loadedChunks[i])!=null)
+            if(GetChunk(loadedChunks[i]) != null)
             {
-                Chunk chunk = GetChunk(loadedChunks[i]).GetComponent<Chunk>();
+                Chunk chunk = GetChunk(loadedChunks[i]);
 
-                if(!chunk.rendered)
-                chunkRenderer.Render(chunk);
-                chunk.rendered = true;
+                if (!chunk.rendered && chunk.generated)
+                {
+                    chunkRenderer.Render(chunk);
+                    chunk.rendered = true;
+                }      
             }
                 
-
             // If true, render only one chunk and continue on next frame
             if (async)
             {
                 yield return null;
             }
         }
-
 
         Debug.Log("Chunk loading finished");
     }
@@ -238,11 +252,15 @@ public class TerrainEngine : MonoBehaviour
         }
     }
 
-    // Returns chunk GameObject that is currently in the game hierarchy
+    // Returns chunk that is currently in the game hierarchy
     // Returns null if the chunk is not loaded
-    private GameObject GetChunk(ChunkTransform chunkTransform)
+    private Chunk GetChunk(ChunkTransform chunkTransform)
     {
-        return GameObject.Find("/Environment/World/" + chunkTransform.ToString());
+        GameObject obj = GameObject.Find("/Environment/World/" + chunkTransform.ToString());
+
+        if (obj == null) return null;
+
+        return obj.GetComponent<Chunk>();
     }
 }
 
