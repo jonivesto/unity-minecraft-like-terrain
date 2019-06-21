@@ -1,44 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BedrockBlock : Block
 {
-    private string blockName = "Bedrock Block";
-    private BlockTransparency blockTransparency = BlockTransparency.Opaque;
-
-    private Vector2[] UVs = {
-        new Vector2(1,14)//, // Top
-        //new Vector2(2,15), // Bottom
-        //new Vector2(5,15), // Right
-        //new Vector2(0,15), // Left
-        //new Vector2(4,15), // Front
-        //new Vector2(0,15)  // Back
-    };
-
-    public override string GetName()
+    public BedrockBlock()
     {
-        return blockName;
-    }
+        blockName = "Bedrock Block";
+        blockTransparency = BlockTransparency.Opaque;
 
-    public override BlockTransparency GetTransparency()
-    {
-        return blockTransparency;
+        UVs = new Vector2[] {
+            new Vector2(1,14)//, // Top
+            //new Vector2(2,15), // Bottom
+            //new Vector2(5,15), // Right
+            //new Vector2(0,15), // Left
+            //new Vector2(4,15), // Front
+            //new Vector2(0,15)  // Back
+        };
     }
-
-    public override Vector2 GetUV(byte side)
-    {
-        // For blocks with all sides same texture
-        if (UVs.Length == 1)
-        {
-            return UVs[0];
-        }
-        // For Blocks that have different texture for each side
-        else
-        {
-            return UVs[side];
-        }
-    }
-
 
 }
