@@ -5,6 +5,9 @@ using System;
 
 public class Chunk : MonoBehaviour
 {
+    public bool generated = false;
+    public bool rendered = false;
+
     internal ChunkTransform chunkTransform;   
     internal ChunkData chunkData;
 

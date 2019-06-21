@@ -48,7 +48,6 @@ public class TerrainGenerator
                 }
             }
         }
-        
     }
 
     private int GetGroundAt(int x, int y, int wX, int wY)

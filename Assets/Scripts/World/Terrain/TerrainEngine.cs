@@ -33,7 +33,7 @@ public class TerrainEngine : MonoBehaviour
         save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
-        SetDistances(3);
+        SetDistances(4);
         LoadPosition();
     }
 
@@ -51,7 +51,7 @@ public class TerrainEngine : MonoBehaviour
         }
 
         // Distance required between player and anchor to start new chunk to load
-        sleepDistance = renderDistance / 2f;
+        sleepDistance = renderDistance / 2f - 1f;
 
         // Distance between player and chunks
         // When out of range, chunks will be unloaded
@@ -138,12 +138,14 @@ public class TerrainEngine : MonoBehaviour
     // true = load chunks smoothly in a spiral order
     // false = load all chunks at once. This causes high lag.
     IEnumerator LoadChunks(bool async)
-    {      
+    {
+        Debug.Log("Chunk loading started");
         Transform parentOfChunks = GameObject.Find("/Environment/World").transform;
 
         // Load chunks if not already in game
         foreach (ChunkTransform chunkTransform in loadedChunks)
         {
+
             if (GetChunk(chunkTransform) == null)
             {
                 GameObject obj = new GameObject(chunkTransform.ToString());
@@ -167,13 +169,14 @@ public class TerrainEngine : MonoBehaviour
                 else
                 {
                     // Generate chunk
-                    terrainGenerator.Generate(chunk);                   
+                    terrainGenerator.Generate(chunk);
                 }
-                
-                // Render chunk
-                chunkRenderer.Render(chunk);           
+
+                // Mark as generated
+                chunk.generated = true;
+       
             }
-          
+
             // Destroy chunks that are too far away
             // Before that, save them to file
             for (int i = 0; i < parentOfChunks.childCount; ++i)
@@ -186,13 +189,40 @@ public class TerrainEngine : MonoBehaviour
                     Destroy(chunkObj);
                 }
             }
-            
-            // If true, load only one chunk and continue on next frame
+
+            // If true, load/generate only one chunk and continue on next frame
             if (async)
             {
                 yield return null;
             }
         }
+
+        Debug.Log("Chunks generated, rendering..");
+
+
+        // Render chunks
+        int outer = loadDimension * 4 - 4;
+        for (int i = 0; i < loadedChunks.Length - outer; i++)
+        {
+            if(GetChunk(loadedChunks[i])!=null)
+            {
+                Chunk chunk = GetChunk(loadedChunks[i]).GetComponent<Chunk>();
+
+                if(!chunk.rendered)
+                chunkRenderer.Render(chunk);
+                chunk.rendered = true;
+            }
+                
+
+            // If true, render only one chunk and continue on next frame
+            if (async)
+            {
+                yield return null;
+            }
+        }
+
+
+        Debug.Log("Chunk loading finished");
     }
 
     // Save all loaded chunks to files
