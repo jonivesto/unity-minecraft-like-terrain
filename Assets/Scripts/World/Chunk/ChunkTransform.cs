@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class ChunkTransform
 {
@@ -63,5 +64,25 @@ public class ChunkTransform
     public new string ToString()
     {
         return "Chunk(" + x + ", " + z + ")";
+    }
+
+    internal ChunkTransform GetRight()
+    {
+        return new ChunkTransform(x + 1, z);
+    }
+
+    internal ChunkTransform GetLeft()
+    {
+        return new ChunkTransform(x - 1, z);
+    }
+
+    internal ChunkTransform GetFront()
+    {
+        return new ChunkTransform(x, z + 1);
+    }
+
+    internal ChunkTransform GetBack()
+    {
+        return new ChunkTransform(x, z - 1);
     }
 }

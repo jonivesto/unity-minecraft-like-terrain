@@ -6,10 +6,20 @@ public class Chunk : MonoBehaviour
     public bool rendered = false;
     public bool unsaved = false;
 
-    internal ChunkTransform chunkTransform;   
+    internal Chunk nextRight, nextLeft, nextFront, nextBack;
     internal ChunkData chunkData;
+    internal ChunkTransform chunkTransform;   
+    
 
-    public void Init(ChunkTransform chunkTransform)
+    public void SetNext(Chunk right, Chunk left, Chunk front, Chunk back)
+    {
+        nextRight = right;
+        nextLeft = left;
+        nextFront = front;
+        nextBack = back;
+    }
+
+    public void SetTransform(ChunkTransform chunkTransform)
     {
         this.chunkTransform = chunkTransform;
         chunkData = new ChunkData();

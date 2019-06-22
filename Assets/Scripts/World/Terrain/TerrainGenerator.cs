@@ -38,7 +38,7 @@ public class TerrainGenerator
                         }
                         else
                         {
-                            chunk.SetBlock(x, y, z, 1); // Stone block 
+                            chunk.SetBlock(x, y, z, 3); // Stone block 
                         }
 
                                              
@@ -54,6 +54,6 @@ public class TerrainGenerator
         seed.Reset();
         x += wX;
         y += wY;
-        return Mathf.FloorToInt(Mathf.PerlinNoise(x/10f + seed.get.Next(64), y/ 10f + seed.get.Next(64)) * 9f + 9f);       
+        return Mathf.FloorToInt(Mathf.PerlinNoise(x/10f + seed.get.Next(64), y/ 10f + seed.get.Next(64)) * 9f + 90f);       
     }
 }

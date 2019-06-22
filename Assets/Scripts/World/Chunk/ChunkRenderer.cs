@@ -15,14 +15,62 @@ public class ChunkRenderer
             {
                 for (int y = 0; y < 256; y++)
                 {
-                    int currentBlock = chunk.GetBlock(x, y, z);
+                    int currentBlockId = chunk.GetBlock(x, y, z);
+                    if (currentBlockId == 0) continue; // Skip air blocks (id == 0)
+                    Block currentBlock = Config.ID[currentBlockId] as Block;
 
-                    if (currentBlock == 0) continue; // SKIP IF BLANK AIR
-
-                    if (currentBlock != 0)
+                    // Current is not a block
+                    if (currentBlock == null)
                     {
-                        // Top
-                        if (y + 1 < 256 && chunk.GetBlock(x, y + 1, z) == 0)
+                        //TODO
+                    }
+
+                    // Current is a block
+                    else
+                    {
+                        bool renderThisSide = false;
+
+                        // Top face
+                        // Top face
+                        // Top face
+                        if (y + 1 < 256) // Next in array bounds
+                        {
+                            int next = chunk.GetBlock(x, y + 1, z);
+
+                            if (next == 0) // Next is air
+                            {
+                                renderThisSide = true;
+                            }
+                            else if (Config.ID[next] as Block != null) // Next is a block
+                            {
+                                Block nextBlock = Config.ID[next] as Block;
+
+                                if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                                {
+                                    if (nextBlock.GetTransparency() == BlockTransparency.ShowNext)
+                                    {
+                                        renderThisSide = true;
+                                    }
+                                    else if (currentBlockId != next) // Next BlockTransparency.HideNext
+                                    {
+                                        renderThisSide = true;
+                                    }
+                                }                                 
+                            }
+                            else // Next is not a block
+                            {
+                                renderThisSide = true;
+                            }
+                        }
+                        else // Next is out of array bounds
+                        {
+                            renderThisSide = true;
+                        }
+
+                        // Top face
+                        // Top face
+                        // Top face
+                        if (renderThisSide)
                         {
                             verts.Add(new Vector3(x, y + 1, z));
                             verts.Add(new Vector3(x + 1, y + 1, z));
@@ -32,12 +80,53 @@ public class ChunkRenderer
                             int vCount = verts.Count - 4;
                             AddTriangles(tris, vCount, true);
 
-                            AddUvs(uvs, currentBlock, 0);
+                            AddUvs(uvs, currentBlockId, 0);
+
+                            renderThisSide = false;
                         }
 
 
-                        // Bottom
-                        if (y == 0 || y - 1 >= 0 && chunk.GetBlock(x, y - 1, z) == 0)
+                        // Bottom face
+                        // Bottom face
+                        // Bottom face
+                        if (y - 1 >= 0) // Next in array bounds
+                        {
+                            int nextY = chunk.GetBlock(x, y - 1, z);
+
+                            if (nextY == 0) // Next is air
+                            {
+                                renderThisSide = true;
+                            }
+                            else if (Config.ID[nextY] as Block != null) // Next is a block
+                            {
+                                Block nextBlock = Config.ID[nextY] as Block;
+
+                                if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                                {
+                                    if (nextBlock.GetTransparency() == BlockTransparency.ShowNext)
+                                    {
+                                        renderThisSide = true;
+                                    }
+                                    else if (currentBlockId != nextY) // Next BlockTransparency.HideNext
+                                    {
+                                        renderThisSide = true;
+                                    }
+                                }
+                            }
+                            else // Next is not a block
+                            {
+                                renderThisSide = true;
+                            }
+                        }
+                        else // Next is out of array bounds
+                        {
+                            renderThisSide = true;
+                        }
+
+                        // Bottom face
+                        // Bottom face
+                        // Bottom face
+                        if (renderThisSide)
                         {
                             verts.Add(new Vector3(x, y, z));
                             verts.Add(new Vector3(x + 1, y, z));
@@ -47,12 +136,51 @@ public class ChunkRenderer
                             int vCount = verts.Count - 4;
                             AddTriangles(tris, vCount, false);
 
-                            AddUvs(uvs, currentBlock, 1);
+                            AddUvs(uvs, currentBlockId, 1);
+
+                            renderThisSide = false;
                         }
 
-                        // Right
-                        bool render = x + 1 < 16 && chunk.GetBlock(x + 1, y, z) == 0;
-                        if (x + 1 == 16 || render)
+                        // Right face     
+                        // Right face  
+                        // Right face  
+                        int nextX = (x + 1 < 16) // Get next from chunk it is in
+                            ?chunk.GetBlock(x + 1, y, z)
+                            :chunk.nextRight.GetBlock(0, y, z);
+
+                        if (nextX == 0) // Next is air
+                        {
+                            renderThisSide = true;
+                        }
+                        else if (Config.ID[nextX] as Block != null) // Next is a block
+                        {
+                            Block nextBlock = Config.ID[nextX] as Block;
+
+                            if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                            {
+                                if (nextBlock.GetTransparency() == BlockTransparency.ShowNext)
+                                {
+                                    renderThisSide = true;
+                                }
+                                else if (currentBlockId != nextX) // Next BlockTransparency.HideNext
+                                {
+                                    renderThisSide = true;
+                                }
+                            }
+                            else if(x == 15) // Next block is opaque and from other chunk
+                            {
+                                renderThisSide = true;
+                            }
+                        }
+                        else // Next is not a block
+                        {
+                            renderThisSide = true;
+                        }
+
+                        // Right face     
+                        // Right face  
+                        // Right face  
+                        if (renderThisSide)
                         {
                             verts.Add(new Vector3(x + 1, y, z));
                             verts.Add(new Vector3(x + 1, y + 1, z));
@@ -62,12 +190,50 @@ public class ChunkRenderer
                             int vCount = verts.Count - 4;
                             AddTriangles(tris, vCount, false);
 
-                            AddUvs(uvs, currentBlock, 2);
+                            AddUvs(uvs, currentBlockId, 2);
+
+                            renderThisSide = false;
                         }
 
-                        // Left
-                        render = x - 1 >= 0 && chunk.GetBlock(x - 1, y, z) == 0;
-                        if (x - 1 < 0 || render)
+                        // Left face
+                        // Left face
+                        // Left face
+                        nextX = (x - 1 < 0) // Get next from chunk it is in
+                            ? chunk.nextLeft.GetBlock(15, y, z)
+                            : chunk.GetBlock(x - 1, y, z);
+                            
+
+                        if (nextX == 0) // Next is air
+                        {
+                            renderThisSide = true;
+                        }
+                        else if (Config.ID[nextX] as Block != null) // Next is a block
+                        {
+                            Block nextBlock = Config.ID[nextX] as Block;
+
+                            if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                            {
+                                if (nextBlock.GetTransparency() == BlockTransparency.ShowNext)
+                                {
+                                    renderThisSide = true;
+                                }
+                                else if (currentBlockId != nextX) // Next BlockTransparency.HideNext
+                                {
+                                    renderThisSide = true;
+                                }
+                            }
+                            else if (x == 0) // Next block is opaque and from other chunk
+                            {
+                                renderThisSide = true;
+                            }
+                        }
+                        else // Next is not a block
+                        {
+                            renderThisSide = true;
+                        }
+
+
+                        if (renderThisSide)
                         {
                             verts.Add(new Vector3(x, y, z));
                             verts.Add(new Vector3(x, y + 1, z));
@@ -77,12 +243,51 @@ public class ChunkRenderer
                             int vCount = verts.Count - 4;
                             AddTriangles(tris, vCount, true);
 
-                            AddUvs(uvs, currentBlock, 3);
+                            AddUvs(uvs, currentBlockId, 3);
+
+                            renderThisSide = false;
                         }
 
-                        // Front
-                        render = z + 1 < 16 && chunk.GetBlock(x, y, z + 1) == 0;
-                        if (z + 1 == 16 || render)
+                        // Front face
+                        // Front face
+                        // Front face    
+                        int nextZ = (z + 1 < 16) // Get next from chunk it is in
+                            ? chunk.GetBlock(x, y, z + 1)
+                            : chunk.nextFront.GetBlock(x, y, 0);
+
+                        if (nextZ == 0) // Next is air
+                        {
+                            renderThisSide = true;
+                        }
+                        else if (Config.ID[nextZ] as Block != null) // Next is a block
+                        {
+                            Block nextBlock = Config.ID[nextZ] as Block;
+
+                            if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                            {
+                                if (nextBlock.GetTransparency() == BlockTransparency.ShowNext)
+                                {
+                                    renderThisSide = true;
+                                }
+                                else if (currentBlockId != nextZ) // Next BlockTransparency.HideNext
+                                {
+                                    renderThisSide = true;
+                                }
+                            }
+                            else if (z == 15) // Next block is opaque and from other chunk
+                            {
+                                renderThisSide = true;
+                            }
+                        }
+                        else // Next is not a block
+                        {
+                            renderThisSide = true;
+                        }
+
+                        // Front face
+                        // Front face
+                        // Front face    
+                        if (renderThisSide)
                         {
                             verts.Add(new Vector3(x, y, z + 1));
                             verts.Add(new Vector3(x, y + 1, z + 1));
@@ -92,12 +297,51 @@ public class ChunkRenderer
                             int vCount = verts.Count - 4;
                             AddTriangles(tris, vCount, true);
 
-                            AddUvs(uvs, currentBlock, 4);
+                            AddUvs(uvs, currentBlockId, 4);
+
+                            renderThisSide = false;
                         }
 
-                        // Back
-                        render = z - 1 >= 0 && chunk.GetBlock(x, y, z - 1) == 0;
-                        if (z - 1 < 0 || render)
+                        // Back face
+                        // Back face
+                        // Back face
+                        nextZ = (z - 1 < 0) // Get next from chunk it is in                         
+                            ? chunk.nextBack.GetBlock(x, y, 15)
+                            : chunk.GetBlock(x, y, z - 1);
+
+                        if (nextZ == 0) // Next is air
+                        {
+                            renderThisSide = true;
+                        }
+                        else if (Config.ID[nextZ] as Block != null) // Next is a block
+                        {
+                            Block nextBlock = Config.ID[nextZ] as Block;
+
+                            if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                            {
+                                if (nextBlock.GetTransparency() == BlockTransparency.ShowNext)
+                                {
+                                    renderThisSide = true;
+                                }
+                                else if (currentBlockId != nextZ) // Next BlockTransparency.HideNext
+                                {
+                                    renderThisSide = true;
+                                }
+                            }
+                            else if (z == 0) // Next block is opaque and from other chunk
+                            {
+                                renderThisSide = true;
+                            }
+                        }
+                        else // Next is not a block
+                        {
+                            renderThisSide = true;
+                        }
+
+                        // Back face
+                        // Back face
+                        // Back face
+                        if (renderThisSide)
                         {
                             verts.Add(new Vector3(x, y, z));
                             verts.Add(new Vector3(x, y + 1, z));
@@ -107,10 +351,13 @@ public class ChunkRenderer
                             int vCount = verts.Count - 4;
                             AddTriangles(tris, vCount, false);
 
-                            AddUvs(uvs, currentBlock, 5);
+                            AddUvs(uvs, currentBlockId, 5);
+
+                            renderThisSide = false;
                         }
 
                     }
+                    
 
                 }
             }

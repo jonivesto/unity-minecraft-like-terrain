@@ -11,13 +11,14 @@ public class TerrainEngine : MonoBehaviour
     
     TerrainGenerator terrainGenerator;
     ChunkRenderer chunkRenderer = new ChunkRenderer();
-    ChunkTransform[] loadedChunks;
+    ChunkTransform[] loadedChunks, renderedChunks;
     Vector3 playerAnchor;
     Vector3 facingDirection;
     Coroutine load;
     Save save;
 
-    int renderDistance;  
+    int renderDistance;
+    int preLoadDistance;
     int unloadDistance;
     int loadDimension;
 
@@ -32,14 +33,14 @@ public class TerrainEngine : MonoBehaviour
         save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
-        SetDistances(4);
+        SetDistances(3, 1);
         LoadPosition();
     }
 
     // Set all distances to the according to the renderdistance
     // Call this on init
     // call this on render distance setting changes
-    void SetDistances(int renderDistance)
+    void SetDistances(int renderDistance, int preLoadDistance)
     {
         this.renderDistance = renderDistance;
 
@@ -48,6 +49,8 @@ public class TerrainEngine : MonoBehaviour
         {
             renderDistance++;
         }
+
+        this.preLoadDistance = renderDistance + preLoadDistance;
 
         // Distance required between player and anchor to start new chunk to load
         sleepDistance = renderDistance / 2f;
@@ -87,10 +90,13 @@ public class TerrainEngine : MonoBehaviour
     private void LoadPosition()
     {
         // Chunks around the player chunk in spiral order
-        List<ChunkTransform> chunkTransforms = new List<ChunkTransform>();
+        // LoadedChunks will always have more layer(s) than renderedChunks
+        List<ChunkTransform> loadedChunkTransforms = new List<ChunkTransform>();
+        List<ChunkTransform> renderedChunkTransforms = new List<ChunkTransform>();
 
         // Add player chunk (the center of the spiral)
-        chunkTransforms.Add(new ChunkTransform(playerChunk));
+        loadedChunkTransforms.Add(new ChunkTransform(playerChunk));
+        renderedChunkTransforms.Add(new ChunkTransform(playerChunk));
 
         // X and Y directions that define the spiral pattern
         int[] patternX = new int[] {1, 0, 0, -1, -1, 0, 0, 1};
@@ -99,7 +105,7 @@ public class TerrainEngine : MonoBehaviour
         // Current position when drawing the spiral
         int x, y;
         
-        for (int layer = 1; layer <= renderDistance; layer++) // Spiral layers aroud the player
+        for (int layer = 1; layer <= renderDistance + preLoadDistance; layer++) // Spiral layers aroud the player
         {
             // Set starting point for each layer
             x = playerChunk.x;
@@ -115,13 +121,22 @@ public class TerrainEngine : MonoBehaviour
                     x += patternX[phase] * 1;
                     y += patternY[phase] * 1;
 
-                    chunkTransforms.Add(new ChunkTransform(x, y));
+                    // Add to load
+                    loadedChunkTransforms.Add(new ChunkTransform(x, y));
+
+                    // Add to render
+                    // RenderedChunks will have less layers
+                    if(layer <= renderDistance)
+                    {
+                        renderedChunkTransforms.Add(new ChunkTransform(x, y));
+                    }
                 }
             }
         }
 
         // List to array
-        loadedChunks = chunkTransforms.ToArray();
+        loadedChunks = loadedChunkTransforms.ToArray();
+        renderedChunks = renderedChunkTransforms.ToArray();
 
         // Stop load if it is in progress
         if (load != null)
@@ -158,7 +173,7 @@ public class TerrainEngine : MonoBehaviour
                 obj.AddComponent<MeshCollider>();
 
                 chunk = obj.AddComponent<Chunk>();
-                chunk.Init(chunkTransform);        
+                chunk.SetTransform(chunkTransform);        
             }
             else
             {
@@ -213,14 +228,34 @@ public class TerrainEngine : MonoBehaviour
             }
         }
 
+
+        // Init chunks
+        foreach (ChunkTransform chunkTransform in renderedChunks)
+        {
+            Chunk chunk = GetChunk(chunkTransform);
+
+            if (chunk == null)
+            {
+                Debug.LogWarning("NULL");
+                continue;
+            }
+
+            chunk.SetNext(
+                GetChunk(chunkTransform.GetRight()),
+                GetChunk(chunkTransform.GetLeft()),
+                GetChunk(chunkTransform.GetFront()),
+                GetChunk(chunkTransform.GetBack())
+            );
+        }
+
         Debug.Log("Chunks generated, rendering..");
 
         // Render chunks
-        for (int i = 0; i < loadedChunks.Length; i++)
+        for (int i = 0; i < renderedChunks.Length; i++)
         {
-            if(GetChunk(loadedChunks[i]) != null)
+            if(GetChunk(renderedChunks[i]) != null)
             {
-                Chunk chunk = GetChunk(loadedChunks[i]);
+                Chunk chunk = GetChunk(renderedChunks[i]);
 
                 if (!chunk.rendered && chunk.generated)
                 {
