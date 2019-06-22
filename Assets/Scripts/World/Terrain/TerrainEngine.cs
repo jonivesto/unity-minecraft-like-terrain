@@ -153,7 +153,10 @@ public class TerrainEngine : MonoBehaviour
     // false = load all chunks at once. This causes high lag.
     IEnumerator LoadChunks(bool async)
     {
+        // Debug
+        System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
         Debug.Log("Chunk loading started");
+
         Transform parentOfChunks = GameObject.Find("/Environment/World").transform;
 
         foreach (ChunkTransform chunkTransform in loadedChunks)
@@ -252,7 +255,7 @@ public class TerrainEngine : MonoBehaviour
             );
         }
 
-        Debug.Log("Chunks generated, rendering..");
+        Debug.Log("Chunks generated. rendering..");
 
         // Render chunks
         for (int i = 0; i < renderedChunks.Length; i++)
@@ -275,7 +278,8 @@ public class TerrainEngine : MonoBehaviour
             }
         }
 
-        Debug.Log("Chunk loading finished");
+        stopwatch.Stop();
+        Debug.Log("Chunk loading finished in " + stopwatch.ElapsedMilliseconds);
     }
 
     // Save all loaded chunks to files
