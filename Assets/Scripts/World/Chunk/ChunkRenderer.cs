@@ -118,10 +118,7 @@ public class ChunkRenderer
                                 renderThisSide = true;
                             }
                         }
-                        else // Next is out of array bounds
-                        {
-                            renderThisSide = true;
-                        }
+                        
 
                         // Bottom face
                         // Bottom face
@@ -144,17 +141,17 @@ public class ChunkRenderer
                         // Right face     
                         // Right face  
                         // Right face  
-                        int nextX = (x + 1 < 16) // Get next from chunk it is in
+                        int nextH = (x + 1 < 16) // Get next from chunk it is in
                             ?chunk.GetBlock(x + 1, y, z)
                             :chunk.nextRight.GetBlock(0, y, z);
 
-                        if (nextX == 0) // Next is air
+                        if (nextH == 0) // Next is air
                         {
                             renderThisSide = true;
                         }
-                        else if (Config.ID[nextX] as Block != null) // Next is a block
+                        else if (Config.ID[nextH] as Block != null) // Next is a block
                         {
-                            Block nextBlock = Config.ID[nextX] as Block;
+                            Block nextBlock = Config.ID[nextH] as Block;
 
                             if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
                             {
@@ -162,15 +159,12 @@ public class ChunkRenderer
                                 {
                                     renderThisSide = true;
                                 }
-                                else if (currentBlockId != nextX) // Next BlockTransparency.HideNext
+                                else if (currentBlockId != nextH) // Next BlockTransparency.HideNext
                                 {
                                     renderThisSide = true;
                                 }
                             }
-                            else if(x == 15) // Next block is opaque and from other chunk
-                            {
-                                renderThisSide = true;
-                            }
+                            
                         }
                         else // Next is not a block
                         {
@@ -198,18 +192,18 @@ public class ChunkRenderer
                         // Left face
                         // Left face
                         // Left face
-                        nextX = (x - 1 < 0) // Get next from chunk it is in
+                        nextH = (x - 1 < 0) // Get next from chunk it is in
                             ? chunk.nextLeft.GetBlock(15, y, z)
                             : chunk.GetBlock(x - 1, y, z);
                             
 
-                        if (nextX == 0) // Next is air
+                        if (nextH == 0) // Next is air
                         {
                             renderThisSide = true;
                         }
-                        else if (Config.ID[nextX] as Block != null) // Next is a block
+                        else if (Config.ID[nextH] as Block != null) // Next is a block
                         {
-                            Block nextBlock = Config.ID[nextX] as Block;
+                            Block nextBlock = Config.ID[nextH] as Block;
 
                             if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
                             {
@@ -217,15 +211,12 @@ public class ChunkRenderer
                                 {
                                     renderThisSide = true;
                                 }
-                                else if (currentBlockId != nextX) // Next BlockTransparency.HideNext
+                                else if (currentBlockId != nextH) // Next BlockTransparency.HideNext
                                 {
                                     renderThisSide = true;
                                 }
                             }
-                            else if (x == 0) // Next block is opaque and from other chunk
-                            {
-                                renderThisSide = true;
-                            }
+                            
                         }
                         else // Next is not a block
                         {
@@ -251,17 +242,17 @@ public class ChunkRenderer
                         // Front face
                         // Front face
                         // Front face    
-                        int nextZ = (z + 1 < 16) // Get next from chunk it is in
+                        nextH = (z + 1 < 16) // Get next from chunk it is in
                             ? chunk.GetBlock(x, y, z + 1)
                             : chunk.nextFront.GetBlock(x, y, 0);
 
-                        if (nextZ == 0) // Next is air
+                        if (nextH == 0) // Next is air
                         {
                             renderThisSide = true;
                         }
-                        else if (Config.ID[nextZ] as Block != null) // Next is a block
+                        else if (Config.ID[nextH] as Block != null) // Next is a block
                         {
-                            Block nextBlock = Config.ID[nextZ] as Block;
+                            Block nextBlock = Config.ID[nextH] as Block;
 
                             if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
                             {
@@ -269,15 +260,12 @@ public class ChunkRenderer
                                 {
                                     renderThisSide = true;
                                 }
-                                else if (currentBlockId != nextZ) // Next BlockTransparency.HideNext
+                                else if (currentBlockId != nextH) // Next BlockTransparency.HideNext
                                 {
                                     renderThisSide = true;
                                 }
                             }
-                            else if (z == 15) // Next block is opaque and from other chunk
-                            {
-                                renderThisSide = true;
-                            }
+                            
                         }
                         else // Next is not a block
                         {
@@ -305,17 +293,17 @@ public class ChunkRenderer
                         // Back face
                         // Back face
                         // Back face
-                        nextZ = (z - 1 < 0) // Get next from chunk it is in                         
+                        nextH = (z - 1 < 0) // Get next from chunk it is in                         
                             ? chunk.nextBack.GetBlock(x, y, 15)
                             : chunk.GetBlock(x, y, z - 1);
 
-                        if (nextZ == 0) // Next is air
+                        if (nextH == 0) // Next is air
                         {
                             renderThisSide = true;
                         }
-                        else if (Config.ID[nextZ] as Block != null) // Next is a block
+                        else if (Config.ID[nextH] as Block != null) // Next is a block
                         {
-                            Block nextBlock = Config.ID[nextZ] as Block;
+                            Block nextBlock = Config.ID[nextH] as Block;
 
                             if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
                             {
@@ -323,15 +311,12 @@ public class ChunkRenderer
                                 {
                                     renderThisSide = true;
                                 }
-                                else if (currentBlockId != nextZ) // Next BlockTransparency.HideNext
+                                else if (currentBlockId != nextH) // Next BlockTransparency.HideNext
                                 {
                                     renderThisSide = true;
                                 }
                             }
-                            else if (z == 0) // Next block is opaque and from other chunk
-                            {
-                                renderThisSide = true;
-                            }
+                            
                         }
                         else // Next is not a block
                         {

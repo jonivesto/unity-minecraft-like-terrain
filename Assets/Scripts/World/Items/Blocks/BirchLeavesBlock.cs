@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 
-public class BedrockBlock : Block
+public class BirchLeavesBlock : Block
 {
-    public BedrockBlock()
+    public BirchLeavesBlock()
     {
-        blockName = "Bedrock";
-        blockTransparency = BlockTransparency.Opaque;
+        blockName = "Birch leaves";
+        blockTransparency = BlockTransparency.ShowNext;
 
         UVs = new Vector2[] {
-            new Vector2(1,14)//, // Top
+            new Vector2(8,3)//, // Top
             //new Vector2(2,15), // Bottom
             //new Vector2(5,15), // Right
             //new Vector2(0,15), // Left

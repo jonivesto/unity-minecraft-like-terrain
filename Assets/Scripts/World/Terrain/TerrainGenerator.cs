@@ -38,10 +38,10 @@ public class TerrainGenerator
                         }
                         else
                         {
-                            chunk.SetBlock(x, y, z, 3); // Stone block 
+                            chunk.SetBlock(x, y, z, 1); // Stone block 
                         }
 
-                                             
+                        
                     }
                 }
             }

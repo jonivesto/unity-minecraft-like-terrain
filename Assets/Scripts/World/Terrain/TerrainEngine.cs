@@ -33,7 +33,7 @@ public class TerrainEngine : MonoBehaviour
         save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
-        SetDistances(3, 1);
+        SetDistances(2, 1);
         LoadPosition();
     }
 
@@ -193,7 +193,11 @@ public class TerrainEngine : MonoBehaviour
                 {
                     // Generate and save to file
                     terrainGenerator.Generate(chunk);
-                    save.SaveChunk(chunk);
+                    if (Config.SAVE_CHUNKS_ON_GENERATE)
+                    {
+                        save.SaveChunk(chunk);
+                    }
+                    
                 }
 
                 chunk.generated = true;
