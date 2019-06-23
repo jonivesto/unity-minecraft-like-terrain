@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NoiseTest;
+using UnityEngine;
 
 public class TerrainGenerator
 {
@@ -6,11 +7,16 @@ public class TerrainGenerator
     const int CHUNK_Y = 256;
     const int CHUNK_Z = 16;
 
+    Seed seed;
+    OpenSimplexNoise simplex;
+
     private TerrainEngine terrainEngine;
 
     public TerrainGenerator(TerrainEngine terrainEngine)
     {
         this.terrainEngine = terrainEngine;
+        seed = terrainEngine.seed;
+        simplex = new OpenSimplexNoise(seed.ToLong());
     }
 
     public void Generate(Chunk chunk)
@@ -46,25 +52,17 @@ public class TerrainGenerator
                 }
             }
         }
-        chunk.SetBlock(0, 100, 0, 1);
-        chunk.SetBlock(1, 100, 0, 2);
-        chunk.SetBlock(0, 100, 1, 3);
-        chunk.SetBlock(1, 100, 1, 4);
-
-        chunk.SetBlock(0, 101, 0, 1);
-        chunk.SetBlock(1, 101, 0, 2);
-        chunk.SetBlock(0, 101, 1, 3);
-        chunk.SetBlock(1, 101, 1, 4);
-
 
     }
 
     private int GetGroundAt(int x, int y, int wX, int wY)
-    {
-        Seed seed = terrainEngine.seed;
+    {       
         seed.Reset();
         x += wX;
         y += wY;
-        return Mathf.FloorToInt(Mathf.PerlinNoise(x/10f + seed.get.Next(64), y/ 10f + seed.get.Next(64)) * 9f + 90f);       
+        //return Mathf.FloorToInt(Mathf.PerlinNoise(x/10f + seed.get.Next(64), y/ 10f + seed.get.Next(64)) * 9f + 90f);       
+
+        
+        return Mathf.FloorToInt((float)simplex.Evaluate(x / 100f, y / 100f) * 25f + 64f);
     }
 }

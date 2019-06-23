@@ -19,7 +19,7 @@ public class Seed
 
     public Seed(string value)
     {
-        this.origin = value;
+        origin = value;
         Reset();
     }
 
@@ -51,5 +51,10 @@ public class Seed
     public new string ToString()
     {
         return origin;
+    }
+
+    public long ToLong()
+    {
+        return Convert.ToInt64(origin);
     }
 }

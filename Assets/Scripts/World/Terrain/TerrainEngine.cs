@@ -33,7 +33,7 @@ public class TerrainEngine : MonoBehaviour
         save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
-        SetDistances(2, 1);
+        SetDistances(7, 1);
         LoadPosition();
     }
 
@@ -57,7 +57,7 @@ public class TerrainEngine : MonoBehaviour
 
         // Distance between player and chunks
         // When out of range, chunks will be unloaded
-        unloadDistance = renderDistance * 2;
+        unloadDistance = renderDistance * 3;
 
         // x and y lenghts of the loadedChunks[] array
         loadDimension = renderDistance * 2 + 1;
@@ -243,7 +243,6 @@ public class TerrainEngine : MonoBehaviour
 
             if (chunk == null)
             {
-                Debug.LogWarning("NULL");
                 continue;
             }
 
