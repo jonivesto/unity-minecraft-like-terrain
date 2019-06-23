@@ -6,7 +6,6 @@ public class TerrainEngine : MonoBehaviour
 {
     public string worldName;
     public Seed seed;
-    public Config config = new Config();
     public Vector2Int playerChunk = new Vector2Int();
     
     TerrainGenerator terrainGenerator;
@@ -33,7 +32,7 @@ public class TerrainEngine : MonoBehaviour
         save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
-        SetDistances(7, 1);
+        SetDistances(4, 1);
         LoadPosition();
     }
 
@@ -65,6 +64,8 @@ public class TerrainEngine : MonoBehaviour
 
     public void UpdatePosition(Vector3 position, Vector3 rotation)
     {
+        if (!Config.UPDATE_PLAYER_POSITION) return;
+
         // Get chunk position player is in
         playerChunk.Set
         (

@@ -11,8 +11,9 @@
         new    BirchLeavesBlock()      // 4
     };
 
-    // Save options
+    // Debug
     public static bool SAVE_CHUNKS_ON_GENERATE = false;
+    public static bool UPDATE_PLAYER_POSITION = false;
 
     // Terrain generation
     public static bool GENERATE_CAVES = true;

@@ -7,6 +7,8 @@ public class TerrainGenerator
     const int CHUNK_Y = 256;
     const int CHUNK_Z = 16;
 
+    
+
     Seed seed;
     OpenSimplexNoise simplex;
 
@@ -28,7 +30,7 @@ public class TerrainGenerator
         {
             for (int z = 0; z < CHUNK_Z; z++) // local z
             {
-                int ground = GetGroundAt(x, z, worldX, worldZ);
+                int ground = BaseHeight(x, z, worldX, worldZ);
 
                 for (int y = 0; y < CHUNK_Y; y++) // local y
                 {
@@ -55,14 +57,21 @@ public class TerrainGenerator
 
     }
 
-    private int GetGroundAt(int x, int y, int wX, int wY)
+
+    private int BaseHeight(int x, int y, int wx, int wy)
     {       
-        seed.Reset();
-        x += wX;
-        y += wY;
+        x += wx;
+        y += wy;
+
         //return Mathf.FloorToInt(Mathf.PerlinNoise(x/10f + seed.get.Next(64), y/ 10f + seed.get.Next(64)) * 9f + 90f);       
 
-        
-        return Mathf.FloorToInt((float)simplex.Evaluate(x / 100f, y / 100f) * 25f + 64f);
+        int noiseValue = Mathf.FloorToInt((float)simplex.Evaluate(x / 800f, y / 800f) * 50f + 64f);
+
+        int detailNoise = Mathf.FloorToInt((float)simplex.Evaluate(x / 20f, y / 20f) * 10f) ;
+
+
+        return noiseValue + detailNoise;
     }
+
+
 }
