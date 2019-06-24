@@ -5,5 +5,6 @@ public class OceanBiome : Biome
     {
         heightMultiplier = 100f;
         terrainMultiplier = 10f;
+        hillMultiplier = 2f;
     }
 }

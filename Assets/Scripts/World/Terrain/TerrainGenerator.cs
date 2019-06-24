@@ -9,7 +9,7 @@ public class TerrainGenerator
 
 
     Seed seed;
-    OpenSimplexNoise height, humidity, temperature;
+    OpenSimplexNoise height, hills, hillHeights, humidity, temperature;
 
     private TerrainEngine terrainEngine;
 
@@ -21,8 +21,10 @@ public class TerrainGenerator
 
         // Noise maps
         height = new OpenSimplexNoise(seed.ToLong());
-        humidity = new OpenSimplexNoise(seed.ToLong() / 2 + 1);
-        temperature = new OpenSimplexNoise(seed.ToLong() / 3 + 1);
+        hills = new OpenSimplexNoise(seed.ToLong() / 2+1);
+        hillHeights = new OpenSimplexNoise(seed.ToLong() / 3 + 1);
+        humidity = new OpenSimplexNoise(seed.ToLong() / 2);
+        temperature = new OpenSimplexNoise(seed.ToLong() / 3);
 
     }
 
@@ -35,7 +37,7 @@ public class TerrainGenerator
         {
             for (int z = 0; z < CHUNK_Z; z++) // local z
             {
-                int ground = GetGroundAt(x, z, worldX, worldZ);
+                int ground = GetGroundAt(x + worldX, z + worldZ);
 
                 for (int y = 0; y < CHUNK_Y; y++) // local y
                 {
@@ -44,7 +46,7 @@ public class TerrainGenerator
                         // Water
                         if (y < Config.SEA_LEVEL)
                         {
-                            chunk.SetBlock(x, y, z, 3); // Water block
+                            //chunk.SetBlock(x, y, z, 5); // Water
                         }
                         else
                         {
@@ -72,11 +74,14 @@ public class TerrainGenerator
     }
 
 
-    private int GetGroundAt(int x, int y, int wx, int wy)
-    {       
-        // Add block position to chunk position
-        x += wx;
-        y += wy;
+    private int GetGroundAt(int x, int y)
+    {
+        // TODO: SOME REWORK HERE
+        // 1. Get flatness noise (large noise like the height noise)
+        // 2. Get hills noise
+        // 3. Use flatness to add hills
+        // 4. GetBiomeAt() Use flatness with temperature and humidity to set biomes
+
 
         // Get biome
         Biome biome = GetBiomeAt(x, y);
@@ -86,11 +91,16 @@ public class TerrainGenerator
                                 * biome.heightMultiplier
                                 + Config.SEA_LEVEL;
 
+        // Define hills
+        float multiplier = Mathf.Abs((float)hillHeights.Evaluate(x / Config.CONTINENT_SIZE, y / Config.CONTINENT_SIZE));
+        double hillNoise = hills.Evaluate(x / Config.HILL_SIZE, y / Config.HILL_SIZE) * multiplier *10f;
+        if (hillNoise < 0) hillNoise = 0;
+
         // Define more detailed terrain shapes
         double terrainNoise = height.Evaluate(x / 20f, y / 20f) * biome.terrainMultiplier;
 
-        // Set terrain noise on top of the continent noise
-        return Mathf.FloorToInt((float)(continentNoise + terrainNoise));
+        // Combine noise maps for the final result
+        return Mathf.FloorToInt((float)(continentNoise + hillNoise + terrainNoise));
     }
 
     public Biome GetBiomeAt(float x, float y)
@@ -102,8 +112,8 @@ public class TerrainGenerator
         }
         else
         {
-            double h = humidity.Evaluate(x, y);
-            double t = temperature.Evaluate(x, y);
+            //double h = humidity.Evaluate(x, y);
+            //double t = temperature.Evaluate(x, y);
 
             //TODO: set biomes with t and h
 

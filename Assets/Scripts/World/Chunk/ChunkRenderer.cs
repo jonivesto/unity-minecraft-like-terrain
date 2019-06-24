@@ -22,7 +22,13 @@ public class ChunkRenderer
                     // Current is not a block
                     if (currentBlock == null)
                     {
-                        //TODO
+                        Liquid liquid = Config.ID[currentBlockId] as Liquid;
+
+                        // Current is liquid
+                        if (liquid != null)
+                        {
+
+                        }
                     }
 
                     // Current is a block

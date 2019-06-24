@@ -5,5 +5,6 @@ public class BirchForestBiome : Biome
     {
         heightMultiplier = 50f;
         terrainMultiplier = 10f;
+        hillMultiplier = 12f;
     }
 }

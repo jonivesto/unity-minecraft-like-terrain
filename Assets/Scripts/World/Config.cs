@@ -8,7 +8,9 @@
         new          StoneBlock(),     // 1
         new        BedrockBlock(),     // 2
         new          GlassBlock(),     // 3
-        new    BirchLeavesBlock()      // 4
+        new    BirchLeavesBlock(),     // 4
+        new               Water(),     // 5
+        new           WaterFlow()      // 6
     };
 
     // List of biomes in the game
@@ -27,5 +29,6 @@
     // Terrain generation
     public static int SEA_LEVEL = 64;
     public static float CONTINENT_SIZE = 800f;
+    public static float HILL_SIZE = 40f;
 
 }

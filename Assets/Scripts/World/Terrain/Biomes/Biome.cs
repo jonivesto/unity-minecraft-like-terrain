@@ -3,7 +3,7 @@
     public string biomeName;
 
     public float heightMultiplier;
-
+    public float hillMultiplier;
     public float terrainMultiplier;
 
 

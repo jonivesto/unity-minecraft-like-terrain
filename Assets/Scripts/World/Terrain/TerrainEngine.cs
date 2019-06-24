@@ -280,7 +280,10 @@ public class TerrainEngine : MonoBehaviour
         }
 
         stopwatch.Stop();
-        Debug.Log("Chunk loading finished in " + stopwatch.ElapsedMilliseconds);
+        long minutes = (stopwatch.ElapsedMilliseconds / 1000) / 60;
+        int seconds = (int)((stopwatch.ElapsedMilliseconds / 1000) % 60);
+
+        Debug.Log("Chunk loading finished in " + minutes +"m, "+ seconds + "s");
     }
 
     // Save all loaded chunks to files
