@@ -2,7 +2,8 @@
 {
     public string biomeName;
 
-    public float heightMultiplier;
+    public float heightMultiplier = 50f;
+    public float terrainResolution = 20f;
     public float hillMultiplier;
     public float terrainMultiplier;
 

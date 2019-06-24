@@ -29,6 +29,12 @@ public class ChunkRenderer
                         {
 
                         }
+
+                        // Current is not liquid
+                        else
+                        {
+
+                        }
                     }
 
                     // Current is a block

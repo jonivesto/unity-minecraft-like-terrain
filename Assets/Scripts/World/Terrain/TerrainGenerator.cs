@@ -7,24 +7,20 @@ public class TerrainGenerator
     const int CHUNK_Y = 256;
     const int CHUNK_Z = 16;
 
-
     Seed seed;
-    OpenSimplexNoise height, hills, hillHeights, humidity, temperature;
-
-    private TerrainEngine terrainEngine;
+    OpenSimplexNoise baseHeightMap, hillsHeightMap, flatnessMap, humidityMap, temperatureMap;
 
 
     public TerrainGenerator(TerrainEngine terrainEngine)
     {
-        this.terrainEngine = terrainEngine;
         seed = terrainEngine.seed;
 
         // Noise maps
-        height = new OpenSimplexNoise(seed.ToLong());
-        hills = new OpenSimplexNoise(seed.ToLong() / 2+1);
-        hillHeights = new OpenSimplexNoise(seed.ToLong() / 3 + 1);
-        humidity = new OpenSimplexNoise(seed.ToLong() / 2);
-        temperature = new OpenSimplexNoise(seed.ToLong() / 3);
+        flatnessMap = new OpenSimplexNoise(seed.ToLong() / 2 + 1);
+        humidityMap = new OpenSimplexNoise(seed.ToLong() / 2);     
+        baseHeightMap = new OpenSimplexNoise(seed.ToLong());
+        hillsHeightMap = new OpenSimplexNoise(seed.ToLong() / 3 + 1);
+        temperatureMap = new OpenSimplexNoise(seed.ToLong() / 3);
 
     }
 
@@ -46,7 +42,7 @@ public class TerrainGenerator
                         // Water
                         if (y < Config.SEA_LEVEL)
                         {
-                            //chunk.SetBlock(x, y, z, 5); // Water
+                            chunk.SetBlock(x, y, z, 5); // Water
                         }
                         else
                         {
@@ -82,38 +78,42 @@ public class TerrainGenerator
         // 3. Use flatness to add hills
         // 4. GetBiomeAt() Use flatness with temperature and humidity to set biomes
 
+        // Get flatness map
+        float flatness = Mathf.PerlinNoise(x / Config.FLATNESS, y / Config.FLATNESS);
 
         // Get biome
-        Biome biome = GetBiomeAt(x, y);
+        Biome biome = GetBiomeAt(x, y, flatness);
 
         // This noise defines oceans and continents
-        double continentNoise = height.Evaluate(x / Config.CONTINENT_SIZE, y / Config.CONTINENT_SIZE) 
-                                * biome.heightMultiplier
-                                + Config.SEA_LEVEL;
+        double continentNoise = baseHeightMap.Evaluate(x / Config.CONTINENT_SIZE, y / Config.CONTINENT_SIZE) 
+                              * biome.heightMultiplier
+                              + Config.SEA_LEVEL;
 
         // Define hills
-        float multiplier = Mathf.Abs((float)hillHeights.Evaluate(x / Config.CONTINENT_SIZE, y / Config.CONTINENT_SIZE));
-        double hillNoise = hills.Evaluate(x / Config.HILL_SIZE, y / Config.HILL_SIZE) * multiplier *10f;
+        double hillNoise = flatnessMap.Evaluate(x / Config.HILL_SIZE, y / Config.HILL_SIZE) * flatness * 60f;
         if (hillNoise < 0) hillNoise = 0;
 
-        // Define more detailed terrain shapes
-        double terrainNoise = height.Evaluate(x / 20f, y / 20f) * biome.terrainMultiplier;
+        // Define more detailed terrain
+        double terrainNoise = baseHeightMap.Evaluate(x / biome.terrainResolution, y / biome.terrainResolution) * biome.terrainMultiplier;
 
         // Combine noise maps for the final result
         return Mathf.FloorToInt((float)(continentNoise + hillNoise + terrainNoise));
     }
 
-    public Biome GetBiomeAt(float x, float y)
+    public Biome GetBiomeAt(float x, float y, float f)
     {
-        // Anything below sea level will be ocean
-        if(height.Evaluate(x / Config.CONTINENT_SIZE, y / Config.CONTINENT_SIZE) < 0)
+        // Pre-calculate continent noise
+        double b = baseHeightMap.Evaluate(x / Config.CONTINENT_SIZE, y / Config.CONTINENT_SIZE);
+
+        // Negative b will be underwater
+        if (b < 0)
         {
-            return Config.BIOMES[0];
+            return Config.BIOMES[0]; // Ocean
         }
         else
         {
-            //double h = humidity.Evaluate(x, y);
-            //double t = temperature.Evaluate(x, y);
+            double h = humidityMap.Evaluate(x, y);
+            double t = temperatureMap.Evaluate(x, y);
 
             //TODO: set biomes with t and h
 

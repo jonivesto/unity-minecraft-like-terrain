@@ -29,6 +29,7 @@
     // Terrain generation
     public static int SEA_LEVEL = 64;
     public static float CONTINENT_SIZE = 800f;
-    public static float HILL_SIZE = 40f;
+    public static float HILL_SIZE = 42f;
+    public static float FLATNESS = 49f;
 
 }

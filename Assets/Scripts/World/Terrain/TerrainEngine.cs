@@ -33,7 +33,7 @@ public class TerrainEngine : MonoBehaviour
         save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
-        SetDistances(3, 1);
+        SetDistances(16, 1);
         LoadPosition();
     }
 
@@ -157,7 +157,7 @@ public class TerrainEngine : MonoBehaviour
     {
         // Debug
         System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        Debug.Log("Chunk loading started");
+        Debug.Log("Loading chunks. (Total: "+ loadDimension * loadDimension +")");
 
         Transform parentOfChunks = GameObject.Find("/Environment/World").transform;
 
@@ -256,7 +256,7 @@ public class TerrainEngine : MonoBehaviour
             );
         }
 
-        Debug.Log("Chunks generated. rendering..");
+        Debug.Log("Chunks generated. ("+ stopwatch.ElapsedMilliseconds + "ms) Rendering..");
 
         // Render chunks
         for (int i = 0; i < renderedChunks.Length; i++)
@@ -283,7 +283,7 @@ public class TerrainEngine : MonoBehaviour
         long minutes = (stopwatch.ElapsedMilliseconds / 1000) / 60;
         int seconds = (int)((stopwatch.ElapsedMilliseconds / 1000) % 60);
 
-        Debug.Log("Chunk loading finished in " + minutes +"m, "+ seconds + "s");
+        Debug.Log("Chunks rendered. (" + minutes +"m, "+ seconds + "s)");
     }
 
     // Save all loaded chunks to files
