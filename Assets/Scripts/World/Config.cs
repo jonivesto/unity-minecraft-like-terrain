@@ -11,11 +11,21 @@
         new    BirchLeavesBlock()      // 4
     };
 
+    // List of biomes in the game
+    // Index is biome ID    
+    // If you dont include biome here, it will not work.
+    public static Biome[] BIOMES =
+    {
+        new         OceanBiome(),      // 0
+        new   BirchForestBiome()       // 1
+    };
+
     // Debug
     public static bool SAVE_CHUNKS_ON_GENERATE = false;
     public static bool UPDATE_PLAYER_POSITION = false;
 
     // Terrain generation
-    public static bool GENERATE_CAVES = true;
+    public static int SEA_LEVEL = 64;
+    public static float CONTINENT_SIZE = 800f;
 
 }
