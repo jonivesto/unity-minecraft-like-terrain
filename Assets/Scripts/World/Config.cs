@@ -32,7 +32,7 @@
     public static int SEA_LEVEL = 64;
     public static float CONTINENT_SIZE = 800f;
     public static float HILL_SIZE = 100f;
-    public static float FLATNESS = 60f;
-    public static int SURFACE_DEPTH = 3;
+    public static float FLATNESS = 610f;
+    public static int SURFACE_DEPTH = 4;
 
 }

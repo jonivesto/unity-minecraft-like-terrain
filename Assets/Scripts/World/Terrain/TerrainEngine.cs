@@ -27,13 +27,13 @@ public class TerrainEngine : MonoBehaviour
     void Start()
     {
         worldName = "My world";
-        seed = new Seed();
-        //seed = new Seed("0004887891122446");
+        //seed = new Seed();
+        seed = new Seed("0004887891122446");
 
         save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
-        SetDistances(16, 1);
+        SetDistances(50, 1);
         LoadPosition();
     }
 
@@ -157,7 +157,7 @@ public class TerrainEngine : MonoBehaviour
     {
         // Debug
         System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        Debug.Log("Loading chunks. (Total: "+ loadDimension * loadDimension +")");
+        Debug.Log("Loading chunks. (Estimated: "+ 9.8 * (loadDimension * loadDimension) / 100+ "s) (Total: " + loadDimension * loadDimension + ")");
 
         Transform parentOfChunks = GameObject.Find("/Environment/World").transform;
 

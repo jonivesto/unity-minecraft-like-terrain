@@ -34,7 +34,6 @@ public class TerrainGenerator
             for (int z = 0; z < CHUNK_Z; z++) // local z
             {
                 int ground = GetGroundAt(x + worldX, z + worldZ);
-                Biome biome = GetBiomeAt(x + worldX, z + worldZ);
 
                 for (int y = 0; y < CHUNK_Y; y++) // local y
                 {
@@ -61,10 +60,10 @@ public class TerrainGenerator
                         {
                             chunk.SetBlock(x, y, z, 1); // Stone block 
                         }
-
-                        
+                       
                     }
 
+                    Biome biome = GetBiomeAt(x + worldX, z + worldZ, ground);
 
                     // Replace with biome surface material
                     for (int s = 0; s < Config.SURFACE_DEPTH; s++)
@@ -87,31 +86,32 @@ public class TerrainGenerator
         float flatness = Mathf.PerlinNoise(x / Config.FLATNESS, y / Config.FLATNESS);
 
         // Get biome
-        Biome biome = GetBiomeAt(x, y);
+        //Biome biome = GetBiomeAt(x, y);
 
         // This noise defines oceans and continents
         double continentNoise = baseHeightMap.Evaluate(x / Config.CONTINENT_SIZE, y / Config.CONTINENT_SIZE) 
-                              * biome.heightMultiplier
+                              * 70f // height multiplier
                               + Config.SEA_LEVEL;
 
         // Define hills
-        //double hillNoise = hillsMap.Evaluate(x / Config.HILL_SIZE, y / Config.HILL_SIZE) * flatness * 120f;
-        //if (hillNoise < 0) hillNoise = 0; 
+        double hillNoise = hillsMap.Evaluate(x / Config.HILL_SIZE, y / Config.HILL_SIZE) 
+                         * flatness 
+                         * (hillsHeightMap.Evaluate(x / 100f, y / 100f) * 150f);
+
+        if (hillNoise < 0) hillNoise = 0;
 
         // Define more detailed terrain
-        double terrainNoise = baseHeightMap.Evaluate(x / 20f, y / 20f) * 6f;
+        double terrainNoise = baseHeightMap.Evaluate(x / 20f, y / 20f) 
+                            * (hillsHeightMap.Evaluate(x / 300f, y / 300f) * 20f);
 
         // Combine noise maps for the final result
-        return Mathf.FloorToInt((float)(continentNoise + terrainNoise));
+        return Mathf.FloorToInt((float)(continentNoise + hillNoise + terrainNoise));
     }
 
-    public Biome GetBiomeAt(float x, float y)
+    public Biome GetBiomeAt(float x, float y, int ground)
     {
-        // Pre-calculate continent noise
-        double b = baseHeightMap.Evaluate(x / Config.CONTINENT_SIZE, y / Config.CONTINENT_SIZE);
-
         // Negative b will be underwater
-        if (b < 0)
+        if (ground < Config.SEA_LEVEL)
         {
             return Config.BIOMES[0]; // Ocean
         }
