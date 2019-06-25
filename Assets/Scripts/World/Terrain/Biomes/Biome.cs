@@ -3,9 +3,9 @@
     public string biomeName;
 
     public float heightMultiplier = 50f;
-    public float terrainResolution = 20f;
     public float hillMultiplier;
-    public float terrainMultiplier;
+    public float terrainMultiplier = 10f;
+    public int surfaceBlock = 1;
 
 
     // Returns biome's index in Config.BIOMES[]

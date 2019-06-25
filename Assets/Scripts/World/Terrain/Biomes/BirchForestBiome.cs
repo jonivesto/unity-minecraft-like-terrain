@@ -3,7 +3,8 @@ public class BirchForestBiome : Biome
 {
     public BirchForestBiome()
     {
-        terrainMultiplier = 10f;
-        hillMultiplier = 12f;
+        terrainMultiplier = 20f;
+        hillMultiplier = 62f;
+        surfaceBlock = 8;
     }
 }
