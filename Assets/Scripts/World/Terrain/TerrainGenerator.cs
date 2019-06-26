@@ -102,7 +102,7 @@ public class TerrainGenerator
 
         // Define more detailed terrain
         double terrainNoise = baseHeightMap.Evaluate(x / 20f, y / 20f) 
-                            * (hillsHeightMap.Evaluate(x / 300f, y / 300f) * 20f);
+                            * (hillsHeightMap.Evaluate(x / 300f, y / 300f) * 14f);
 
         // Combine noise maps for the final result
         return Mathf.FloorToInt((float)(continentNoise + hillNoise + terrainNoise));
@@ -110,17 +110,22 @@ public class TerrainGenerator
 
     public Biome GetBiomeAt(float x, float y, int ground)
     {
-        // Negative b will be underwater
-        if (ground < Config.SEA_LEVEL)
+        // beach and ocean
+        if (ground < Config.SEA_LEVEL + (Mathf.PerlinNoise(x / 44f, y / 44f)*3))
         {
             return Config.BIOMES[0]; // Ocean
         }
         else
         {
-            double h = humidityMap.Evaluate(x, y);
-            double t = temperatureMap.Evaluate(x, y);
+            double h = Mathf.PerlinNoise(x / Config.HUMIDITY_MAP_SCALE, y / Config.HUMIDITY_MAP_SCALE);
+            double t = Mathf.PerlinNoise(x / Config.TEMPERATURE_MAP_SCALE, y / Config.TEMPERATURE_MAP_SCALE);
 
             //TODO: set biomes with t and h
+
+            if (h>0.5&&t>0.5)
+            {
+                return Config.BIOMES[2];
+            }
 
             return Config.BIOMES[1];
         }

@@ -27,13 +27,13 @@ public class TerrainEngine : MonoBehaviour
     void Start()
     {
         worldName = "My world";
-        //seed = new Seed();
-        seed = new Seed("0004887891122446");
+        seed = new Seed();
+        //seed = new Seed("0004887891122446");
 
         save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
-        SetDistances(50, 1);
+        SetDistances(12, 1);
         LoadPosition();
     }
 

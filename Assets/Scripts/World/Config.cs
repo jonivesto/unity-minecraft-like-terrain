@@ -13,6 +13,7 @@
         new           WaterFlow(),     // 6
         new           SandBlock(),     // 7
         new           DirtBlock(),     // 8
+        new          GrassBlock(),     // 9
     };
 
     // List of biomes in the game
@@ -21,7 +22,8 @@
     public static Biome[] BIOMES =
     {
         new         OceanBiome(),      // 0
-        new   BirchForestBiome()       // 1
+        new   BirchForestBiome(),      // 1
+        new         SwampBiome(),      // 2
     };
 
     // Debug
@@ -31,8 +33,11 @@
     // Terrain generation
     public static int SEA_LEVEL = 64;
     public static float CONTINENT_SIZE = 800f;
-    public static float HILL_SIZE = 100f;
-    public static float FLATNESS = 610f;
+    public static float HILL_SIZE = 105f;
+    public static float FLATNESS = 1000f;
     public static int SURFACE_DEPTH = 4;
+
+    public static float HUMIDITY_MAP_SCALE = 1600f;
+    public static float TEMPERATURE_MAP_SCALE = 2000f;
 
 }
