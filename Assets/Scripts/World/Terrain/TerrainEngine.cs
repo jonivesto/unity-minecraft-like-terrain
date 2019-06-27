@@ -33,7 +33,7 @@ public class TerrainEngine : MonoBehaviour
         save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
-        SetDistances(12, 1);
+        SetDistances(7, 1);
         LoadPosition();
     }
 

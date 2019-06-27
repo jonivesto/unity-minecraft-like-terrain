@@ -43,8 +43,6 @@ public class ChunkRenderer
                         bool renderThisSide = false;
 
                         // Top face
-                        // Top face
-                        // Top face
                         if (y + 1 < 256) // Next in array bounds
                         {
                             int next = chunk.GetBlock(x, y + 1, z);
@@ -80,8 +78,6 @@ public class ChunkRenderer
                         }
 
                         // Top face
-                        // Top face
-                        // Top face
                         if (renderThisSide)
                         {
                             verts.Add(new Vector3(x, y + 1, z));
@@ -98,8 +94,6 @@ public class ChunkRenderer
                         }
 
 
-                        // Bottom face
-                        // Bottom face
                         // Bottom face
                         if (y - 1 >= 0) // Next in array bounds
                         {
@@ -133,8 +127,6 @@ public class ChunkRenderer
                         
 
                         // Bottom face
-                        // Bottom face
-                        // Bottom face
                         if (renderThisSide)
                         {
                             verts.Add(new Vector3(x, y, z));
@@ -150,9 +142,7 @@ public class ChunkRenderer
                             renderThisSide = false;
                         }
 
-                        // Right face     
-                        // Right face  
-                        // Right face  
+                        // Right face      
                         int nextH = (x + 1 < 16) // Get next from chunk it is in
                             ?chunk.GetBlock(x + 1, y, z)
                             :chunk.nextRight.GetBlock(0, y, z);
@@ -183,9 +173,7 @@ public class ChunkRenderer
                             renderThisSide = true;
                         }
 
-                        // Right face     
-                        // Right face  
-                        // Right face  
+                        // Right face      
                         if (renderThisSide)
                         {
                             verts.Add(new Vector3(x + 1, y, z));
@@ -201,8 +189,6 @@ public class ChunkRenderer
                             renderThisSide = false;
                         }
 
-                        // Left face
-                        // Left face
                         // Left face
                         nextH = (x - 1 < 0) // Get next from chunk it is in
                             ? chunk.nextLeft.GetBlock(15, y, z)
@@ -251,9 +237,7 @@ public class ChunkRenderer
                             renderThisSide = false;
                         }
 
-                        // Front face
-                        // Front face
-                        // Front face    
+                        // Front face   
                         nextH = (z + 1 < 16) // Get next from chunk it is in
                             ? chunk.GetBlock(x, y, z + 1)
                             : chunk.nextFront.GetBlock(x, y, 0);
@@ -284,9 +268,7 @@ public class ChunkRenderer
                             renderThisSide = true;
                         }
 
-                        // Front face
-                        // Front face
-                        // Front face    
+                        // Front face  
                         if (renderThisSide)
                         {
                             verts.Add(new Vector3(x, y, z + 1));
@@ -302,8 +284,6 @@ public class ChunkRenderer
                             renderThisSide = false;
                         }
 
-                        // Back face
-                        // Back face
                         // Back face
                         nextH = (z - 1 < 0) // Get next from chunk it is in                         
                             ? chunk.nextBack.GetBlock(x, y, 15)
@@ -335,8 +315,6 @@ public class ChunkRenderer
                             renderThisSide = true;
                         }
 
-                        // Back face
-                        // Back face
                         // Back face
                         if (renderThisSide)
                         {

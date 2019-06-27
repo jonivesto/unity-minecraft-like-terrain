@@ -66,7 +66,7 @@ public class TerrainGenerator
                     Biome biome = GetBiomeAt(x + worldX, z + worldZ, ground);
 
                     // Replace with biome surface material
-                    for (int s = 0; s < Config.SURFACE_DEPTH; s++)
+                    for (int s = 0; s < biome.surfaceDepth; s++)
                     {
                         if(y == ground - s)
                         {
@@ -117,12 +117,16 @@ public class TerrainGenerator
         }
         else
         {
-            double h = Mathf.PerlinNoise(x / Config.HUMIDITY_MAP_SCALE, y / Config.HUMIDITY_MAP_SCALE);
-            double t = Mathf.PerlinNoise(x / Config.TEMPERATURE_MAP_SCALE, y / Config.TEMPERATURE_MAP_SCALE);
+            float h = Mathf.PerlinNoise(x / Config.HUMIDITY_MAP_SCALE, y / Config.HUMIDITY_MAP_SCALE);
+            float t = Mathf.PerlinNoise(x / Config.TEMPERATURE_MAP_SCALE, y / Config.TEMPERATURE_MAP_SCALE);
 
-            //TODO: set biomes with t and h
-
-            if (h>0.5&&t>0.5)
+            if (h < 0.52f && t < 0.52f && h > 0.48f && t > 0.48f)
+            {
+                return (Mathf.PerlinNoise(x/ 4f, y/ 4f) > 0.5f) 
+                    ? Config.BIOMES[2] 
+                    : Config.BIOMES[1];
+            }
+            if (h > 0.5f && t > 0.5f)
             {
                 return Config.BIOMES[2];
             }

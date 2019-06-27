@@ -1,11 +1,18 @@
 ﻿public abstract class Biome
 {
+    // Biome's display name
     public string biomeName;
 
-    public float heightMultiplier = 50f;
-    public float hillMultiplier;
-    public float terrainMultiplier = 10f;
-    public int surfaceBlock = 1;
+    // ID of the block used to cover the stone terrain
+    // Default is stone block 
+    public int surfaceBlock = 1; 
+
+    // Block layers covering the stone terrain
+    public int surfaceDepth = 4;
+
+    // Decorators for this biome type. (like trees and rocks)
+    // Default is none
+    public byte[] activeDecorators = new byte[]{};
 
 
     // Returns biome's index in Config.BIOMES[]
@@ -17,5 +24,15 @@
         }
 
         return 0;
+    }
+
+    // Runs all decorators
+    // Use seed to always get same result when generating
+    public void RunDecorators(Seed seed, int x, int z)
+    {
+        foreach (byte decoratorId in activeDecorators)
+        {
+            Config.BIOME_DECORATORS[decoratorId].Decorate(seed, x, z);
+        }
     }
 }
