@@ -117,6 +117,7 @@ public class TerrainGenerator
         }
         else
         {
+            /*
             float h = Mathf.PerlinNoise(x / Config.HUMIDITY_MAP_SCALE, y / Config.HUMIDITY_MAP_SCALE);
             float t = Mathf.PerlinNoise(x / Config.TEMPERATURE_MAP_SCALE, y / Config.TEMPERATURE_MAP_SCALE);
 
@@ -130,7 +131,7 @@ public class TerrainGenerator
             {
                 return Config.BIOMES[2];
             }
-
+            */
             return Config.BIOMES[1];
         }
     }

@@ -5,9 +5,13 @@ public class ChunkRenderer
 {
     public void Render(Chunk chunk)
     {
-        List<Vector3> verts = new List<Vector3>();
-        List<int> tris = new List<int>();
-        List<Vector2> uvs = new List<Vector2>();
+        List<Vector3> blockVerts = new List<Vector3>();
+        List<int> blockTris = new List<int>();
+        List<Vector2> blockUvs = new List<Vector2>();
+
+        List<Vector3> liquidVerts = new List<Vector3>();
+        List<int> liquidTris = new List<int>();
+        List<Vector2> liquidUvs = new List<Vector2>();
 
         for (int x = 0; x < 16; x++)
         {
@@ -25,19 +29,31 @@ public class ChunkRenderer
                         Liquid liquid = Config.ID[currentBlockId] as Liquid;
 
                         // Current is liquid
+                        #region Calculate liquid
                         if (liquid != null)
                         {
-
+                            // Current liquid is still
+                            if (liquid.isStill)
+                            {
+                                // TODO
+                            }
+                            // Current liquid is flowing
+                            else
+                            {
+                                // TODO
+                            }
                         }
+                        #endregion
 
                         // Current is not liquid
                         else
                         {
-
+                            // TODO
                         }
                     }
 
                     // Current is a block
+                    #region Calculate block
                     else
                     {
                         bool renderThisSide = false;
@@ -80,15 +96,15 @@ public class ChunkRenderer
                         // Top face
                         if (renderThisSide)
                         {
-                            verts.Add(new Vector3(x, y + 1, z));
-                            verts.Add(new Vector3(x + 1, y + 1, z));
-                            verts.Add(new Vector3(x + 1, y + 1, z + 1));
-                            verts.Add(new Vector3(x, y + 1, z + 1));
+                            blockVerts.Add(new Vector3(x, y + 1, z));
+                            blockVerts.Add(new Vector3(x + 1, y + 1, z));
+                            blockVerts.Add(new Vector3(x + 1, y + 1, z + 1));
+                            blockVerts.Add(new Vector3(x, y + 1, z + 1));
 
-                            int vCount = verts.Count - 4;
-                            AddTriangles(tris, vCount, true);
+                            int vCount = blockVerts.Count - 4;
+                            AddTriangles(blockTris, vCount, true);
 
-                            AddUvs(uvs, currentBlockId, 0);
+                            AddUvs(blockUvs, currentBlockId, 0);
 
                             renderThisSide = false;
                         }
@@ -129,15 +145,15 @@ public class ChunkRenderer
                         // Bottom face
                         if (renderThisSide)
                         {
-                            verts.Add(new Vector3(x, y, z));
-                            verts.Add(new Vector3(x + 1, y, z));
-                            verts.Add(new Vector3(x + 1, y, z + 1));
-                            verts.Add(new Vector3(x, y, z + 1));
+                            blockVerts.Add(new Vector3(x, y, z));
+                            blockVerts.Add(new Vector3(x + 1, y, z));
+                            blockVerts.Add(new Vector3(x + 1, y, z + 1));
+                            blockVerts.Add(new Vector3(x, y, z + 1));
 
-                            int vCount = verts.Count - 4;
-                            AddTriangles(tris, vCount, false);
+                            int vCount = blockVerts.Count - 4;
+                            AddTriangles(blockTris, vCount, false);
 
-                            AddUvs(uvs, currentBlockId, 1);
+                            AddUvs(blockUvs, currentBlockId, 1);
 
                             renderThisSide = false;
                         }
@@ -176,15 +192,15 @@ public class ChunkRenderer
                         // Right face      
                         if (renderThisSide)
                         {
-                            verts.Add(new Vector3(x + 1, y, z));
-                            verts.Add(new Vector3(x + 1, y + 1, z));
-                            verts.Add(new Vector3(x + 1, y + 1, z + 1));
-                            verts.Add(new Vector3(x + 1, y, z + 1));
+                            blockVerts.Add(new Vector3(x + 1, y, z));
+                            blockVerts.Add(new Vector3(x + 1, y + 1, z));
+                            blockVerts.Add(new Vector3(x + 1, y + 1, z + 1));
+                            blockVerts.Add(new Vector3(x + 1, y, z + 1));
 
-                            int vCount = verts.Count - 4;
-                            AddTriangles(tris, vCount, false);
+                            int vCount = blockVerts.Count - 4;
+                            AddTriangles(blockTris, vCount, false);
 
-                            AddUvs(uvs, currentBlockId, 2);
+                            AddUvs(blockUvs, currentBlockId, 2);
 
                             renderThisSide = false;
                         }
@@ -224,15 +240,15 @@ public class ChunkRenderer
 
                         if (renderThisSide)
                         {
-                            verts.Add(new Vector3(x, y, z));
-                            verts.Add(new Vector3(x, y + 1, z));
-                            verts.Add(new Vector3(x, y + 1, z + 1));
-                            verts.Add(new Vector3(x, y, z + 1));
+                            blockVerts.Add(new Vector3(x, y, z));
+                            blockVerts.Add(new Vector3(x, y + 1, z));
+                            blockVerts.Add(new Vector3(x, y + 1, z + 1));
+                            blockVerts.Add(new Vector3(x, y, z + 1));
 
-                            int vCount = verts.Count - 4;
-                            AddTriangles(tris, vCount, true);
+                            int vCount = blockVerts.Count - 4;
+                            AddTriangles(blockTris, vCount, true);
 
-                            AddUvs(uvs, currentBlockId, 3);
+                            AddUvs(blockUvs, currentBlockId, 3);
 
                             renderThisSide = false;
                         }
@@ -271,15 +287,15 @@ public class ChunkRenderer
                         // Front face  
                         if (renderThisSide)
                         {
-                            verts.Add(new Vector3(x, y, z + 1));
-                            verts.Add(new Vector3(x, y + 1, z + 1));
-                            verts.Add(new Vector3(x + 1, y + 1, z + 1));
-                            verts.Add(new Vector3(x + 1, y, z + 1));
+                            blockVerts.Add(new Vector3(x, y, z + 1));
+                            blockVerts.Add(new Vector3(x, y + 1, z + 1));
+                            blockVerts.Add(new Vector3(x + 1, y + 1, z + 1));
+                            blockVerts.Add(new Vector3(x + 1, y, z + 1));
 
-                            int vCount = verts.Count - 4;
-                            AddTriangles(tris, vCount, true);
+                            int vCount = blockVerts.Count - 4;
+                            AddTriangles(blockTris, vCount, true);
 
-                            AddUvs(uvs, currentBlockId, 4);
+                            AddUvs(blockUvs, currentBlockId, 4);
 
                             renderThisSide = false;
                         }
@@ -318,43 +334,55 @@ public class ChunkRenderer
                         // Back face
                         if (renderThisSide)
                         {
-                            verts.Add(new Vector3(x, y, z));
-                            verts.Add(new Vector3(x, y + 1, z));
-                            verts.Add(new Vector3(x + 1, y + 1, z));
-                            verts.Add(new Vector3(x + 1, y, z));
+                            blockVerts.Add(new Vector3(x, y, z));
+                            blockVerts.Add(new Vector3(x, y + 1, z));
+                            blockVerts.Add(new Vector3(x + 1, y + 1, z));
+                            blockVerts.Add(new Vector3(x + 1, y, z));
 
-                            int vCount = verts.Count - 4;
-                            AddTriangles(tris, vCount, false);
+                            int vCount = blockVerts.Count - 4;
+                            AddTriangles(blockTris, vCount, false);
 
-                            AddUvs(uvs, currentBlockId, 5);
+                            AddUvs(blockUvs, currentBlockId, 5);
 
                             renderThisSide = false;
                         }
 
                     }
-                    
+                    #endregion
 
                 }
             }
         }
 
-        Vector3[] vertices = verts.ToArray();
-        int[] triangles = tris.ToArray();
-        Vector2[] mapping = uvs.ToArray();
-
-
-        Mesh mesh = chunk.gameObject.GetComponent<MeshFilter>().mesh;
+        // Build the main block mesh
+        Mesh mesh = chunk.gameObject.AddComponent<MeshFilter>().mesh;
         mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-        mesh.uv = mapping;
+        mesh.vertices = blockVerts.ToArray();
+        mesh.triangles = blockTris.ToArray();
+        mesh.uv = blockUvs.ToArray();
         mesh.Optimize();
         mesh.RecalculateNormals();
 
-        chunk.gameObject.GetComponent<MeshCollider>().sharedMesh = mesh;
+        chunk.gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
+        MeshRenderer renderer = chunk.gameObject.AddComponent<MeshRenderer>();
+        renderer.material = new Material(Resources.Load<Material>("Materials/Blocks"));
 
-        MeshRenderer renderer = chunk.gameObject.GetComponent<MeshRenderer>();
-        renderer.material = new Material(Resources.Load<Material>("Materials/Terrain"));
+        // Build liquids
+        GameObject chunkLiquids = new GameObject("Liquids");
+        chunkLiquids.transform.position = chunk.transform.position;
+        chunkLiquids.transform.SetParent(chunk.transform);
+
+        mesh = chunkLiquids.AddComponent<MeshFilter>().mesh;
+        mesh.Clear();
+        mesh.vertices = liquidVerts.ToArray();
+        mesh.triangles = liquidTris.ToArray();
+        mesh.uv = liquidUvs.ToArray();
+        mesh.Optimize();
+        mesh.RecalculateNormals();
+
+        renderer = chunkLiquids.AddComponent<MeshRenderer>();
+        renderer.material = new Material(Resources.Load<Material>("Materials/Liquids"));
+
     }
 
     /*

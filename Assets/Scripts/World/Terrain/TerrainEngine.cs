@@ -33,7 +33,7 @@ public class TerrainEngine : MonoBehaviour
         save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
-        SetDistances(7, 1);
+        SetDistances(3, 1);
         LoadPosition();
     }
 
@@ -169,13 +169,8 @@ public class TerrainEngine : MonoBehaviour
             if (GetChunk(chunkTransform) == null)
             {
                 GameObject obj = new GameObject(chunkTransform.ToString());
-
                 obj.transform.parent = parentOfChunks;
                 obj.transform.position = chunkTransform.GetBlockPosition();
-
-                obj.AddComponent<MeshFilter>();
-                obj.AddComponent<MeshRenderer>();
-                obj.AddComponent<MeshCollider>();
 
                 chunk = obj.AddComponent<Chunk>();
                 chunk.SetTransform(chunkTransform);        
