@@ -35,7 +35,57 @@ public class ChunkRenderer
                             // Current liquid is still
                             if (liquid.isStill)
                             {
-                                // TODO
+                                bool renderThisSide = false;
+
+                                // Top face
+                                if (y + 1 < 256) // Next in array bounds
+                                {
+                                    int next = chunk.GetBlock(x, y + 1, z);
+
+                                    if (next == 0) // Next is air
+                                    {
+                                        renderThisSide = true;
+                                    }                                   
+                                    else if (Config.ID[next] as Block != null) // Next is a block
+                                    {
+                                        Block nextBlock = Config.ID[next] as Block;
+
+                                        if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                                        {
+                                            renderThisSide = true;
+                                        }
+                                    }
+                                    else // Next is not a block
+                                    {
+                                        if (next != currentBlockId) // Next is not same liquid
+                                        {
+                                            renderThisSide = true;
+                                        }
+                                    }
+                                }
+                                else // Next is out of array bounds
+                                {
+                                    renderThisSide = true;
+                                }
+
+                                // Top face
+                                if (renderThisSide)
+                                {
+                                    liquidVerts.Add(new Vector3(x, y + 0.9f, z));
+                                    liquidVerts.Add(new Vector3(x + 1, y + 0.9f, z));
+                                    liquidVerts.Add(new Vector3(x + 1, y + 0.9f, z + 1));
+                                    liquidVerts.Add(new Vector3(x, y + 0.9f, z + 1));
+
+                                    int vCount = liquidVerts.Count - 4;
+                                    AddTriangles(liquidTris, vCount, true);
+
+                                    AddUvs(liquidUvs, currentBlockId, 0);
+
+                                    renderThisSide = false;
+                                }
+
+                                // TODO: Other faces for liquid
+
                             }
                             // Current liquid is flowing
                             else
@@ -399,8 +449,20 @@ public class ChunkRenderer
         // One texture unit (1/16=0.0625)
         const float unit = 0.0625f;
 
+        // Choose block or liquid
         // Get texture coordinates for this side
-        Vector2 uv = ((Block)Config.ID[id]).GetUV(side);
+        Block b = Config.ID[id] as Block;
+        Vector2 uv;
+        if (b != null)
+        {
+            uv = b.GetUV(side);
+        }
+        else
+        {
+            Liquid l = Config.ID[id] as Liquid;
+            uv = l.GetUV(side);
+        }
+        
 
         // Texture coordinates in the 16x16 grid
         float x = uv.x;
