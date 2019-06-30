@@ -8,7 +8,7 @@ public class BirchLeavesBlock : Block
         blockTransparency = BlockTransparency.ShowNext;
 
         UVs = new Vector2[] {
-            new Vector2(8,3)//, // Top
+            new Vector2(2,14)//, // Top
             //new Vector2(2,15), // Bottom
             //new Vector2(5,15), // Right
             //new Vector2(0,15), // Left

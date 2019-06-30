@@ -34,6 +34,7 @@ public class TerrainGenerator
             for (int z = 0; z < CHUNK_Z; z++) // local z
             {
                 int ground = GetGroundAt(x + worldX, z + worldZ);
+                Biome biome = GetBiomeAt(x + worldX, z + worldZ, ground);
 
                 for (int y = 0; y < CHUNK_Y; y++) // local y
                 {
@@ -62,8 +63,7 @@ public class TerrainGenerator
                         }
                        
                     }
-
-                    Biome biome = GetBiomeAt(x + worldX, z + worldZ, ground);
+                  
 
                     // Replace with biome surface material
                     for (int s = 0; s < biome.surfaceDepth; s++)
@@ -73,7 +73,11 @@ public class TerrainGenerator
                             chunk.SetBlock(x, y, z, biome.surfaceBlock); // Biome surcafe block
                         }
                     }
+                  
                 }
+
+                // Run decorators
+                biome.RunDecorators(seed, chunk, x, z, ground);
             }
         }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Decorator
 {
-    internal void Decorate(Seed seed, int x, int z)
+    internal virtual void Decorate(Seed seed, Chunk chunk, int x, int z, int ground)
     {
         //TODO
     }

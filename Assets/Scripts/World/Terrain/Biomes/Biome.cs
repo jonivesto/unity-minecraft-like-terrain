@@ -28,11 +28,11 @@
 
     // Runs all decorators
     // Use seed to always get same result when generating
-    public void RunDecorators(Seed seed, int x, int z)
+    public void RunDecorators(Seed seed, Chunk chunk, int x, int z, int ground)
     {
         foreach (byte decoratorId in activeDecorators)
         {
-            Config.BIOME_DECORATORS[decoratorId].Decorate(seed, x, z);
+            Config.BIOME_DECORATORS[decoratorId].Decorate(seed, chunk, x, z, ground);
         }
     }
 }
