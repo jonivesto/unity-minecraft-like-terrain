@@ -25,13 +25,6 @@
         new           SwampBiome(),      // 2
     };
 
-    // List of biome decorators
-    // Index is decorator ID   
-    public static Decorator[] BIOME_DECORATORS =
-    {
-        new  BirchThreeDecorator(),     // 0
-        new        RockDecorator(),     // 1
-    };
 
     // Debug
     public static bool SAVE_CHUNKS_ON_GENERATE = false;

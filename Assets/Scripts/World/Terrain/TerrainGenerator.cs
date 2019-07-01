@@ -1,4 +1,5 @@
 ﻿using NoiseTest;
+using System.Linq;
 using UnityEngine;
 
 public class TerrainGenerator
@@ -73,16 +74,42 @@ public class TerrainGenerator
                             chunk.SetBlock(x, y, z, biome.surfaceBlock); // Biome surcafe block
                         }
                     }
-                  
-                }
 
-                // Run decorators
-                biome.RunDecorators(seed, chunk, x, z, ground);
+                }
             }
         }
 
-    }
+        // Trees
+        System.Random d = new System.Random(chunk.chunkTransform.x + chunk.chunkTransform.z);
+        int rx = d.Next(16), rz = d.Next(16);       
+        int rGround = GetGroundAt(rx + worldX, rz + worldZ);
+        Biome rBiome = GetBiomeAt(rx, rz, rGround);
+        int rBlock = chunk.GetBlock(rx, rGround, rz);
 
+        for (int id = 0; id < rBiome.treesPerChunk; id++)
+        {
+
+            rx = d.Next(16);
+            rz = d.Next(16);
+            rGround = GetGroundAt(rx + worldX, rz + worldZ);
+            rBiome = GetBiomeAt(rx, rz, rGround);
+            rBlock = chunk.GetBlock(rx, rGround, rz);
+
+            if (rBlock == 9) // 9 = grass
+            {
+                for (int i = 1; i < 5; i++)
+                {
+                    chunk.SetBlock(rx, rGround + i, rz, 10);
+                }
+                chunk.SetBlock(rx, rGround + 5, rz, 4);
+            }
+        }
+        
+
+        
+
+
+    }
 
     private int GetGroundAt(int x, int y)
     {
@@ -121,22 +148,25 @@ public class TerrainGenerator
         }
         else
         {
-            /*
-            float h = Mathf.PerlinNoise(x / Config.HUMIDITY_MAP_SCALE, y / Config.HUMIDITY_MAP_SCALE);
-            float t = Mathf.PerlinNoise(x / Config.TEMPERATURE_MAP_SCALE, y / Config.TEMPERATURE_MAP_SCALE);
-
-            if (h < 0.52f && t < 0.52f && h > 0.48f && t > 0.48f)
-            {
-                return (Mathf.PerlinNoise(x/ 4f, y/ 4f) > 0.5f) 
-                    ? Config.BIOMES[2] 
-                    : Config.BIOMES[1];
-            }
-            if (h > 0.5f && t > 0.5f)
-            {
-                return Config.BIOMES[2];
-            }
-            */
             return Config.BIOMES[1];
         }
     }
+
+    private Biome GetDominantBiome(Chunk chunk)
+    {
+        int wx = chunk.chunkTransform.x * CHUNK_X;
+        int wz = chunk.chunkTransform.z * CHUNK_Z;
+
+        int[] checks = new int[5];
+
+        checks[0] = GetBiomeAt(0 + wx, 0 + wz, GetGroundAt(0 + wx, 0 + wz)).GetID();
+        checks[1] = GetBiomeAt(0 + wx, 15 + wz, GetGroundAt(0 + wx, 15 + wz)).GetID();
+        checks[2] = GetBiomeAt(15 + wx, 0 + wz, GetGroundAt(15 + wx, 0 + wz)).GetID();
+        checks[3] = GetBiomeAt(15 + wx, 15 + wz, GetGroundAt(15 + wx, 15 + wz)).GetID();
+        checks[4] = GetBiomeAt(7 + wx, 7 + wz, GetGroundAt(7 + wx, 7 + wz)).GetID();
+
+        return Config.BIOMES[checks.GroupBy(value => value)
+                                .OrderByDescending(group => group.Count()).First().First()];
+    }
+
 }

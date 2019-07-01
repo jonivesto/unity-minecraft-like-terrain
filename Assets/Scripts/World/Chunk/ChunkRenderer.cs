@@ -84,7 +84,51 @@ public class ChunkRenderer
                                     renderThisSide = false;
                                 }
 
+                                // Bottom face
+                                if (y - 1 >= 0) // Next in array bounds
+                                {
+                                    int next = chunk.GetBlock(x, y - 1, z);
+
+                                    if (next == 0) // Next is air
+                                    {
+                                        renderThisSide = true;
+                                    }
+                                    else if (Config.ID[next] as Block != null) // Next is a block
+                                    {
+                                        Block nextBlock = Config.ID[next] as Block;
+
+                                        if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                                        {
+                                            renderThisSide = true;
+                                        }
+                                    }
+                                    else // Next is not a block
+                                    {
+                                        if (next != currentBlockId) // Next is not same liquid
+                                        {
+                                            renderThisSide = true;
+                                        }
+                                    }
+                                }
+
+                                // Bottom face
+                                if (renderThisSide)
+                                {
+                                    liquidVerts.Add(new Vector3(x, y, z));
+                                    liquidVerts.Add(new Vector3(x + 1, y, z));
+                                    liquidVerts.Add(new Vector3(x + 1, y, z + 1));
+                                    liquidVerts.Add(new Vector3(x, y, z + 1));
+
+                                    int vCount = liquidVerts.Count - 4;
+                                    AddTriangles(liquidTris, vCount, false);
+
+                                    AddUvs(blockUvs, currentBlockId, 1);
+
+                                    renderThisSide = false;
+                                }
+
                                 // TODO: Other faces for liquid
+
 
                             }
                             // Current liquid is flowing

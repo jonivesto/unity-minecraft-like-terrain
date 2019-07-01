@@ -14,6 +14,9 @@
     // Default is none
     public byte[] activeDecorators = new byte[]{};
 
+    // How many times the tree decorator will try to place trees in one chunk
+    public int treesPerChunk = 3;
+
 
     // Returns biome's index in Config.BIOMES[]
     public int GetID()
@@ -26,13 +29,5 @@
         return 0;
     }
 
-    // Runs all decorators
-    // Use seed to always get same result when generating
-    public void RunDecorators(Seed seed, Chunk chunk, int x, int z, int ground)
-    {
-        foreach (byte decoratorId in activeDecorators)
-        {
-            Config.BIOME_DECORATORS[decoratorId].Decorate(seed, chunk, x, z, ground);
-        }
-    }
+    
 }
