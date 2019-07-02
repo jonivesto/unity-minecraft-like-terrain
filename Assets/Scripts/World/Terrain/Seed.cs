@@ -28,7 +28,7 @@ public class Seed
         get = new Random(IntegerAt(0));
     }
 
-    private int IntegerAt(int index)
+    public int IntegerAt(int index)
     {
         string temp = "";
         int i = 0;
@@ -56,5 +56,10 @@ public class Seed
     public long ToLong()
     {
         return Convert.ToInt64(origin);
+    }
+
+    public Random ChunkBuild(ChunkTransform chunkTransform)
+    {
+        return new Random(IntegerAt(3) + IntegerAt(1) + chunkTransform.x + chunkTransform.z *2);
     }
 }

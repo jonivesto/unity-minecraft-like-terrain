@@ -12,20 +12,20 @@ public class ChunkTransform
 
     public ChunkTransform(int chunkX, int chunkZ)
     {
-        this.x = chunkX;
-        this.z = chunkZ;
+        x = chunkX;
+        z = chunkZ;
     }
 
     public ChunkTransform(Vector2Int position)
     {
-        this.x = position.x;
-        this.z = position.y;
+        x = position.x;
+        z = position.y;
     }
 
     public ChunkTransform(float blockX, float blockZ)
     {     
-        this.x = Mathf.FloorToInt(blockX / (float)SIZE_X);
-        this.z = Mathf.FloorToInt(blockZ / (float)SIZE_Z);  
+        x = Mathf.FloorToInt(blockX / SIZE_X);
+        z = Mathf.FloorToInt(blockZ / SIZE_Z);  
     }
 
     public bool PositionEquals(int x, int z)
@@ -63,7 +63,7 @@ public class ChunkTransform
 
     public new string ToString()
     {
-        return "Chunk(" + x + ", " + z + ")";
+        return x + ", " + z;
     }
 
     internal ChunkTransform GetRight()

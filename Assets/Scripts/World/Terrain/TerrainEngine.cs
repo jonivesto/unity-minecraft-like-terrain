@@ -16,6 +16,8 @@ public class TerrainEngine : MonoBehaviour
     Coroutine load;
     Save save;
 
+    Transform parentOfChunks;
+
     int renderDistance;
     int preLoadDistance;
     int unloadDistance;
@@ -33,7 +35,9 @@ public class TerrainEngine : MonoBehaviour
         save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
-        SetDistances(3, 1);
+        parentOfChunks = GameObject.Find("/Environment/World").transform;
+
+        SetDistances(2, 1);
         LoadPosition();
     }
 
@@ -159,7 +163,7 @@ public class TerrainEngine : MonoBehaviour
         System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
         Debug.Log("Loading chunks. (Estimated: "+ 9.8 * (loadDimension * loadDimension) / 100+ "s) (Total: " + loadDimension * loadDimension + ")");
 
-        Transform parentOfChunks = GameObject.Find("/Environment/World").transform;
+        
 
         foreach (ChunkTransform chunkTransform in loadedChunks)
         {
@@ -173,7 +177,7 @@ public class TerrainEngine : MonoBehaviour
                 obj.transform.position = chunkTransform.GetBlockPosition();
 
                 chunk = obj.AddComponent<Chunk>();
-                chunk.SetTransform(chunkTransform);        
+                chunk.SetTransform(chunkTransform);
             }
             else
             {
@@ -188,6 +192,7 @@ public class TerrainEngine : MonoBehaviour
                 {
                     // Load chunk from file
                     chunk.chunkData = save.LoadChunk(chunkTransform);
+                    chunk.decorated = true;
                 }
                 else
                 {
@@ -200,28 +205,31 @@ public class TerrainEngine : MonoBehaviour
                     
                 }
 
-                chunk.generated = true;
+                chunk.generated = true;                
             }
 
 
             // Destroy chunks that are too far away
-            for (int i = 0; i < parentOfChunks.childCount; ++i)
+            if(Config.UNLOAD_FAR_CHUNKS)
             {
-                // Chunk's world position
-                Vector3 t = parentOfChunks.GetChild(i).position;
-
-                if (Vector2Int.Distance(playerChunk * 16, new Vector2Int((int)t.x, (int)t.z)) > unloadDistance * 16)
+                for (int i = 0; i < parentOfChunks.childCount; ++i)
                 {
-                    Chunk unload = parentOfChunks.GetChild(i).gameObject.GetComponent<Chunk>();
+                    // Chunk's world position
+                    Vector3 t = parentOfChunks.GetChild(i).position;
 
-                    // Save if there are unsaved changes
-                    if (chunk.unsaved)
+                    if (Vector2Int.Distance(playerChunk * 16, new Vector2Int((int)t.x, (int)t.z)) > unloadDistance * 16)
                     {
-                        save.SaveChunk(unload);
-                    }
+                        Chunk unload = parentOfChunks.GetChild(i).gameObject.GetComponent<Chunk>();
 
-                    // Unload
-                    Destroy(unload.gameObject);
+                        // Save if there are unsaved changes
+                        if (chunk.unsaved)
+                        {
+                            save.SaveChunk(unload);
+                        }
+
+                        // Unload
+                        Destroy(unload.gameObject);
+                    }
                 }
             }
 
@@ -238,11 +246,6 @@ public class TerrainEngine : MonoBehaviour
         {
             Chunk chunk = GetChunk(chunkTransform);
 
-            if (chunk == null)
-            {
-                continue;
-            }
-
             chunk.SetNext(
                 GetChunk(chunkTransform.GetRight()),
                 GetChunk(chunkTransform.GetLeft()),
@@ -251,14 +254,17 @@ public class TerrainEngine : MonoBehaviour
             );
         }
 
-        Debug.Log("Chunks generated. ("+ stopwatch.ElapsedMilliseconds + "ms) Rendering..");
-
-        // Render chunks
+        // Decorate & Render chunks
         for (int i = 0; i < renderedChunks.Length; i++)
         {
             if(GetChunk(renderedChunks[i]) != null)
             {
                 Chunk chunk = GetChunk(renderedChunks[i]);
+
+                if(!chunk.decorated && !chunk.rendered)
+                {
+                    terrainGenerator.Decorate(chunk);
+                }
 
                 if (!chunk.rendered && chunk.generated)
                 {
@@ -298,11 +304,11 @@ public class TerrainEngine : MonoBehaviour
     // Returns null if the chunk is not loaded
     private Chunk GetChunk(ChunkTransform chunkTransform)
     {
-        GameObject obj = GameObject.Find("/Environment/World/" + chunkTransform.ToString());
+        Transform t = parentOfChunks.transform.Find(chunkTransform.ToString());
 
-        if (obj == null) return null;
+        if (t == null) return null;
 
-        return obj.GetComponent<Chunk>();
+        return t.GetComponent<Chunk>();
     }
 }
 

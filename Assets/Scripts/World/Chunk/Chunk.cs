@@ -3,13 +3,14 @@
 public class Chunk : MonoBehaviour
 {
     public bool generated = false;
+    public bool decorated = false;
     public bool rendered = false;
     public bool unsaved = false;
 
     internal Chunk nextRight, nextLeft, nextFront, nextBack;
     internal ChunkData chunkData;
-    internal ChunkTransform chunkTransform;   
-    
+    internal ChunkTransform chunkTransform;
+
 
     public void SetNext(Chunk right, Chunk left, Chunk front, Chunk back)
     {
@@ -34,4 +35,5 @@ public class Chunk : MonoBehaviour
     {
         return chunkData.blocks[x, y, z];
     }
+
 }

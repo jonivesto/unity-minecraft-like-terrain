@@ -28,7 +28,8 @@
 
     // Debug
     public static bool SAVE_CHUNKS_ON_GENERATE = false;
-    public static bool UPDATE_PLAYER_POSITION = false;
+    public static bool UPDATE_PLAYER_POSITION = true;
+    public static bool UNLOAD_FAR_CHUNKS = false;
 
     // Terrain generation
     public static int SEA_LEVEL = 64;
