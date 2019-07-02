@@ -9,6 +9,7 @@ public class TerrainGenerator
     const int CHUNK_Y = 256;
     const int CHUNK_Z = 16;
 
+    TerrainEngine terrainEngine;
     Seed seed;
     Chunk chunk;
     OpenSimplexNoise baseHeightMap, hillsHeightMap, hillsMap, humidityMap, temperatureMap;
@@ -17,6 +18,7 @@ public class TerrainGenerator
 
     public TerrainGenerator(TerrainEngine terrainEngine)
     {
+        this.terrainEngine = terrainEngine;
         seed = terrainEngine.seed;
 
         // Noise maps
@@ -117,6 +119,7 @@ public class TerrainGenerator
             // If picked point is grass or dirt (IDs: 9, 8)
             if (block == 9 || block == 8)
             {
+                /*
                 // Check surrounding blocks
                 // Calcel this three if there is no free space
                 int[] patternX = new int[] {-1,-1,-1,0,1,1, 1, 0, 0,0,-2,2};
@@ -148,7 +151,7 @@ public class TerrainGenerator
                     dontCreate = false;
                     continue;
                 }
-                
+                */
 
                 // Create tree
                 for (int i = 1; i < treeHeight; i++)
@@ -156,6 +159,16 @@ public class TerrainGenerator
                     chunk.SetBlock(x, ground + i, z, biome.woodBlock);
                 }
                 chunk.SetBlock(x, ground + treeHeight, z, biome.leavesBlock);
+                //
+                //
+                int[] leavesX = new int[] { -1, -1, 1, 1, 0,0,-1,1,     -1, -1, 1, 1, 0, 0, -1, 1 ,     -1, -1, 1, 1, 0, 0, -1, 1};
+                int[] leavesY = new int[] { 0, 0, 0, 0, 0, 0, 0, 0,     -1, -1, -1, -1, -1, -1, -1, -1,  -2, -2, -2, -2, -2, -2, -2, -2, };
+                int[] leavesZ = new int[] { -1, 1, -1, 1, 1,-1,0,0,      -1, 1, -1, 1, 1, -1, 0, 0 ,      -1, 1, -1, 1, 1, -1, 0, 0};
+                for (int i = 0; i < leavesX.Length; i++)
+                {
+                    terrainEngine.WorldSetBlock(x + worldX +leavesX[i], ground + treeHeight + leavesY[i], z + worldZ + leavesZ[i], biome.leavesBlock);
+                }
+                
 
             }
 

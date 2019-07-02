@@ -37,7 +37,7 @@ public class TerrainEngine : MonoBehaviour
 
         parentOfChunks = GameObject.Find("/Environment/World").transform;
 
-        SetDistances(2, 1);
+        SetDistances(4, 1);
         LoadPosition();
     }
 
@@ -309,6 +309,44 @@ public class TerrainEngine : MonoBehaviour
         if (t == null) return null;
 
         return t.GetComponent<Chunk>();
+    }
+
+    // Same as the method above, but with different params
+    private Chunk GetChunk(int x, int z)
+    {
+        Transform t = parentOfChunks.transform.Find(x + ", " + z);
+
+        if (t == null) return null;
+
+        return t.GetComponent<Chunk>();
+    }
+
+    public void WorldSetBlock(int x, int y, int z, int blockId)
+    {
+        // Target chunk
+        Chunk chunk = GetChunk(x / 16, z / 16);
+
+        // Local pos
+        x = x % 16;
+        z = z % 16;
+
+        if (x < 0)
+        {
+            x = 16 + x;
+            chunk = chunk.nextLeft;
+        }
+
+        if (z < 0)
+        {
+            z = 16 + z;
+            chunk = chunk.nextBack;
+        }
+
+        if (chunk != null)
+        {
+            chunk.SetBlock(x, y, z, blockId);
+        }
+
     }
 }
 
