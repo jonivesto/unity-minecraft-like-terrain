@@ -37,14 +37,14 @@ public class TerrainEngine : MonoBehaviour
 
         parentOfChunks = GameObject.Find("/Environment/World").transform;
 
-        SetDistances(4, 1);
+        SetDistances(4); // 4, 6, 8, 10, 12...
         LoadPosition();
     }
 
     // Set all distances to the according to the renderdistance
     // Call this on init
     // call this on render distance setting changes
-    void SetDistances(int renderDistance, int preLoadDistance)
+    void SetDistances(int renderDistance)
     {
         this.renderDistance = renderDistance;
 
@@ -54,7 +54,7 @@ public class TerrainEngine : MonoBehaviour
             renderDistance++;
         }
 
-        this.preLoadDistance = renderDistance + preLoadDistance;
+        preLoadDistance = renderDistance + 1;
 
         // Distance required between player and anchor to start new chunk to load
         sleepDistance = renderDistance / 2f;
@@ -64,7 +64,7 @@ public class TerrainEngine : MonoBehaviour
         unloadDistance = renderDistance * 3;
 
         // x and y lenghts of the loadedChunks[] array
-        loadDimension = renderDistance * 2 + 1;
+        loadDimension = preLoadDistance * 2 + 1;
     }
 
     public void UpdatePosition(Vector3 position, Vector3 rotation)
@@ -111,7 +111,7 @@ public class TerrainEngine : MonoBehaviour
         // Current position when drawing the spiral
         int x, y;
         
-        for (int layer = 1; layer <= renderDistance + preLoadDistance; layer++) // Spiral layers aroud the player
+        for (int layer = 1; layer < preLoadDistance; layer++) // Spiral layers aroud the player
         {
             // Set starting point for each layer
             x = playerChunk.x;
@@ -161,7 +161,7 @@ public class TerrainEngine : MonoBehaviour
     {
         // Debug
         System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        Debug.Log("Loading chunks. (Estimated: "+ 9.8 * (loadDimension * loadDimension) / 100+ "s) (Total: " + loadDimension * loadDimension + ")");
+        Debug.Log("Loading chunks. (Total: " + loadDimension * loadDimension + ")");
 
         
 
@@ -338,14 +338,18 @@ public class TerrainEngine : MonoBehaviour
 
         if (z < 0)
         {
+            //if (chunk.nextBack == null) print(chunk + ", " + z);
             z = 16 + z;
+            
             chunk = chunk.nextBack;
+            
         }
 
         if (chunk != null)
         {
             chunk.SetBlock(x, y, z, blockId);
         }
+        
 
     }
 }
