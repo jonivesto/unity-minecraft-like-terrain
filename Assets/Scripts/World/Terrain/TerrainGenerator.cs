@@ -176,6 +176,7 @@ public class TerrainGenerator
             x = r.Next(16);
             z = r.Next(16);
         }
+
     }
 
     private int GetGroundAt(int x, int y)

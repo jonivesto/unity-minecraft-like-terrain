@@ -418,7 +418,7 @@ public class ChunkRenderer
                                     renderThisSide = true;
                                 }
                             }
-                            
+
                         }
                         else // Next is not a block
                         {
@@ -449,7 +449,7 @@ public class ChunkRenderer
         }
 
         // Build the main block mesh
-        Mesh mesh = chunk.gameObject.AddComponent<MeshFilter>().mesh;
+        Mesh mesh = chunk.gameObject.GetComponent<MeshFilter>().mesh;
         mesh.Clear();
         mesh.vertices = blockVerts.ToArray();
         mesh.triangles = blockTris.ToArray();
@@ -457,16 +457,13 @@ public class ChunkRenderer
         mesh.Optimize();
         mesh.RecalculateNormals();
 
-        chunk.gameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
-        MeshRenderer renderer = chunk.gameObject.AddComponent<MeshRenderer>();
+        chunk.gameObject.GetComponent<MeshCollider>().sharedMesh = mesh;
+        MeshRenderer renderer = chunk.gameObject.GetComponent<MeshRenderer>();
         renderer.material = new Material(Resources.Load<Material>("Materials/Blocks"));
 
         // Build liquids
-        GameObject chunkLiquids = new GameObject("Liquids");
-        chunkLiquids.transform.position = chunk.transform.position;
-        chunkLiquids.transform.SetParent(chunk.transform);
-
-        mesh = chunkLiquids.AddComponent<MeshFilter>().mesh;
+        GameObject chunkLiquids = chunk.transform.GetChild(0).gameObject;
+        mesh = chunkLiquids.GetComponent<MeshFilter>().mesh;
         mesh.Clear();
         mesh.vertices = liquidVerts.ToArray();
         mesh.triangles = liquidTris.ToArray();
@@ -474,7 +471,7 @@ public class ChunkRenderer
         mesh.Optimize();
         mesh.RecalculateNormals();
 
-        renderer = chunkLiquids.AddComponent<MeshRenderer>();
+        renderer = chunkLiquids.GetComponent<MeshRenderer>();
         renderer.material = new Material(Resources.Load<Material>("Materials/Liquids"));
 
     }

@@ -26,18 +26,19 @@ public class TerrainEngine : MonoBehaviour
     float sleepDistance;
 
 
+
     void Start()
     {
         worldName = "My world";
-        //seed = new Seed();
-        seed = new Seed("0004887891122446");
+        seed = new Seed();
+        //seed = new Seed("0004887891122446");
 
         save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
         parentOfChunks = GameObject.Find("/Environment/World").transform;
 
-        SetDistances(4); // 4, 6, 8, 10, 12...
+        SetDistances(16); // 2, 4, 6, 8, 10, 12...
         LoadPosition();
     }
 
@@ -172,12 +173,25 @@ public class TerrainEngine : MonoBehaviour
             // Create gameObject if not exists
             if (GetChunk(chunkTransform) == null)
             {
+                // Terrain
                 GameObject obj = new GameObject(chunkTransform.ToString());
                 obj.transform.parent = parentOfChunks;
                 obj.transform.position = chunkTransform.GetBlockPosition();
 
+                obj.AddComponent<MeshFilter>();
+                obj.AddComponent<MeshRenderer>();
+                obj.AddComponent<MeshCollider>();
+
                 chunk = obj.AddComponent<Chunk>();
                 chunk.SetTransform(chunkTransform);
+
+                // Liquid
+                GameObject chunkLiquids = new GameObject("Liquids");
+                chunkLiquids.transform.position = chunk.transform.position;
+                chunkLiquids.transform.SetParent(chunk.transform);
+
+                chunkLiquids.AddComponent<MeshFilter>();
+                chunkLiquids.AddComponent<MeshRenderer>();
             }
             else
             {
@@ -241,7 +255,7 @@ public class TerrainEngine : MonoBehaviour
         }
 
 
-        // Init chunks
+        // Link chunks
         foreach (ChunkTransform chunkTransform in renderedChunks)
         {
             Chunk chunk = GetChunk(chunkTransform);
@@ -254,17 +268,33 @@ public class TerrainEngine : MonoBehaviour
             );
         }
 
-        // Decorate & Render chunks
+        // Decorate chunks
+        for (int i = 0; i < renderedChunks.Length; i++)
+        {
+            if (GetChunk(renderedChunks[i]) != null)
+            {
+                Chunk chunk = GetChunk(renderedChunks[i]);
+
+                if (!chunk.decorated && !chunk.rendered)
+                {
+                    terrainGenerator.Decorate(chunk);
+                    chunk.decorated = true;
+                }
+            }
+
+            // If true, decorate only one chunk and continue on next frame
+            if (async)
+            {
+                yield return null;
+            }
+        }
+
+        // Render chunks
         for (int i = 0; i < renderedChunks.Length; i++)
         {
             if(GetChunk(renderedChunks[i]) != null)
             {
                 Chunk chunk = GetChunk(renderedChunks[i]);
-
-                if(!chunk.decorated && !chunk.rendered)
-                {
-                    terrainGenerator.Decorate(chunk);
-                }
 
                 if (!chunk.rendered && chunk.generated)
                 {
@@ -280,10 +310,10 @@ public class TerrainEngine : MonoBehaviour
             }
         }
 
+        // Debug
         stopwatch.Stop();
         long minutes = (stopwatch.ElapsedMilliseconds / 1000) / 60;
         int seconds = (int)((stopwatch.ElapsedMilliseconds / 1000) % 60);
-
         Debug.Log("Chunks rendered. (" + minutes +"m "+ seconds + "s)");
     }
 
@@ -297,6 +327,22 @@ public class TerrainEngine : MonoBehaviour
         {        
             Chunk chunk = parentOfChunks.GetChild(i).gameObject.GetComponent<Chunk>();
             save.SaveChunk(chunk);          
+        }
+    }
+
+    // Refresh a single chunk
+    // Must be already rendered
+    public void RefreshChunk(int x, int z)
+    {
+        Chunk chunk = GetChunk(x, z);
+        
+        if (chunk != null && chunk.rendered && chunk.decorated)
+        {
+            chunkRenderer.Render(chunk);
+        }
+        else
+        {
+            Debug.LogWarning(chunk + " cannot be updated");
         }
     }
 
@@ -323,33 +369,31 @@ public class TerrainEngine : MonoBehaviour
 
     public void WorldSetBlock(int x, int y, int z, int blockId)
     {
+        int xx = x, zz = z;
         // Target chunk
         Chunk chunk = GetChunk(x / 16, z / 16);
 
         // Local pos
         x = x % 16;
         z = z % 16;
-
-        if (x < 0)
-        {
-            x = 16 + x;
-            chunk = chunk.nextLeft;
-        }
+   
 
         if (z < 0)
-        {
-            //if (chunk.nextBack == null) print(chunk + ", " + z);
-            z = 16 + z;
-            
+        {          
+            z = 16 + z;          
             chunk = chunk.nextBack;
-            
+        }
+
+        if (x < 0)
+        {          
+            x = 16 + x;
+            chunk = chunk.nextLeft;
         }
 
         if (chunk != null)
         {
             chunk.SetBlock(x, y, z, blockId);
         }
-        
 
     }
 }
