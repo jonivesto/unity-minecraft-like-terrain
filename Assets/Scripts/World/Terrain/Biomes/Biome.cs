@@ -16,7 +16,7 @@
 
     // How many times the tree decorator will try to place trees in one chunk
     // value 0 means this biome does not have trees
-    public int treesPerChunk = 5;
+    public int treesPerChunk = 7;
 
     public int woodBlock = 10;
     public int leavesBlock = 4;

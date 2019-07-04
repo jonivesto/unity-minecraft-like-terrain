@@ -9,12 +9,13 @@ public class TerrainGenerator
     const int CHUNK_Y = 256;
     const int CHUNK_Z = 16;
 
-    TerrainEngine terrainEngine;
-    Seed seed;
-    Chunk chunk;
+    public TerrainEngine terrainEngine;
+    public Seed seed;
+    public Chunk chunk;
+
     OpenSimplexNoise baseHeightMap, hillsHeightMap, hillsMap, humidityMap, temperatureMap;
 
-    private int worldX, worldZ;   
+    internal int worldX, worldZ;   
 
     public TerrainGenerator(TerrainEngine terrainEngine)
     {
@@ -96,92 +97,13 @@ public class TerrainGenerator
     {
         SetChunk(chunk);
 
-        // Pick a random starting point
-        System.Random r = seed.ChunkBuild(chunk.chunkTransform);
-        int x = r.Next(16);
-        int z = r.Next(16);
-        int ground = GetGroundAt(x + worldX, z + worldZ);
-        Biome biome = GetBiomeAt(x, z, ground);
-
-        // Dont make trees on flat
-        if (GetHillsAt(x + worldX, z + worldZ) == 0) return;
-
-        // If picked point biome can grow trees
-        for (int id = 0; id < biome.treesPerChunk; id++)
-        {
-            ground = GetGroundAt(x + worldX, z + worldZ);
-            biome = GetBiomeAt(x, z, ground);
-
-            int block = chunk.GetBlock(x, ground, z);
-            int treeHeight = r.Next(biome.minTreeHeight, biome.maxTreeHeight);
-            
-
-            // If picked point is grass or dirt (IDs: 9, 8)
-            if (block == 9 || block == 8)
-            {
-                /*
-                // Check surrounding blocks
-                // Calcel this three if there is no free space
-                int[] patternX = new int[] {-1,-1,-1,0,1,1, 1, 0, 0,0,-2,2};
-                int[] patternZ = new int[] {-1, 0, 1,1,1,0,-1,-1,-2,2, 0,0 };
-
-                bool dontCreate = false;
-
-                for (int i = 4; i < treeHeight + 1; i++)
-                {
-                    for (int j = 0; j < 8; j++)
-                    {
-                        if(x + patternX[j] < 0 || x + patternX[j] > 15){
-                            dontCreate = true;
-                            break;
-                        }
-                        if (z + patternZ[j] < 0 || z + patternZ[j] > 15){
-                            dontCreate = true;
-                            break;
-                        }
-
-                        if (chunk.GetBlock(x + patternX[j], ground + i, z + patternZ[j]) != 0)
-                        {
-                            dontCreate = true;
-                        }
-                    }
-                }
-                if (dontCreate)
-                {
-                    dontCreate = false;
-                    continue;
-                }
-                */
-
-                // Create tree
-                for (int i = 1; i < treeHeight; i++)
-                {
-                    chunk.SetBlock(x, ground + i, z, biome.woodBlock);
-                }
-                chunk.SetBlock(x, ground + treeHeight, z, biome.leavesBlock);
-                //
-                //
-                int[] leavesX = new int[] { -1, -1, 1, 1, 0,0,-1,1,     -1, -1, 1, 1, 0, 0, -1, 1 ,     -1, -1, 1, 1, 0, 0, -1, 1};
-                int[] leavesY = new int[] { 0, 0, 0, 0, 0, 0, 0, 0,     -1, -1, -1, -1, -1, -1, -1, -1,  -2, -2, -2, -2, -2, -2, -2, -2, };
-                int[] leavesZ = new int[] { -1, 1, -1, 1, 1,-1,0,0,      -1, 1, -1, 1, 1, -1, 0, 0 ,      -1, 1, -1, 1, 1, -1, 0, 0};
-                for (int i = 0; i < leavesX.Length; i++)
-                {
-                    terrainEngine.WorldSetBlock(x + worldX +leavesX[i], ground + treeHeight + leavesY[i], z + worldZ + leavesZ[i], biome.leavesBlock);
-                }
-                
-
-            }
-
-            // New position for next tree
-            x = r.Next(16);
-            z = r.Next(16);
-        }
+        // Generate default trees
+        ClassicTreeDecorator.GenerateTrees(this);
 
     }
 
-    private int GetGroundAt(int x, int y)
+    public int GetGroundAt(int x, int y)
     {
-
         // This noise defines oceans and continents
         double continentNoise = baseHeightMap.Evaluate(x / Config.CONTINENT_SIZE, y / Config.CONTINENT_SIZE) 
                               * 70f // height multiplier
@@ -198,7 +120,7 @@ public class TerrainGenerator
         return Mathf.FloorToInt((float)(continentNoise + hillNoise + terrainNoise));
     }
 
-    private double GetHillsAt(int x, int y)
+    public double GetHillsAt(int x, int y)
     {
         // Get flatness map
         float flatness = Mathf.PerlinNoise(x / Config.FLATNESS, y / Config.FLATNESS);
@@ -225,6 +147,7 @@ public class TerrainGenerator
         }
     }
 
+    // Propably not needed but dont remove this yet
     private Biome GetDominantBiome(Chunk chunk)
     {
         int wx = chunk.chunkTransform.x * CHUNK_X;

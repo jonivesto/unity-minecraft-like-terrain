@@ -18,13 +18,9 @@ public class TerrainEngine : MonoBehaviour
 
     Transform parentOfChunks;
 
-    int renderDistance;
-    int preLoadDistance;
-    int unloadDistance;
-    int loadDimension;
+    int renderDistance, preLoadDistance, unloadDistance, loadDimension;
 
     float sleepDistance;
-
 
 
     void Start()
@@ -38,7 +34,7 @@ public class TerrainEngine : MonoBehaviour
 
         parentOfChunks = GameObject.Find("/Environment/World").transform;
 
-        SetDistances(16); // 2, 4, 6, 8, 10, 12...
+        SetDistances(4); // 2, 4, 6, 8, 10, 12...
         LoadPosition();
     }
 
@@ -50,11 +46,9 @@ public class TerrainEngine : MonoBehaviour
         this.renderDistance = renderDistance;
 
         // Make sure renderDistance is odd
-        if (renderDistance % 2 == 0)
-        {
-            renderDistance++;
-        }
-
+        if (renderDistance % 2 == 0) renderDistance++;
+        
+        // Preload chunks next to rendered chunks
         preLoadDistance = renderDistance + 1;
 
         // Distance required between player and anchor to start new chunk to load
@@ -369,7 +363,6 @@ public class TerrainEngine : MonoBehaviour
 
     public void WorldSetBlock(int x, int y, int z, int blockId)
     {
-        int xx = x, zz = z;
         // Target chunk
         Chunk chunk = GetChunk(x / 16, z / 16);
 
@@ -377,7 +370,6 @@ public class TerrainEngine : MonoBehaviour
         x = x % 16;
         z = z % 16;
    
-
         if (z < 0)
         {          
             z = 16 + z;          
@@ -396,5 +388,38 @@ public class TerrainEngine : MonoBehaviour
         }
 
     }
+
+    public int WorldGetBlock(int x, int y, int z)
+    {
+        // Target chunk
+        Chunk chunk = GetChunk(x / 16, z / 16);
+
+        // Local pos
+        x = x % 16;
+        z = z % 16;
+
+        if (z < 0)
+        {
+            z = 16 + z;
+            chunk = chunk.nextBack;
+        }
+
+        if (x < 0)
+        {
+            x = 16 + x;
+            chunk = chunk.nextLeft;
+        }
+
+        if (chunk != null)
+        {
+            return chunk.GetBlock(x, y, z);
+        }
+        else
+        {
+            Debug.LogWarning("WorldGetBlock() chunk not found!");
+            return 0;
+        }
+    }
+
 }
 
