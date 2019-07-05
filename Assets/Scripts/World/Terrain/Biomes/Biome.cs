@@ -11,26 +11,18 @@ public abstract class Biome
     // Block layers covering the stone terrain
     public int surfaceDepth = 4;
 
-
     // How many times the tree decorator will try to place trees in one chunk
     // value 0 means this biome does not have trees
     public int treesPerChunk = 7;
 
     // Tree species that can grow in this biome
     // You can increase the chance of one tree species over others by adding the same value many times
-    public TreeSpecies[] treeSpecies = {
-
+    public TreeSpecies[] treeSpecies = 
+    {
         TreeSpecies.Birch,
         TreeSpecies.Spruce,
         TreeSpecies.Pine
     };
-
-    public int woodBlock = 10;
-    public int leavesBlock = 4;
-
-    public int minTreeHeight = 5;
-    public int maxTreeHeight = 8;
-
 
     // Returns biome's index in Config.BIOMES[]
     public int GetID()
