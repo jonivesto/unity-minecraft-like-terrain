@@ -473,7 +473,6 @@ public class ChunkRenderer
 
         renderer = chunkLiquids.GetComponent<MeshRenderer>();
         renderer.material = new Material(Resources.Load<Material>("Materials/Liquids"));
-
     }
 
     /*

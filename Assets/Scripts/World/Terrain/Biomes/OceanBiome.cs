@@ -5,9 +5,5 @@ public class OceanBiome : Biome
     {
         surfaceBlock = 7;
 
-        activeDecorators = new byte[]
-        {
-
-        };
     }
 }

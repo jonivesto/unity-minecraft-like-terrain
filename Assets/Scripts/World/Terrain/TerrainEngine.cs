@@ -361,6 +361,7 @@ public class TerrainEngine : MonoBehaviour
         return t.GetComponent<Chunk>();
     }
 
+    // Sets block in world space
     public void WorldSetBlock(int x, int y, int z, int blockId)
     {
         // Target chunk
@@ -389,6 +390,37 @@ public class TerrainEngine : MonoBehaviour
 
     }
 
+    // Sets block in world space if target position is air (id = 0)
+    public void WorldSetBlockNoReplace(int x, int y, int z, int blockId)
+    {
+        // Target chunk
+        Chunk chunk = GetChunk(x / 16, z / 16);
+
+        // Local pos
+        x = x % 16;
+        z = z % 16;
+
+        if (z < 0)
+        {
+            z = 16 + z;
+            chunk = chunk.nextBack;
+        }
+
+        if (x < 0)
+        {
+            x = 16 + x;
+            chunk = chunk.nextLeft;
+        }
+
+        // Only set if target is air
+        if (chunk != null && chunk.GetBlock(x, y, z) == 0)
+        {
+            chunk.SetBlock(x, y, z, blockId);
+        }
+
+    }
+
+    // Read block from world space coords
     public int WorldGetBlock(int x, int y, int z)
     {
         // Target chunk
@@ -416,7 +448,7 @@ public class TerrainEngine : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("WorldGetBlock() chunk not found!");
+            //Debug.LogWarning("WorldGetBlock() chunk not found!");
             return 0;
         }
     }

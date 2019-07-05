@@ -98,7 +98,7 @@ public class TerrainGenerator
         SetChunk(chunk);
 
         // Generate default trees
-        ClassicTreeDecorator.GenerateTrees(this);
+        TreeDecorator.GenerateTrees(this);
 
     }
 
@@ -145,24 +145,6 @@ public class TerrainGenerator
         {
             return Config.BIOMES[1];
         }
-    }
-
-    // Propably not needed but dont remove this yet
-    private Biome GetDominantBiome(Chunk chunk)
-    {
-        int wx = chunk.chunkTransform.x * CHUNK_X;
-        int wz = chunk.chunkTransform.z * CHUNK_Z;
-
-        int[] checks = new int[5];
-
-        checks[0] = GetBiomeAt(0 + wx, 0 + wz, GetGroundAt(0 + wx, 0 + wz)).GetID();
-        checks[1] = GetBiomeAt(0 + wx, 15 + wz, GetGroundAt(0 + wx, 15 + wz)).GetID();
-        checks[2] = GetBiomeAt(15 + wx, 0 + wz, GetGroundAt(15 + wx, 0 + wz)).GetID();
-        checks[3] = GetBiomeAt(15 + wx, 15 + wz, GetGroundAt(15 + wx, 15 + wz)).GetID();
-        checks[4] = GetBiomeAt(7 + wx, 7 + wz, GetGroundAt(7 + wx, 7 + wz)).GetID();
-
-        return Config.BIOMES[checks.GroupBy(value => value)
-                                .OrderByDescending(group => group.Count()).First().First()];
     }
 
 }

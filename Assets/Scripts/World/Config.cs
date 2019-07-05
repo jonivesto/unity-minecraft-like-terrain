@@ -13,7 +13,11 @@
         new            SandBlock(),     // 7
         new            DirtBlock(),     // 8
         new           GrassBlock(),     // 9
-        new       BirchWoodBlock()      //10
+        new       BirchWoodBlock(),     // 10
+        new        PineWoodBlock(),     // 11
+        new      PineLeavesBlock(),     // 12
+        new      SpruceWoodBlock(),     // 13
+        new    SpruceLeavesBlock(),     // 14
     };
 
     // List of biomes in the game
