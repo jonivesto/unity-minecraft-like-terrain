@@ -13,6 +13,8 @@ public class ChunkRenderer
         List<int> liquidTris = new List<int>();
         List<Vector2> liquidUvs = new List<Vector2>();
 
+        
+
         for (int x = 0; x < 16; x++)
         {
             for (int z = 0; z < 16; z++)
@@ -142,7 +144,29 @@ public class ChunkRenderer
                         // Current is not liquid
                         else
                         {
-                            // TODO
+                            Custom custom = Config.ID[currentBlockId] as Custom;
+
+                            // Current is custom item
+                            #region Render custom item
+
+                            if (custom != null)
+                            {
+                                // Create obj and add components
+                                GameObject customObj = new GameObject("(" + x + ", " + y + ", " + z + ") " + custom.itemName);
+                                customObj.AddComponent<MeshFilter>();
+                                customObj.AddComponent<MeshRenderer>();
+                                customObj.AddComponent<MeshCollider>();
+
+                                // Set parent and position
+                                customObj.transform.SetParent(chunk.transform.GetChild(1));
+                                customObj.transform.localPosition = new Vector3(x, y, z);
+
+                                // Load mesh
+                                Mesh m = (Mesh)Resources.Load(custom.prefabPath, typeof(Mesh));
+                                customObj.GetComponent<MeshFilter>().sharedMesh = m;
+                                customObj.GetComponent<MeshCollider>().sharedMesh = m;
+                            }
+                            #endregion
                         }
                     }
 
@@ -473,6 +497,9 @@ public class ChunkRenderer
 
         renderer = chunkLiquids.GetComponent<MeshRenderer>();
         renderer.material = new Material(Resources.Load<Material>("Materials/Liquids"));
+
+        // Display customs
+        chunk.transform.GetChild(1).gameObject.SetActive(true);
     }
 
     /*

@@ -167,7 +167,7 @@ public class TerrainEngine : MonoBehaviour
             // Create gameObject if not exists
             if (GetChunk(chunkTransform) == null)
             {
-                // Terrain
+                // Blocks
                 GameObject obj = new GameObject(chunkTransform.ToString());
                 obj.transform.parent = parentOfChunks;
                 obj.transform.position = chunkTransform.GetBlockPosition();
@@ -179,13 +179,19 @@ public class TerrainEngine : MonoBehaviour
                 chunk = obj.AddComponent<Chunk>();
                 chunk.SetTransform(chunkTransform);
 
-                // Liquid
+                // Liquids
                 GameObject chunkLiquids = new GameObject("Liquids");
                 chunkLiquids.transform.position = chunk.transform.position;
                 chunkLiquids.transform.SetParent(chunk.transform);
 
                 chunkLiquids.AddComponent<MeshFilter>();
                 chunkLiquids.AddComponent<MeshRenderer>();
+
+                // Customs
+                GameObject chunkCustoms = new GameObject("Customs");
+                chunkCustoms.transform.position = chunk.transform.position;
+                chunkCustoms.transform.SetParent(chunk.transform);
+                chunkCustoms.SetActive(false);
             }
             else
             {

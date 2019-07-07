@@ -9,7 +9,9 @@ public class BirchForestBiome : Biome
 
         treeSpecies = new TreeSpecies[]
         {
-            TreeSpecies.Birch
+            TreeSpecies.Birch,
+            TreeSpecies.Birch,
+            TreeSpecies.ThinBirch,
         };
 }
 }

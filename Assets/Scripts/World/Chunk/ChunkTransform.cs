@@ -8,8 +8,6 @@ public class ChunkTransform
     const int SIZE_X = 16, SIZE_Z = 16;
     const int SIZE_Y = 256;
 
-    private const int POPULATION_OFFSET = 7;
-
     public ChunkTransform(int chunkX, int chunkZ)
     {
         x = chunkX;
@@ -31,24 +29,6 @@ public class ChunkTransform
     public bool PositionEquals(int x, int z)
     {
         return this.x == x && this.z == z;
-    }
-
-    public bool PopulatesBlock(int x, int z)
-    {
-        return PositionEquals
-        (
-            Mathf.FloorToInt((x - POPULATION_OFFSET) / (float)SIZE_X),
-            Mathf.FloorToInt((z - POPULATION_OFFSET) / (float)SIZE_Z)
-        );
-    }
-
-    public Vector2Int GetBlockCenter()
-    {
-        return new Vector2Int
-        (
-            x * SIZE_X + POPULATION_OFFSET,
-            z * SIZE_Z + POPULATION_OFFSET
-        );
     }
 
     public Vector3 GetBlockPosition()

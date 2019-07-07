@@ -10,6 +10,7 @@ public enum TreeSpecies
     Birch = 12,
     Pine = 14,
     Spruce = 8,
+    ThinBirch = 5,
 };
 
 static class TreeDecorator
@@ -115,6 +116,7 @@ static class TreeDecorator
 
             case TreeSpecies.Spruce: return (getLeaves) ? 14 : 13;
 
+            case TreeSpecies.ThinBirch: return (getLeaves) ? 14 : 15;
 
             // Birch is default
             default: return (getLeaves) ? 4 : 10;
@@ -183,6 +185,26 @@ static class TreeDecorator
                 0, -3, 2,
                 0, -3, -2,
                 -2, -3, 0,
+            };
+
+            case TreeSpecies.ThinBirch:
+                return new int[] {
+                0, 0, 0,
+
+                1, 0, 0,
+                0, 0, 1,
+                0, 0, -1,
+                -1, 0, 0,
+
+                1, -1, 0,
+                0, -1, 1,
+                0, -1, -1,
+                -1, -1, 0,
+                -1, -1, -1,
+                -1, -1, 1,
+                1, -1, -1,
+                1, -1, 1,
+
             };
 
             case TreeSpecies.Spruce:
