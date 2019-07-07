@@ -151,20 +151,37 @@ public class ChunkRenderer
 
                             if (custom != null)
                             {
-                                // Create obj and add components
+                                // Create obj and add mesh components
                                 GameObject customObj = new GameObject("(" + x + ", " + y + ", " + z + ") " + custom.itemName);
                                 customObj.AddComponent<MeshFilter>();
                                 customObj.AddComponent<MeshRenderer>();
-                                customObj.AddComponent<MeshCollider>();
+                                
 
                                 // Set parent and position
                                 customObj.transform.SetParent(chunk.transform.GetChild(1));
-                                customObj.transform.localPosition = new Vector3(x, y, z);
+                                if (custom.displaced)
+                                {
+                                    
+                                    customObj.transform.localPosition = new Vector3(x + 0.08f * ((Random.value <= .5) ? 1 : -1), 
+                                                                                    y, 
+                                                                                    z + 0.08f * ((Random.value <= .5) ? 1 : -1));
+                                }
+                                else
+                                {
+                                    customObj.transform.localPosition = new Vector3(x, y, z);
+                                }
 
                                 // Load mesh
                                 Mesh m = (Mesh)Resources.Load(custom.prefabPath, typeof(Mesh));
                                 customObj.GetComponent<MeshFilter>().sharedMesh = m;
-                                customObj.GetComponent<MeshCollider>().sharedMesh = m;
+
+                                // Colliders
+                                if (custom.collision)
+                                {
+                                    customObj.AddComponent<MeshCollider>();
+                                    customObj.GetComponent<MeshCollider>().sharedMesh = m;
+                                }
+                                    
 
                                 // Set material
                                 customObj.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Custom");

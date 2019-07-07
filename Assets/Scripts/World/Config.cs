@@ -20,6 +20,7 @@
         new    SpruceLeavesBlock(),     // 14
         new        ThinBirchWood(),     // 15
         new            PineCones(),     // 16
+        new                Grass(),     // 17
     };
 
     // List of biomes in the game

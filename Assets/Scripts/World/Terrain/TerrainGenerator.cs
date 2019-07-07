@@ -86,7 +86,6 @@ public class TerrainGenerator
                             chunk.SetBlock(x, y, z, biome.surfaceBlock); // Biome surcafe block
                         }
                     }
-
                 }
             }
         }
@@ -100,6 +99,9 @@ public class TerrainGenerator
         // Generate default trees
         TreeDecorator.GenerateTrees(this);
 
+        //Last
+        // Generate grass
+        GrassDecorator.GenerateGrass(this);
     }
 
     public int GetGroundAt(int x, int y)

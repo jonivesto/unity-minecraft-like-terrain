@@ -14,5 +14,7 @@ public class BirchForestBiome : Biome
             TreeSpecies.ThinBirch,
             TreeSpecies.Pine
         };
-}
+
+        grass = 17;
+    }
 }

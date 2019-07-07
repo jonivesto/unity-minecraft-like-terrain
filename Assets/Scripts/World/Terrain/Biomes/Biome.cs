@@ -24,6 +24,8 @@ public abstract class Biome
         TreeSpecies.Pine
     };
 
+    public int grass = 0;
+
     // Returns biome's index in Config.BIOMES[]
     public int GetID()
     {
