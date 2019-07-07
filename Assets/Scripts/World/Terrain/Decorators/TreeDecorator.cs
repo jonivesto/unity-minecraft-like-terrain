@@ -3,6 +3,7 @@
 // 1. Add tree to TreeSpecies enum
 // 2. Add tree's block IDs to GetBlocks() switch statement
 // 3. Create leaf models in GetLeafModel()
+// 4. (optional) Add fruits to GetFruit() and GetFruitModel()
 
 // Index is tree height
 public enum TreeSpecies
@@ -72,6 +73,21 @@ static class TreeDecorator
             for (int i = 0; i < model.Length; i+=3)
             {
                 t.terrainEngine.WorldSetBlockNoReplace(x + t.worldX + model[i], y + treeHeight + model[i+1], z + t.worldZ + model[i+2], leavesBlock);
+            }
+
+            // Set fruits
+            int fruit = GetFruit(species);
+            if (fruit != 0)
+            {
+                int[] fruitModel = GetFruitModel(species);
+
+                for (int i = 0; i < fruitModel.Length; i += 3)
+                {
+                    // fruit spawn 50/50 change
+                    if (r.Next(2) < 1) continue;
+
+                    t.terrainEngine.WorldSetBlockNoReplace(x + t.worldX + fruitModel[i], y + treeHeight + fruitModel[i + 1], z + t.worldZ + fruitModel[i + 2], fruit);
+                }
             }
         }
 
@@ -320,5 +336,34 @@ static class TreeDecorator
         }
     }
 
+    // Returns fruit item id
+    // default = 0 = this species has no fruits
+    private static int GetFruit(TreeSpecies species)
+    {
+        switch (species)
+        {
+            case TreeSpecies.Pine: return 16;
 
+            default: return 0;
+        }
+    }
+
+    // Returns fruit spawn points for species
+    private static int[] GetFruitModel(TreeSpecies species)
+    {
+        switch (species)
+        {
+            case TreeSpecies.Pine: return new int[] 
+            {
+                1, -4, 0,
+                2, -4, 0,
+
+                0, -4, 1,
+                0, -4, 2,
+            };
+
+            // Default is null = no fruits for this species
+            default: return null;
+        }
+    }
 }
