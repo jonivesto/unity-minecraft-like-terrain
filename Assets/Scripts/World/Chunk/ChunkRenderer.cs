@@ -5,6 +5,8 @@ public class ChunkRenderer
 {
     public void Render(Chunk chunk)
     {
+        CleanCustoms(chunk);
+
         List<Vector3> blockVerts = new List<Vector3>();
         List<int> blockTris = new List<int>();
         List<Vector2> blockUvs = new List<Vector2>();
@@ -12,8 +14,6 @@ public class ChunkRenderer
         List<Vector3> liquidVerts = new List<Vector3>();
         List<int> liquidTris = new List<int>();
         List<Vector2> liquidUvs = new List<Vector2>();
-
-        
 
         for (int x = 0; x < 16; x++)
         {
@@ -165,6 +165,9 @@ public class ChunkRenderer
                                 Mesh m = (Mesh)Resources.Load(custom.prefabPath, typeof(Mesh));
                                 customObj.GetComponent<MeshFilter>().sharedMesh = m;
                                 customObj.GetComponent<MeshCollider>().sharedMesh = m;
+
+                                // Set material
+                                customObj.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Custom");
                             }
                             #endregion
                         }
@@ -483,7 +486,7 @@ public class ChunkRenderer
 
         chunk.gameObject.GetComponent<MeshCollider>().sharedMesh = mesh;
         MeshRenderer renderer = chunk.gameObject.GetComponent<MeshRenderer>();
-        renderer.material = new Material(Resources.Load<Material>("Materials/Blocks"));
+        renderer.material = Resources.Load<Material>("Materials/Blocks");
 
         // Build liquids
         GameObject chunkLiquids = chunk.transform.GetChild(0).gameObject;
@@ -496,7 +499,7 @@ public class ChunkRenderer
         mesh.RecalculateNormals();
 
         renderer = chunkLiquids.GetComponent<MeshRenderer>();
-        renderer.material = new Material(Resources.Load<Material>("Materials/Liquids"));
+        renderer.material = Resources.Load<Material>("Materials/Liquids");
 
         // Display customs
         chunk.transform.GetChild(1).gameObject.SetActive(true);
@@ -570,4 +573,20 @@ public class ChunkRenderer
             triangles.Add(vertices + pattern[i]);
         }
     }
+
+    // Remove custom items
+    // Call this before render/refresh
+    private void CleanCustoms(Chunk chunk)
+    {
+        Transform t = chunk.transform.GetChild(1);
+
+        if (t!=null)
+        {
+            foreach (Transform c in t)
+            {
+                GameObject.Destroy(c.gameObject);
+            }
+        }   
+    }
+
 }

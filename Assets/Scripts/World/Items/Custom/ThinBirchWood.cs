@@ -7,6 +7,6 @@ public class ThinBirchWood : Custom
     public ThinBirchWood()
     {
         itemName = "Thin birch";
-        prefabPath = "Prefabs/Custom/thinWood";
+        prefabPath = "Prefabs/Custom/ThinBirch";
     }
 }
