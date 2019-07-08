@@ -24,7 +24,11 @@ public abstract class Biome
         TreeSpecies.Pine
     };
 
+    // Grass item id
     public int grass = 0;
+
+    // Amount of grass
+    public float grassDensity = 0.5f;
 
     // Returns biome's index in Config.BIOMES[]
     public int GetID()

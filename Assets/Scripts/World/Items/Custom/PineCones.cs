@@ -9,5 +9,6 @@ public class PineCones : Custom
         itemName = "Pine cones";
         prefabPath = "Prefabs/Custom/PineCones";
         displaced = true;
+        collision = false;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using NoiseTest;
-using System.Linq;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class TerrainGenerator
 {
@@ -12,10 +12,13 @@ public class TerrainGenerator
     public TerrainEngine terrainEngine;
     public Seed seed;
     public Chunk chunk;
+    public int worldX, worldZ;
 
     OpenSimplexNoise baseHeightMap, hillsHeightMap, hillsMap, humidityMap, temperatureMap;
+    List<int> allowOverride = new List<int>();
 
-    internal int worldX, worldZ;   
+    
+
 
     public TerrainGenerator(TerrainEngine terrainEngine)
     {
@@ -87,6 +90,29 @@ public class TerrainGenerator
                         }
                     }
                 }
+
+                // Grass
+                if (biome.grass != 0) // If biome has grass
+                {
+                    // If grass is not blocked and grows on dirt
+                    if (chunk.GetBlock(x, ground + 1, z) == 0 && chunk.GetBlock(x, ground, z) == 9)
+                    {
+                        // Only grass on flat areas
+                        if (GetHillsAt(x + worldX, z + worldZ) == 0)
+                        {
+                            // Noise makes grass more random
+                            if(Mathf.PerlinNoise(x / 4f, z / 4f) > biome.grassDensity)
+                            {
+                                chunk.SetBlock(x, ground + 1, z, biome.grass);
+                                if (!allowOverride.Contains(biome.grass))
+                                {
+                                    allowOverride.Add(biome.grass);
+                                }
+                            }                         
+                        }
+                    }
+                }
+                
             }
         }
 
@@ -98,10 +124,6 @@ public class TerrainGenerator
 
         // Generate default trees
         TreeDecorator.GenerateTrees(this);
-
-        //Last
-        // Generate grass
-        GrassDecorator.GenerateGrass(this);
     }
 
     public int GetGroundAt(int x, int y)
@@ -149,4 +171,15 @@ public class TerrainGenerator
         }
     }
 
+    // Check if block can be rewritten
+    // Items like grass can block trees etc..
+    // This method allows trees to replace grass
+    public bool AllowOverwrite(int itemId)
+    {
+        if (itemId == 0) return true;
+
+        if (allowOverride.Contains(itemId)) return true;
+
+        return false;
+    }
 }

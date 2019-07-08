@@ -58,7 +58,7 @@ static class TreeDecorator
 
 
             // Skip this tree if the terrain does not allow tree in this position
-            if (TreeBlocked(x + t.worldX, y, z + t.worldZ, treeHeight, t.terrainEngine)) continue;
+            if (TreeBlocked(x + t.worldX, y, z + t.worldZ, treeHeight, t)) continue;
             
             // Create tree
             // Set wood blocks
@@ -93,7 +93,7 @@ static class TreeDecorator
 
     }
 
-    private static bool TreeBlocked(int x, int y, int z, int h, TerrainEngine t)
+    private static bool TreeBlocked(int x, int y, int z, int h, TerrainGenerator t)
     {
         // Surrounding blocks
         int[] patternX = new int[] { -1, -1, -1, 0, 1, 1, 1, 0 };
@@ -102,7 +102,7 @@ static class TreeDecorator
         for (int i = 1; i < h + 2; i++)
         {          
             // If wood is blocked
-            if (t.WorldGetBlock(x, y + i, z) != 0) return true;          
+            if (!t.AllowOverwrite(t.terrainEngine.WorldGetBlock(x, y + i, z))) return true;          
 
             // Don't check surroundings for the first wood block
             if (i == 1) continue;
@@ -110,7 +110,7 @@ static class TreeDecorator
             // If surrounding blocks are blocked
             for (int j = 0; j < 8; j++)
             {
-                if (t.WorldGetBlock(x + patternX[j], y + i, z + patternZ[j]) != 0)
+                if (!t.AllowOverwrite(t.terrainEngine.WorldGetBlock(x + patternX[j], y + i, z + patternZ[j])))
                 {                 
                     return true;
                 }
