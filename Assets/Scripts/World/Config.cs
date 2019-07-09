@@ -21,6 +21,10 @@
         new        ThinBirchWood(),     // 15
         new            PineCones(),     // 16
         new                Grass(),     // 17
+        new         GoldOreBlock(),     // 18
+        new         CoalOreBlock(),     // 19
+        new         LeadOreBlock(),     // 20
+        new         IronOreBlock(),     // 21
     };
 
     // List of biomes in the game
