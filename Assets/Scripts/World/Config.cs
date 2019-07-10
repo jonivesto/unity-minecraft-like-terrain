@@ -45,11 +45,11 @@
     // Terrain generation
     public static int SEA_LEVEL = 64;
     public static float CONTINENT_SIZE = 800f;
-    public static float HILL_SIZE = 105f;
+    public static float HILL_SIZE = 110f;
     public static float FLATNESS = 1000f;
 
     public static bool GENERATE_CAVES = true;
-    public static float CAVE_FREQUENCY = 6f;
+    public static float CAVE_FREQUENCY = 16f;
 
     public static bool GENERATE_ORES = true;
 

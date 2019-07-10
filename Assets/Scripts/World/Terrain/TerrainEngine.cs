@@ -17,9 +17,7 @@ public class TerrainEngine : MonoBehaviour
     Save save;
 
     Transform parentOfChunks;
-
     int renderDistance, preLoadDistance, unloadDistance, loadDimension;
-
     float sleepDistance;
 
 

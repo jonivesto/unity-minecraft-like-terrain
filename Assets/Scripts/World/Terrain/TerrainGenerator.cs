@@ -18,8 +18,6 @@ public class TerrainGenerator
     internal OpenSimplexNoise simplex3, simplex4, simplex1, simplex2, simplex5;
     internal List<int> allowOverride = new List<int>();
 
-    
-
 
     public TerrainGenerator(TerrainEngine terrainEngine)
     {
@@ -77,16 +75,16 @@ public class TerrainGenerator
                         else
                         {
                             // Default is stone block
-                            int blockSet = 3; ////////////////DEBUG CHANGE TI TO 1
+                            int blockSet = 1;
 
                             // Get cave if caves enabled
                             if (Config.GENERATE_CAVES)
                             {
-                                blockSet = CaveNoise.Evaluate(x, y, z); // Stone (1) or air (0)
+                                blockSet = CaveNoise.Evaluate(this, worldX + x, y, worldZ + z); // Stone (1) or air (0)
                             }
                             
                             // Set ores if ores enabled
-                            if(Config.GENERATE_ORES && blockSet == 3) ////////////////DEBUG CHANGE TI TO 1
+                            if(Config.GENERATE_ORES && blockSet == 1)
                             {
                                  blockSet = OreDecorator.GetOreAt(blockSet, this, x + worldX, y, z + worldZ); // Ore block                                  
                             }
@@ -99,10 +97,11 @@ public class TerrainGenerator
                     // Replace with biome surface material
                     for (int s = 0; s < biome.surfaceDepth; s++)
                     {
-                        // Dont cover cave entry points with surface material
-                        if(y == ground - s && chunk.GetBlock(x, y, z) != 0)
+                        if(y == ground - s)
                         {
+                            if(chunk.GetBlock(x, y, z)!=0 || biome.GetID()==0)
                             chunk.SetBlock(x, y, z, biome.surfaceBlock); // Biome surcafe block
+                            
                         }
                     }
                 }
