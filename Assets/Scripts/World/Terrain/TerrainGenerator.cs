@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Perlin3D;
 
 public class TerrainGenerator
 {
@@ -75,27 +76,31 @@ public class TerrainGenerator
                         }
                         else
                         {
-                            int ore = OreDecorator.GetOreAt(this, x + worldX, y, z + worldZ);
-                            if(ore == 0)
+                            // Default is stone block
+                            int blockSet = 3; ////////////////DEBUG CHANGE TI TO 1
+
+                            // Get cave if caves enabled
+                            if (Config.GENERATE_CAVES)
                             {
-                                chunk.SetBlock(x, y, z, 1); // Stone block   
+                                blockSet = CaveNoise.Evaluate(x, y, z); // Stone (1) or air (0)
                             }
-                            else
+                            
+                            // Set ores if ores enabled
+                            if(Config.GENERATE_ORES && blockSet == 3) ////////////////DEBUG CHANGE TI TO 1
                             {
-                                chunk.SetBlock(x, y, z, ore); // Ore block  
+                                 blockSet = OreDecorator.GetOreAt(blockSet, this, x + worldX, y, z + worldZ); // Ore block                                  
                             }
-                                                                                
+
+                            // Set block that is stone or cave (air) or ore
+                            chunk.SetBlock(x, y, z, blockSet);
                         }
-
-                        
-                       
                     }
-                  
-
+                    
                     // Replace with biome surface material
                     for (int s = 0; s < biome.surfaceDepth; s++)
                     {
-                        if(y == ground - s)
+                        // Dont cover cave entry points with surface material
+                        if(y == ground - s && chunk.GetBlock(x, y, z) != 0)
                         {
                             chunk.SetBlock(x, y, z, biome.surfaceBlock); // Biome surcafe block
                         }

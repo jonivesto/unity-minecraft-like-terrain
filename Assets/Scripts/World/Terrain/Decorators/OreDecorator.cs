@@ -15,10 +15,8 @@ public static class OreDecorator
     };
 
 
-    public static int GetOreAt(TerrainGenerator t, int x, int y, int z)
+    public static int GetOreAt(int blockSet, TerrainGenerator t, int x, int y, int z)
     {
-        // Ore to be returned
-        int ore = 0;
 
         // Each array
         for (int i = 0; i < ores.GetLength(0); i++)
@@ -42,11 +40,11 @@ public static class OreDecorator
                 float s = ores[i, 4];
                 if (noise.Evaluate(x / s, y / s, z / s) > (ores[i, 1]) / 10f)
                 {
-                    ore = ores[i, 0];
+                    blockSet = ores[i, 0];
                 }
             }
         }
 
-        return ore;
+        return blockSet;
     }
 }

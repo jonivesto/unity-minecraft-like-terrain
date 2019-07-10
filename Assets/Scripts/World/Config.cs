@@ -47,9 +47,10 @@
     public static float CONTINENT_SIZE = 800f;
     public static float HILL_SIZE = 105f;
     public static float FLATNESS = 1000f;
-    public static bool GENERATE_CAVES = true;
 
-    public static float HUMIDITY_MAP_SCALE = 600f;
-    public static float TEMPERATURE_MAP_SCALE = 1000f;
+    public static bool GENERATE_CAVES = true;
+    public static float CAVE_FREQUENCY = 6f;
+
+    public static bool GENERATE_ORES = true;
 
 }
