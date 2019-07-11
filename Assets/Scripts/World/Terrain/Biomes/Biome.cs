@@ -8,6 +8,7 @@ public abstract class Biome
     // Default is stone block 
     public int surfaceBlock = 1;
     public int hiddenSurfaceBlock = 8;
+
     // Block layers covering the stone terrain
     public int surfaceDepth = 4;
 

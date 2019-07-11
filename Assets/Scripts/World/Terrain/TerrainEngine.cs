@@ -24,15 +24,15 @@ public class TerrainEngine : MonoBehaviour
     void Start()
     {
         worldName = "My world";
-        //seed = new Seed();
-        seed = new Seed("0004887891122446");
+        seed = new Seed();
+        //seed = new Seed("0004887891122446");
 
         save = new Save(worldName, seed);
         terrainGenerator = new TerrainGenerator(this);
 
         parentOfChunks = GameObject.Find("/Environment/World").transform;
 
-        SetDistances(4); // 2, 4, 6, 8, 10, 12...
+        SetDistances(6); // 2, 4, 6, 8, 10, 12...
         LoadPosition();
     }
 

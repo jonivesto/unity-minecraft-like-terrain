@@ -7,7 +7,7 @@ using Perlin3D;
 public class TerrainGenerator
 {
     const int CHUNK_X = 16;
-    const int CHUNK_Y = 256;
+    const int CHUNK_Y = 192;
     const int CHUNK_Z = 16;
 
     public TerrainEngine terrainEngine;
@@ -119,12 +119,19 @@ public class TerrainGenerator
                 // Lava & noise bedrock
                 if (chunk.GetBlock(x, 1, z) == 0)
                 {
-                    chunk.SetBlock(x, 1, z, 5); // Lava
+                    if (Mathf.PerlinNoise(x / 1.5f, z / 1.5f) > 0.5)
+                    {
+                        chunk.SetBlock(x, 1, z, 2); // Bedrock
+                    }
+                    else
+                    {
+                        chunk.SetBlock(x, 1, z, 5); // Lava
+                    }
                 }
-                else
+
+                if (chunk.GetBlock(x, 2, z) == 0)
                 {
-                    if (Mathf.PerlinNoise(x/1.5f, z/1.5f)>0.5)
-                    chunk.SetBlock(x, 1, z, 2); // Bedrock
+                    chunk.SetBlock(x, 2, z, 5); // Lava
                 }
 
                 // Grass
