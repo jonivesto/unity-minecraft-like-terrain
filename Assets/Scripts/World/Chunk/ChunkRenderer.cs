@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class ChunkRenderer
 {
-    const int WORLD_HEIGHT = 192;
-
     public void Render(Chunk chunk)
     {
         CleanCustoms(chunk);
@@ -21,7 +19,7 @@ public class ChunkRenderer
         {
             for (int z = 0; z < 16; z++)
             {
-                for (int y = 0; y < WORLD_HEIGHT; y++)
+                for (int y = 0; y < Config.WORLD_HEIGHT; y++)
                 {
                     int currentBlockId = chunk.GetBlock(x, y, z);
                     if (currentBlockId == 0) continue; // Skip air blocks (id == 0)
@@ -43,7 +41,7 @@ public class ChunkRenderer
                                 bool renderThisSide = false;
 
                                 // Top face
-                                if (y + 1 < WORLD_HEIGHT) // Next in array bounds
+                                if (y + 1 < Config.WORLD_HEIGHT) // Next in array bounds
                                 {
                                     int next = chunk.GetBlock(x, y + 1, z);
 
@@ -199,7 +197,7 @@ public class ChunkRenderer
                         bool renderThisSide = false;
 
                         // Top face
-                        if (y + 1 < WORLD_HEIGHT) // Next in array bounds
+                        if (y + 1 < Config.WORLD_HEIGHT) // Next in array bounds
                         {
                             int next = chunk.GetBlock(x, y + 1, z);
 

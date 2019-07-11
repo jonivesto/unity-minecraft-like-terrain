@@ -7,7 +7,6 @@ using Perlin3D;
 public class TerrainGenerator
 {
     const int CHUNK_X = 16;
-    const int CHUNK_Y = 192;
     const int CHUNK_Z = 16;
 
     public TerrainEngine terrainEngine;
@@ -51,7 +50,7 @@ public class TerrainGenerator
                 int ground = GetGroundAt(x + worldX, z + worldZ);
                 Biome biome = GetBiomeAt(x + worldX, z + worldZ, ground);
 
-                for (int y = 0; y < CHUNK_Y; y++) // local y
+                for (int y = 0; y < Config.WORLD_HEIGHT; y++) // local y
                 {
                     if (ground < y)
                     {

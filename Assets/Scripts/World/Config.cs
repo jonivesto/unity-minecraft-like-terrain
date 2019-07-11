@@ -43,6 +43,7 @@
     public static bool UNLOAD_FAR_CHUNKS = false;
 
     // Terrain generation
+    public const  int WORLD_HEIGHT = 192;
     public static int SEA_LEVEL = 64;
     public static float CONTINENT_SIZE = 800f;
     public static float HILL_SIZE = 110f;
