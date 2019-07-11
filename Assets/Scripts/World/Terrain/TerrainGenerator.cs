@@ -99,11 +99,32 @@ public class TerrainGenerator
                     {
                         if(y == ground - s)
                         {
-                            if(chunk.GetBlock(x, y, z)!=0 || biome.GetID()==0)
-                            chunk.SetBlock(x, y, z, biome.surfaceBlock); // Biome surcafe block
+                            if(chunk.GetBlock(x, y, z) != 0 || biome.GetID() == 0) // Skip if cave or ocean
+                            {
+                                if(y == ground)
+                                {
+                                    chunk.SetBlock(x, y, z, biome.surfaceBlock); // Biome surcafe block
+                                }
+                                else
+                                {
+                                    chunk.SetBlock(x, y, z, biome.hiddenSurfaceBlock); // Biome hidden surcafe block
+                                }                               
+                            }                           
                             
                         }
+
                     }
+                }
+
+                // Lava & noise bedrock
+                if (chunk.GetBlock(x, 1, z) == 0)
+                {
+                    chunk.SetBlock(x, 1, z, 5); // Lava
+                }
+                else
+                {
+                    if (Mathf.PerlinNoise(x/1.5f, z/1.5f)>0.5)
+                    chunk.SetBlock(x, 1, z, 2); // Bedrock
                 }
 
                 // Grass

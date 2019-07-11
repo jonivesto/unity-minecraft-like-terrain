@@ -49,7 +49,7 @@
     public static float FLATNESS = 1000f;
 
     public static bool GENERATE_CAVES = true;
-    public static float CAVE_FREQUENCY = 16f;
+    public static float CAVE_FREQUENCY = 19f;
 
     public static bool GENERATE_ORES = true;
 
