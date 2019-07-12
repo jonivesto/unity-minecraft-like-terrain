@@ -6,10 +6,12 @@ using UnityEngine;
 public class Save
 {
     private string worldName;
+    private byte terrainId;
     private Seed seed;
 
-    public Save(string worldName, Seed seed)
-    {      
+    public Save(string worldName, Seed seed, byte terrainId)
+    {
+        this.terrainId = terrainId;
         this.seed = seed;
         SetWorld(worldName);
     }
@@ -40,7 +42,16 @@ public class Save
         else
         {
             Debug.Log("World save exists at: " + path);
-        }     
+        }
+
+        // Terrain sub-folder for this terrainId   
+        // Create if not exist
+        path = Path.Combine(path, "Chunks/" + terrainId);
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+            
     }
 
     public void SaveChunk(Chunk chunk)
@@ -48,8 +59,11 @@ public class Save
         string path = Application.persistentDataPath 
             + "/" + worldName
             + "/Chunks"
+            + "/" + terrainId
             + "/" + chunk.chunkTransform.ToString() 
             + ".chk";
+
+
 
         // Create file or find existing one
         FileStream file;
@@ -74,6 +88,7 @@ public class Save
         string path = Application.persistentDataPath 
             + "/" + worldName 
             + "/Chunks"
+            + "/" + terrainId
             + "/" + chunkTransform.ToString() 
             + ".chk";
 
@@ -85,6 +100,7 @@ public class Save
         string path = Application.persistentDataPath 
             + "/" + worldName
             + "/Chunks"
+            + "/" + terrainId
             + "/" + chunkTransform.ToString() 
             + ".chk";
 

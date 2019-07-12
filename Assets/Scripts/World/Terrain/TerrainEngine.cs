@@ -32,10 +32,7 @@ public class TerrainEngine : MonoBehaviour
         // 1 = alien
         // 2 = cave
         SetTerrain(0);
-
-        // Init save
-        save = new Save(worldName, seed);
-              
+ 
         // Set render distance
         // 2, 4, 6, 8, 10, 12...
         SetDistances(4);
@@ -64,7 +61,11 @@ public class TerrainEngine : MonoBehaviour
                 break;
         }
 
+        // TODO: reset environment and set terrain properties like gravity and lights..
         parentOfChunks = GameObject.Find("/Environment/World").transform;
+
+        // Init save
+        save = new Save(worldName, seed, terrainId);
     }
 
     // Set all distances to the according to the renderdistance
