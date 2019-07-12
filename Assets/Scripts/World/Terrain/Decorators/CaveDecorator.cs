@@ -1,7 +1,7 @@
 ﻿using NoiseTest;
 using UnityEngine;
 
-public static class CaveNoise
+public static class CaveDecorator
 {
     public static byte Evaluate(TerrainGenerator t, int x, int y, int z)
     {

@@ -9,10 +9,10 @@ public static class OreDecorator
     // 4 = noise size           [0, 200]
     // 5 = noise displacement   [0, 200]
     static byte[,] ores = {
-        {21, 7, 100, 0, 5, 3}, // Iron
+        {21, 7, 100, 1, 5, 3}, // Iron
         {20, 7, 57, 30, 5, 5}, // Lead
-        {19, 7, 200, 0, 5, 8}, // Coal
-        {18, 7, 40, 0, 5, 9}, // Gold
+        {19, 7, 200, 1, 5, 8}, // Coal
+        {18, 7, 40, 1, 5, 9}, // Gold
     };
 
 

@@ -11,8 +11,7 @@ public class BirchForestBiome : Biome
         {
             TreeSpecies.Birch,
             TreeSpecies.Birch,
-            TreeSpecies.ThinBirch,
-            TreeSpecies.Pine
+            TreeSpecies.ThinBirch
         };
 
         grass = 17;

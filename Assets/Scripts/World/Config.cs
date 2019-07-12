@@ -25,6 +25,7 @@
         new         CoalOreBlock(),     // 19
         new         LeadOreBlock(),     // 20
         new         IronOreBlock(),     // 21
+        new                 Lava(),     // 22
     };
 
     // List of biomes in the game
@@ -33,7 +34,7 @@
     {
         new           OceanBiome(),      // 0
         new     BirchForestBiome(),      // 1
-        new           SwampBiome(),      // 2
+        new      PineForestBiome(),      // 2
     };
 
 
@@ -44,14 +45,17 @@
 
     // Terrain generation
     public const  int WORLD_HEIGHT = 192;
+    public const int CHUNK_SIZE = 16;
+
     public static int SEA_LEVEL = 64;
     public static float CONTINENT_SIZE = 800f;
     public static float HILL_SIZE = 110f;
     public static float FLATNESS = 1000f;
 
+    public static float BIOME_SIZE = 300f;
+
     public static bool GENERATE_CAVES = true;
     public static float CAVE_FREQUENCY = 19f;
-
     public static bool GENERATE_ORES = true;
 
 }

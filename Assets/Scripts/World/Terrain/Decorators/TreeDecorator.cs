@@ -26,7 +26,7 @@ static class TreeDecorator
         int y = t.GetGroundAt(x + t.worldX, z + t.worldZ);
 
         // Biome the tree is on
-        Biome biome = t.GetBiomeAt(x, z, y);
+        Biome biome = t.GetBiomeAt(x + t.worldX, z + t.worldZ, y);
 
         // Dont make trees on flat
         if (t.GetHillsAt(x + t.worldX, z + t.worldZ) == 0) return;
@@ -39,7 +39,7 @@ static class TreeDecorator
             z = r.Next(16);
             y = t.GetGroundAt(x + t.worldX, z + t.worldZ);
 
-            biome = t.GetBiomeAt(x, z, y);
+            biome = t.GetBiomeAt(x + t.worldX, z + t.worldZ, y);
 
             // Block ID the tree will be created on
             int groundBlock = t.chunk.GetBlock(x, y, z);

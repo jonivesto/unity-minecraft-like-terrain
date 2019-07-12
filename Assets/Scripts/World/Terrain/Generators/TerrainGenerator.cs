@@ -5,8 +5,7 @@ using System.Collections.Generic;
 
 public class TerrainGenerator
 {
-    const int CHUNK_X = 16;
-    const int CHUNK_Z = 16;
+    public const int CHUNK_SIZE = Config.CHUNK_SIZE;
 
     public TerrainEngine terrainEngine;
     public Seed seed;
@@ -22,7 +21,7 @@ public class TerrainGenerator
         this.terrainEngine = terrainEngine;
         seed = terrainEngine.seed;
 
-        // Noise maps
+        // Simplex
         simplex1 = new OpenSimplexNoise(seed.ToLong() / 2 + 1);
         simplex2 = new OpenSimplexNoise(seed.ToLong() / 2);     
         simplex3 = new OpenSimplexNoise(seed.ToLong());
@@ -33,17 +32,17 @@ public class TerrainGenerator
     internal void SetChunk(Chunk chunk)
     {
         this.chunk = chunk;
-        worldX = chunk.chunkTransform.x * CHUNK_X;
-        worldZ = chunk.chunkTransform.z * CHUNK_Z;
+        worldX = chunk.chunkTransform.x * CHUNK_SIZE;
+        worldZ = chunk.chunkTransform.z * CHUNK_SIZE;
     }
 
     public virtual void Generate(Chunk chunk)
     {
         SetChunk(chunk);
         
-        for (int x = 0; x < CHUNK_X; x++) // local x
+        for (int x = 0; x < CHUNK_SIZE; x++) // local x
         {
-            for (int z = 0; z < CHUNK_Z; z++) // local z
+            for (int z = 0; z < CHUNK_SIZE; z++) // local z
             {
                 int ground = GetGroundAt(x + worldX, z + worldZ);
                 Biome biome = GetBiomeAt(x + worldX, z + worldZ, ground);
@@ -77,7 +76,7 @@ public class TerrainGenerator
                             // Get cave if caves enabled
                             if (Config.GENERATE_CAVES)
                             {
-                                blockSet = CaveNoise.Evaluate(this, worldX + x, y, worldZ + z); // Stone (1) or air (0)
+                                blockSet = CaveDecorator.Evaluate(this, worldX + x, y, worldZ + z); // Stone (1) or air (0)
                             }
                             
                             // Set ores if ores enabled
@@ -122,13 +121,13 @@ public class TerrainGenerator
                     }
                     else
                     {
-                        chunk.SetBlock(x, 1, z, 5); // Lava
+                        chunk.SetBlock(x, 1, z, 22); // Lava
                     }
                 }
 
                 if (chunk.GetBlock(x, 2, z) == 0)
                 {
-                    chunk.SetBlock(x, 2, z, 5); // Lava
+                    chunk.SetBlock(x, 2, z, 22); // Lava
                 }
 
                 // Grass
@@ -141,7 +140,7 @@ public class TerrainGenerator
                         if (GetHillsAt(x + worldX, z + worldZ) == 0)
                         {
                             // Noise makes grass more random
-                            if(Mathf.PerlinNoise(x / 4f, z / 4f) > biome.grassDensity)
+                            if(Perlin.Noise(x / 4f, z / 4f) > biome.grassDensity)
                             {
                                 chunk.SetBlock(x, ground + 1, z, biome.grass);
                                 if (!allowOverride.Contains(biome.grass))
@@ -200,14 +199,23 @@ public class TerrainGenerator
 
     public virtual Biome GetBiomeAt(float x, float y, int ground)
     {
-        // beach and ocean
-        if (ground < Config.SEA_LEVEL + (Mathf.PerlinNoise(x / 44f, y / 44f) * 3))
+        // Beach and ocean
+        if (ground < Config.SEA_LEVEL + (Perlin.Noise(x / 44f, y / 44f) * 3))
         {
             return Config.BIOMES[0]; // Ocean
         }
+        // Land biomes
         else
         {
-            return Config.BIOMES[1];
+            if(simplex1.Evaluate(x / Config.BIOME_SIZE, y / Config.BIOME_SIZE) > 0f)
+            {
+                return Config.BIOMES[1]; // Birch forest
+            }              
+            else
+            {
+                return Config.BIOMES[2]; // Pine forest
+            }
+
         }
     }
 

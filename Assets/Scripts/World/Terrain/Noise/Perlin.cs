@@ -4,6 +4,11 @@ namespace NoiseTest
 {
     public static class Perlin
     {
+        public static float Noise(float x, float y)
+        {
+            return Mathf.PerlinNoise(x, y);
+        }
+
         public static float Noise3D(float x, float y, float z)
         {
             float AB = Mathf.PerlinNoise(x, y);
@@ -18,10 +23,10 @@ namespace NoiseTest
             return ABC / 6f;
         }
 
-        public static float NoiseDistorted(float x, float y, float distortionStrength)
+        public static float NoiseDistorted(float x, float y, float strength)
         {
-            float xDistortion = distortionStrength * Distort(x + 2.3f, y + 2.9f);
-            float yDistortion = distortionStrength * Distort(x - 3.1f, y - 4.3f);
+            float xDistortion = strength * Distort(x + 2.3f, y + 2.9f);
+            float yDistortion = strength * Distort(x - 3.1f, y - 4.3f);
 
             return Mathf.PerlinNoise(x + xDistortion, y + yDistortion);
         }
