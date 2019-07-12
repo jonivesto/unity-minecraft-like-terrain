@@ -2,7 +2,6 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using Perlin3D;
 
 public class TerrainGenerator
 {
@@ -17,7 +16,7 @@ public class TerrainGenerator
     internal OpenSimplexNoise simplex3, simplex4, simplex1, simplex2, simplex5;
     internal List<int> allowOverride = new List<int>();
 
-
+    
     public TerrainGenerator(TerrainEngine terrainEngine)
     {
         this.terrainEngine = terrainEngine;
@@ -29,17 +28,16 @@ public class TerrainGenerator
         simplex3 = new OpenSimplexNoise(seed.ToLong());
         simplex4 = new OpenSimplexNoise(seed.ToLong() / 3 + 1);
         simplex5 = new OpenSimplexNoise(seed.ToLong() / 3);
-
     }
-
-    private void SetChunk(Chunk chunk)
+    
+    internal void SetChunk(Chunk chunk)
     {
         this.chunk = chunk;
         worldX = chunk.chunkTransform.x * CHUNK_X;
         worldZ = chunk.chunkTransform.z * CHUNK_Z;
     }
 
-    public void Generate(Chunk chunk)
+    public virtual void Generate(Chunk chunk)
     {
         SetChunk(chunk);
         
@@ -160,7 +158,7 @@ public class TerrainGenerator
 
     }
 
-    public void Decorate(Chunk chunk)
+    public virtual void Decorate(Chunk chunk)
     {
         SetChunk(chunk);
 
@@ -168,7 +166,7 @@ public class TerrainGenerator
         TreeDecorator.GenerateTrees(this);
     }
 
-    public int GetGroundAt(int x, int y)
+    public virtual int GetGroundAt(int x, int y)
     {
         // This noise defines oceans and continents
         double continentNoise = simplex3.Evaluate(x / Config.CONTINENT_SIZE, y / Config.CONTINENT_SIZE) 
@@ -186,7 +184,7 @@ public class TerrainGenerator
         return Mathf.FloorToInt((float)(continentNoise + hillNoise + terrainNoise));
     }
 
-    public double GetHillsAt(int x, int y)
+    public virtual double GetHillsAt(int x, int y)
     {
         // Get flatness map
         float flatness = Mathf.PerlinNoise(x / Config.FLATNESS, y / Config.FLATNESS);
@@ -200,7 +198,7 @@ public class TerrainGenerator
         return hillNoise;
     }
 
-    public Biome GetBiomeAt(float x, float y, int ground)
+    public virtual Biome GetBiomeAt(float x, float y, int ground)
     {
         // beach and ocean
         if (ground < Config.SEA_LEVEL + (Mathf.PerlinNoise(x / 44f, y / 44f) * 3))

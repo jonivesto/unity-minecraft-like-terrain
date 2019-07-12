@@ -24,21 +24,52 @@ public class TerrainEngine : MonoBehaviour
     void Start()
     {
         worldName = "My world";
+
         //seed = new Seed();
         seed = new Seed("0004887891122446");
 
+        // 0 = default
+        // 1 = alien
+        // 2 = cave
+        SetTerrain(0);
+
+        // Init save
         save = new Save(worldName, seed);
-        terrainGenerator = new TerrainGenerator(this);
+              
+        // Set render distance
+        // 2, 4, 6, 8, 10, 12...
+        SetDistances(4);
+
+        // Render terrain from player's position
+        LoadPosition();
+    }
+
+    // Choose terrain generator
+    void SetTerrain(byte terrainId)
+    {
+        switch (terrainId)
+        {
+            case 0:
+                terrainGenerator = new DefaultTerrainGenerator(this);
+                break;
+            case 1:
+                terrainGenerator = new AlienTerrainGenerator(this);
+                break;
+            case 2:
+                terrainGenerator = new CaveTerrainGenerator(this);
+                break;
+            
+            default:
+                SetTerrain(0);
+                break;
+        }
 
         parentOfChunks = GameObject.Find("/Environment/World").transform;
-
-        SetDistances(6); // 2, 4, 6, 8, 10, 12...
-        LoadPosition();
     }
 
     // Set all distances to the according to the renderdistance
     // Call this on init
-    // call this on render distance setting changes
+    // Call this on render distance setting changes
     void SetDistances(int renderDistance)
     {
         this.renderDistance = renderDistance;
