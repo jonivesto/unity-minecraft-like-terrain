@@ -35,7 +35,7 @@ public class TerrainEngine : MonoBehaviour
  
         // Set render distance
         // 2, 4, 6, 8, 10, 12...
-        SetDistances(8);
+        SetDistances(6);
 
         // Render terrain from player's position
         LoadPosition();

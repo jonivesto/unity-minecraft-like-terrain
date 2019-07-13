@@ -186,11 +186,11 @@ public class TerrainGenerator
     public virtual double GetHillsAt(int x, int y)
     {
         // Get flatness map
-        float flatness = Mathf.PerlinNoise(x / Config.FLATNESS, y / Config.FLATNESS);
+        float flatness = Perlin.NoiseDistorted(x / Config.FLATNESS, y / Config.FLATNESS, 2.1f);
 
         double hillNoise = simplex1.Evaluate(x / Config.HILL_SIZE, y / Config.HILL_SIZE)
                          * flatness
-                         * (simplex4.Evaluate(x / 100f, y / 100f) * 150f);
+                         * (simplex4.Evaluate(x / 100f, y / 100f) * Config.HILLS_MULTIPLIER);
 
         if (hillNoise < 0) hillNoise = 0;
 

@@ -50,9 +50,9 @@
     public static int SEA_LEVEL = 64;
     public static float CONTINENT_SIZE = 800f;
     public static float HILL_SIZE = 110f;
-    public static float FLATNESS = 1000f;
-
-    public static float BIOME_SIZE = 300f;
+    public static float FLATNESS = 1600f;
+    public static float BIOME_SIZE = 400f;
+    public static float HILLS_MULTIPLIER = 100f;
 
     public static bool GENERATE_CAVES = true;
     public static float CAVE_FREQUENCY = 19f;
