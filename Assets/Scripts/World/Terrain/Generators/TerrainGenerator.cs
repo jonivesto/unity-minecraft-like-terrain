@@ -189,7 +189,7 @@ public class TerrainGenerator
         float flatness = Perlin.NoiseDistorted(x / Config.FLATNESS, y / Config.FLATNESS, 2.1f);
 
         double hillNoise = simplex1.Evaluate(x / Config.HILL_SIZE, y / Config.HILL_SIZE)
-                         * flatness
+                         * (flatness + 0.1f)
                          * (simplex4.Evaluate(x / 100f, y / 100f) * Config.HILLS_MULTIPLIER);
 
         if (hillNoise < 0) hillNoise = 0;
@@ -200,7 +200,7 @@ public class TerrainGenerator
     public virtual Biome GetBiomeAt(float x, float y, int ground)
     {
         // Beach and ocean
-        if (ground < Config.SEA_LEVEL + (Perlin.Noise(x / 44f, y / 44f) * 3))
+        if (ground < Config.SEA_LEVEL + (Perlin.Noise(x / 34f, y / 34f) * 3))
         {
             return Config.BIOMES[0]; // Ocean
         }

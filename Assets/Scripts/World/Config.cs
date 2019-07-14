@@ -44,10 +44,10 @@
     public static bool UNLOAD_FAR_CHUNKS = false;
 
     // Terrain generation
-    public const  int WORLD_HEIGHT = 192;
+    public const  int WORLD_HEIGHT = 208;
     public const int CHUNK_SIZE = 16;
 
-    public static int SEA_LEVEL = 64;
+    public static int SEA_LEVEL = 80;
     public static float CONTINENT_SIZE = 800f;
     public static float HILL_SIZE = 110f;
     public static float FLATNESS = 1600f;
@@ -55,7 +55,7 @@
     public static float HILLS_MULTIPLIER = 100f;
 
     public static bool GENERATE_CAVES = true;
-    public static float CAVE_FREQUENCY = 19f;
+    public static float CAVE_FREQUENCY = 20f;
     public static bool GENERATE_ORES = true;
 
 }
