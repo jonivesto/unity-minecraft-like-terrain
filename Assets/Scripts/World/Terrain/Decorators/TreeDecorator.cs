@@ -1,19 +1,4 @@
 ﻿
-// Adding new tree variants/species, requires following steps:
-// 1. Add tree to TreeSpecies enum
-// 2. Add tree's block IDs to GetBlocks() switch statement
-// 3. Create leaf models in GetLeafModel()
-// 4. (optional) Add fruits to GetFruit() and GetFruitModel()
-
-// Index is tree height
-public enum TreeSpecies
-{
-    Birch = 12,
-    Pine = 14,
-    Spruce = 8,
-    ThinBirch = 5,
-};
-
 static class TreeDecorator
 {
     public static void GenerateTrees(TerrainGenerator t)
@@ -28,6 +13,9 @@ static class TreeDecorator
         // Biome the tree is on
         Biome biome = t.GetBiomeAt(x + t.worldX, z + t.worldZ, y);
 
+        // Tree for this biome
+        TreeType tree = Config.TREES[r.Next(Config.TREES.Length)];
+
         // Dont make trees on flat
         if (t.GetHillsAt(x + t.worldX, z + t.worldZ) == 0) return;
 
@@ -40,6 +28,7 @@ static class TreeDecorator
             y = t.GetGroundAt(x + t.worldX, z + t.worldZ);
 
             biome = t.GetBiomeAt(x + t.worldX, z + t.worldZ, y);
+            tree = Config.TREES[biome.treeSpecies[r.Next(biome.treeSpecies.Length)]];
 
             // Block ID the tree will be created on
             int groundBlock = t.chunk.GetBlock(x, y, z);
@@ -47,15 +36,8 @@ static class TreeDecorator
             // Only grass and dirt can grow trees (IDs: 9, 8)
             if (groundBlock != 9 && groundBlock != 8) continue;
 
-            // Tree properties based on biome's properties:
-            TreeSpecies species = biome.treeSpecies[r.Next(0, biome.treeSpecies.Length)];
-            int woodBlock = GetBlocks(species, false);
-            int leavesBlock = GetBlocks(species, true);
-
-            // Species id is tree height
-            // Randomize by shortening the height with a random value 
-            int treeHeight = (int)species - r.Next(3);
-
+            // Randomize by shortening the height by a random value 
+            int treeHeight = tree.height - r.Next(3);
 
             // Skip this tree if the terrain does not allow tree in this position
             if (TreeBlocked(x + t.worldX, y, z + t.worldZ, treeHeight, t)) continue;
@@ -64,29 +46,28 @@ static class TreeDecorator
             // Set wood blocks
             for (int i = 1; i < treeHeight; i++)
             {
-                t.chunk.SetBlock(x, y + i, z, woodBlock);
+                t.chunk.SetBlock(x, y + i, z, tree.woodBlock);
             }
 
             // Set leaves
-            int[] model = GetLeafModels(species);
+            int[] model = tree.leafModel;
 
             for (int i = 0; i < model.Length; i+=3)
             {
-                t.terrainEngine.WorldSetBlockNoReplace(x + t.worldX + model[i], y + treeHeight + model[i+1], z + t.worldZ + model[i+2], leavesBlock);
+                t.terrainEngine.WorldSetBlockNoReplace(x + t.worldX + model[i], y + treeHeight + model[i+1], z + t.worldZ + model[i+2], tree.leafBlock);
             }
 
             // Set fruits
-            int fruit = GetFruit(species);
-            if (fruit != 0)
+            if (tree.fruitBlock != 0)
             {
-                int[] fruitModel = GetFruitModel(species);
+                int[] fruitModel = tree.fruitModel;
 
                 for (int i = 0; i < fruitModel.Length; i += 3)
                 {
                     // fruit spawn 50/50 change
                     if (r.Next(2) < 1) continue;
 
-                    t.terrainEngine.WorldSetBlockNoReplace(x + t.worldX + fruitModel[i], y + treeHeight + fruitModel[i + 1], z + t.worldZ + fruitModel[i + 2], fruit);
+                    t.terrainEngine.WorldSetBlockNoReplace(x + t.worldX + fruitModel[i], y + treeHeight + fruitModel[i + 1], z + t.worldZ + fruitModel[i + 2], tree.fruitBlock);
                 }
             }
         }
@@ -120,7 +101,7 @@ static class TreeDecorator
         // All clear
         return false;
     }
-
+    /*
     // Returns wood and leaf block IDs for given species
     private static int GetBlocks(TreeSpecies species, bool getLeaves)
     {
@@ -364,5 +345,5 @@ static class TreeDecorator
             // Default is null = no fruits for this species
             default: return null;
         }
-    }
+    }*/
 }

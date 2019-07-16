@@ -38,10 +38,20 @@
     };
 
     // List of structures in the game
-    // Index is ID 
+    // Index is structure ID 
     public static Structure[] STRUCTURES =
     {
-        new   DebugCubeStructure(),      // 0
+        new   DebugPyramidStructure(),   // 0
+    };
+
+    // List of trees in the game
+    // Index is tree ID 
+    public static TreeType[] TREES =
+    {
+        new            BirchTree(),      // 0
+        new             PineTree(),      // 1
+        new        ThinBirchTree(),      // 2
+        new           SpruceTree(),      // 3
     };
 
     // Debug

@@ -405,23 +405,42 @@ public class TerrainEngine : MonoBehaviour
         Chunk chunk = GetChunk(x / 16, z / 16);
 
         // Name this chunk in case it's not found
-        string name = x + "," + z;
+        string name = x / 16 + "," + z / 16;
+
 
         // Local pos
         x = x % 16;
         z = z % 16;
    
         if (z < 0)
-        {          
-            z = 16 + z;          
-            chunk = chunk.nextBack;
+        {                     
+            if (chunk == null || chunk.nextBack == null)
+            {
+                chunk = null;
+            }
+
+            else
+            {
+                z = 16 + z;
+                chunk = chunk.nextBack;
+            }
         }
 
         if (x < 0)
         {          
-            x = 16 + x;
-            chunk = chunk.nextLeft;
+            if (chunk == null || chunk.nextLeft == null)
+            {
+                chunk = null;
+            }
+
+            else
+            {
+                x = 16 + x;
+                chunk = chunk.nextLeft;
+            }
         }
+
+
 
         // If not found
         if (chunk == null)

@@ -7,11 +7,9 @@ public class BirchForestBiome : Biome
 
         treesPerChunk = 5;
 
-        treeSpecies = new TreeSpecies[]
+        treeSpecies = new int[]
         {
-            TreeSpecies.Birch,
-            TreeSpecies.Birch,
-            TreeSpecies.ThinBirch
+            0, 2
         };
 
         grass = 17;

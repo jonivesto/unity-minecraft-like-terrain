@@ -22,7 +22,6 @@ public static class StructureDecorator
             t.outOfBoundsDecorations.Remove(outName);
         }
 
-
         System.Random r = t.seed.ChunkBuild(t.chunk.chunkTransform);
 
         // Pick a local
@@ -44,7 +43,7 @@ public static class StructureDecorator
 
         // TODO: check if this location is ok for this structure
 
-        if(t.simplex1.Evaluate(gx, ground, gz) > 0.5)
+        if(t.simplex1.Evaluate(gx, ground, gz) > 0.65)
         {
             // Spawn structure
             for (int i = 0; i < structure.model.Length; i+=4)

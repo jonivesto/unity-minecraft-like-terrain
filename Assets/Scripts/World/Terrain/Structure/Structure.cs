@@ -18,5 +18,7 @@ public class Structure
     // Biomes this can spawn on
     public int[] spawnBiomes;
 
+    // Array of block types and coords
+    // x, y, z, blockID, x, y, z, blockID...
     public int[] model;
 }

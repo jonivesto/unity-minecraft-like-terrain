@@ -7,6 +7,6 @@ public class OceanBiome : Biome
         hiddenSurfaceBlock = 7;
 
         treesPerChunk = 0;
-        TreeSpecies[] treeSpecies = { };
+        int[] treeSpecies = { };
     }
 }

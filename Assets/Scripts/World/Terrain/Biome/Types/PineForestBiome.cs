@@ -7,10 +7,9 @@ public class PineForestBiome : Biome
 
         treesPerChunk = 4;
 
-        treeSpecies = new TreeSpecies[]
+        treeSpecies= new int[]
         {
-            TreeSpecies.Pine,
-            TreeSpecies.Pine,
+            1
         };
 
         grass = 17;

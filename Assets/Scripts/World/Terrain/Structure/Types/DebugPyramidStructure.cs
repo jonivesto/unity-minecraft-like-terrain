@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DebugCubeStructure : FixedStructure
+public class DebugPyramidStructure : FixedStructure
 {
-    public DebugCubeStructure()
+    public DebugPyramidStructure()
     {
         List<int> modelList = new List<int>();
-        int range = 10;
 
-        for (int y = 0; y < 9; y++)
+        int range = 58;
+
+        for (int y = 0; y < Config.WORLD_HEIGHT; y++)
         {
             for (int x = -range; x <= range; x++)
             {

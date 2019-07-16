@@ -18,11 +18,9 @@ public abstract class Biome
 
     // Tree species that can grow in this biome
     // You can increase the chance of one tree species over others by adding the same value many times
-    public TreeSpecies[] treeSpecies = 
+    public int[] treeSpecies = 
     {
-        TreeSpecies.Birch,
-        TreeSpecies.Spruce,
-        TreeSpecies.Pine
+        0,1,2,3
     };
 
     // Grass item id
