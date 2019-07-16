@@ -18,5 +18,5 @@ public class Structure
     // Biomes this can spawn on
     public int[] spawnBiomes;
 
-
+    public int[] model;
 }

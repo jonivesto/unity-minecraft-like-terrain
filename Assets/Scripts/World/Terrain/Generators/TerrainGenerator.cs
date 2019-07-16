@@ -2,6 +2,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 
 public class TerrainGenerator
 {
@@ -13,9 +14,11 @@ public class TerrainGenerator
     public int worldX, worldZ;
 
     internal OpenSimplexNoise simplex3, simplex4, simplex1, simplex2, simplex5;
+    internal Hashtable outOfBoundsDecorations = new Hashtable(); // Blocks that are generated outside loaded distance
     internal List<int> allowOverride = new List<int>();
-
     
+
+
     public TerrainGenerator(TerrainEngine terrainEngine)
     {
         this.terrainEngine = terrainEngine;
@@ -160,6 +163,9 @@ public class TerrainGenerator
     public virtual void Decorate(Chunk chunk)
     {
         SetChunk(chunk);
+
+        // Structures
+        StructureDecorator.Generate(this);
 
         // Generate default trees
         TreeDecorator.GenerateTrees(this);

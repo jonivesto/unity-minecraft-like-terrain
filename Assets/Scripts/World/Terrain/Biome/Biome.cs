@@ -31,6 +31,13 @@ public abstract class Biome
     // Amount of grass
     public float grassDensity = 0.5f;
 
+    // Structures that can spawn on this biome
+    // Structure index in Config.STRUCTURES[]
+    public int[] structures =
+    {
+        0, 0
+    };
+
     // Returns biome's index in Config.BIOMES[]
     public int GetID()
     {

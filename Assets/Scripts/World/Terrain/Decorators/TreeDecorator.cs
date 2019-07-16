@@ -357,7 +357,6 @@ static class TreeDecorator
             {
                 1, -4, 0,
                 2, -4, 0,
-
                 0, -4, 1,
                 0, -4, 2,
             };

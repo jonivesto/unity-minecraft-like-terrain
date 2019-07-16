@@ -37,6 +37,12 @@
         new      PineForestBiome(),      // 2
     };
 
+    // List of structures in the game
+    // Index is ID 
+    public static Structure[] STRUCTURES =
+    {
+        new   DebugCubeStructure(),      // 0
+    };
 
     // Debug
     public static bool SAVE_CHUNKS_ON_GENERATE = false;

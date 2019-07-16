@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
+
 public class TerrainEngine : MonoBehaviour
 {
     public string worldName;
@@ -403,6 +404,9 @@ public class TerrainEngine : MonoBehaviour
         // Target chunk
         Chunk chunk = GetChunk(x / 16, z / 16);
 
+        // Name this chunk in case it's not found
+        string name = x + "," + z;
+
         // Local pos
         x = x % 16;
         z = z % 16;
@@ -419,11 +423,30 @@ public class TerrainEngine : MonoBehaviour
             chunk = chunk.nextLeft;
         }
 
-        if (chunk != null)
+        // If not found
+        if (chunk == null)
+        {
+            // Set to wait until this chunk becomes to decorarion range
+            Hashtable hash = terrainGenerator.outOfBoundsDecorations;
+            List<int[]> list;
+
+            if (hash.Contains(name))
+            {
+                list = hash[name] as List<int[]>;
+            }
+            else
+            {
+                list = new List<int[]>();
+            }
+
+            list.Add(new int[] { x, y, z, blockId });
+            hash.Remove(name);
+            hash.Add(name, list);
+        }
+        else
         {
             chunk.SetBlock(x, y, z, blockId);
         }
-
     }
 
     // Sets block in world space if target position is air (id = 0)
