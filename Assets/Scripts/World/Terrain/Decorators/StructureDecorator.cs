@@ -16,7 +16,8 @@ public static class StructureDecorator
             // Set blocks
             foreach (int[] model in blocks)
             {
-                t.terrainEngine.WorldSetBlock(model[0], model[1], model[2], model[3]);
+                //t.terrainEngine.WorldSetBlock(model[0], model[1], model[2], model[3]);
+                t.chunk.SetBlock(model[0], model[1], model[2], model[3]);
             }
 
             t.outOfBoundsDecorations.Remove(outName);
@@ -48,7 +49,15 @@ public static class StructureDecorator
             // Spawn structure
             for (int i = 0; i < structure.model.Length; i+=4)
             {
-                t.terrainEngine.WorldSetBlock(gx + structure.model[i], ground + structure.model[i+1], gz + structure.model[i+2], structure.model[i+3]);
+                int xx = structure.model[i];
+                int yy = ground + structure.model[i + 1];
+                int zz = structure.model[i + 2];
+
+                // Flip if negative spawn pos
+                if (gx > 0) xx *= -1;
+                if (gz > 0) zz *= -1;
+
+                t.terrainEngine.WorldSetBlock(xx + gx, yy, zz + gz, structure.model[i+3]);
             }
         }
 

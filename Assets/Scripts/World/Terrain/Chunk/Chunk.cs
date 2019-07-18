@@ -5,6 +5,7 @@ public class Chunk : MonoBehaviour
     public bool generated = false;
     public bool decorated = false;
     public bool rendered = false;
+    public bool pendingRefresh = false;
     public bool unsaved = false;
 
     internal Chunk nextRight, nextLeft, nextFront, nextBack;
@@ -29,6 +30,7 @@ public class Chunk : MonoBehaviour
     public void SetBlock(int x, int y, int z, int blockId)
     {
         chunkData.blocks[x, y, z] = blockId;
+        if(rendered) pendingRefresh = true;
     }
 
     public int GetBlock(int x, int y, int z)

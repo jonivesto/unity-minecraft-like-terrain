@@ -27,7 +27,7 @@ public class TerrainEngine : MonoBehaviour
         worldName = "My world";
 
         //seed = new Seed();
-        seed = new Seed("0004887891122446");
+        seed = new Seed("8799887091982440");
 
         // 0 = default
         // 1 = alien
@@ -36,7 +36,7 @@ public class TerrainEngine : MonoBehaviour
  
         // Set render distance
         // 2, 4, 6, 8, 10, 12...
-        SetDistances(6);
+        SetDistances(4);
 
         // Render terrain from player's position
         LoadPosition();
@@ -321,19 +321,17 @@ public class TerrainEngine : MonoBehaviour
         }
 
         // Render chunks
-        for (int i = 0; i < renderedChunks.Length; i++)
+        for (int i = 0; i < parentOfChunks.childCount; ++i)
         {
-            if(GetChunk(renderedChunks[i]) != null)
-            {
-                Chunk chunk = GetChunk(renderedChunks[i]);
+            Chunk chunk = parentOfChunks.GetChild(i).gameObject.GetComponent<Chunk>();
 
-                if (!chunk.rendered && chunk.generated)
-                {
-                    chunkRenderer.Render(chunk);
-                    chunk.rendered = true;
-                }      
+            if (chunk.pendingRefresh || !chunk.rendered && chunk.generated && chunk.decorated)
+            {
+                chunkRenderer.Render(chunk);
+                chunk.rendered = true;
+                chunk.pendingRefresh = false;
             }
-                
+
             // If true, render only one chunk and continue on next frame
             if (async)
             {
@@ -370,10 +368,11 @@ public class TerrainEngine : MonoBehaviour
         if (chunk != null && chunk.rendered && chunk.decorated)
         {
             chunkRenderer.Render(chunk);
+            chunk.pendingRefresh = false;
         }
         else
         {
-            Debug.LogWarning(chunk + " cannot be updated");
+            Debug.LogWarning(chunk + " cannot be updated. The chunk is not rendered yet");
         }
     }
 
@@ -402,50 +401,37 @@ public class TerrainEngine : MonoBehaviour
     public void WorldSetBlock(int x, int y, int z, int blockId)
     {
         // Target chunk
-        Chunk chunk = GetChunk(x / 16, z / 16);
+        int tx = x / 16;
+        int tz = z / 16;
+
+        Chunk chunk = GetChunk(tx, tz);
 
         // Name this chunk in case it's not found
         string name = x / 16 + "," + z / 16;
 
-
         // Local pos
-        x = x % 16;
-        z = z % 16;
-   
-        if (z < 0)
-        {                     
-            if (chunk == null || chunk.nextBack == null)
-            {
-                chunk = null;
-            }
+        int lx = x % 16;
+        int lz = z % 16;
 
-            else
-            {
-                z = 16 + z;
-                chunk = chunk.nextBack;
-            }
+        if (lz < 0)
+        {
+            lz = 16 + lz;
+            tz = (z / 16) - 1;
         }
 
-        if (x < 0)
-        {          
-            if (chunk == null || chunk.nextLeft == null)
-            {
-                chunk = null;
-            }
-
-            else
-            {
-                x = 16 + x;
-                chunk = chunk.nextLeft;
-            }
+        if (lx < 0)
+        {
+            lx = 16 + lx;
+            tx = (x / 16) - 1;            
         }
 
-
+        chunk = GetChunk(tx, tz);
+        name = tx + "," + tz;
 
         // If not found
+        // Set to wait until this chunk becomes to decorarion range
         if (chunk == null)
-        {
-            // Set to wait until this chunk becomes to decorarion range
+        {           
             Hashtable hash = terrainGenerator.outOfBoundsDecorations;
             List<int[]> list;
 
@@ -458,13 +444,14 @@ public class TerrainEngine : MonoBehaviour
                 list = new List<int[]>();
             }
 
-            list.Add(new int[] { x, y, z, blockId });
+            list.Add(new int[] { lx, y, lz, blockId });
             hash.Remove(name);
             hash.Add(name, list);
         }
+        // Else just set the block
         else
         {
-            chunk.SetBlock(x, y, z, blockId);
+            chunk.SetBlock(lx, y, lz, blockId);
         }
     }
 
