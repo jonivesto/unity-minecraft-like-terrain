@@ -325,6 +325,7 @@ public class TerrainEngine : MonoBehaviour
         {
             Chunk chunk = parentOfChunks.GetChild(i).gameObject.GetComponent<Chunk>();
 
+            // Render if chunk has been modified or it is not rendered yet
             if (chunk.pendingRefresh || !chunk.rendered && chunk.generated && chunk.decorated)
             {
                 chunkRenderer.Render(chunk);

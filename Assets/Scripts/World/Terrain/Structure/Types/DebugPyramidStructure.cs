@@ -8,7 +8,7 @@ public class DebugPyramidStructure : FixedStructure
     {
         List<int> modelList = new List<int>();
 
-        int range = 15;
+        int range = 13;
 
         for (int y = 0; y < Config.WORLD_HEIGHT; y++)
         {
@@ -20,10 +20,7 @@ public class DebugPyramidStructure : FixedStructure
                     modelList.Add(y);
                     modelList.Add(z);
 
-                    if(x<range/2&&z<range/2)
-                        modelList.Add(2);
-                    else
-                        modelList.Add(1);
+                    modelList.Add(1);
                 }
             }
             range--;
