@@ -8,4 +8,5 @@ public class FixedStructure : Structure
     {
         return false;
     }
+
 }

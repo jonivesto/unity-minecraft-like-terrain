@@ -8,4 +8,5 @@ public class ProcedualStructure : Structure
     {
         return true;
     }
+
 }

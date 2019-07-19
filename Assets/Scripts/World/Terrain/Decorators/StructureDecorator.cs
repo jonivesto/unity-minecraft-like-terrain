@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using NoiseTest;
+using System.Linq;
 
 public static class StructureDecorator
 {
@@ -42,22 +43,52 @@ public static class StructureDecorator
         // Get random structure from list of possible structures for this biome
         Structure structure = Config.STRUCTURES[biome.structures[r.Next(biome.structures.Length)]];
 
-        // TODO: check if this location is ok for this structure
+        // Check if this biome is ok for the structure
+        if (!structure.spawnBiomes.Contains(biome.GetID())) return;
 
-        if(t.simplex1.Evaluate(gx, ground, gz) > 0.65)
+        // Ground based on structure properties
+        // For ground level
+        if (structure.spawnFixedToGround)
+        {
+            ground += structure.spawnFix;            
+        }
+        // For underground
+        else
+        {
+            ground += Mathf.Abs(structure.spawnFix);
+        }
+
+        if (ground < 1) ground = 1;
+
+        if (t.simplex1.Evaluate(gx, gz) > 0.65)
         {
             // Spawn structure
-            for (int i = 0; i < structure.model.Length; i+=4)
+            int[] model = structure.GetModel();
+            for (int i = 0; i < model.Length; i+=4)
             {
-                int xx = structure.model[i];
-                int yy = ground + structure.model[i + 1];
-                int zz = structure.model[i + 2];
+                int xx = model[i];
+                int yy = ground + model[i + 1];
+                int zz = model[i + 2];
+
+                // Foundations
+                if (model[i + 1] == 0 && structure.foundationBlock != 0)
+                {
+                    for (int j = ground; j > 0; j--)
+                    {
+                        int bid = t.terrainEngine.WorldGetBlock(xx + gx, j, zz + gz);
+                        if (bid==0||bid==5||bid==22)
+                        {
+                            t.terrainEngine.WorldSetBlock(xx + gx, j, zz + gz, structure.foundationBlock);
+                            continue;
+                        }
+                    }
+                }
 
                 // Flip if negative spawn pos
                 if (gx > 0) xx *= -1;
                 if (gz > 0) zz *= -1;
 
-                t.terrainEngine.WorldSetBlock(xx + gx, yy, zz + gz, structure.model[i+3]);
+                t.terrainEngine.WorldSetBlock(xx + gx, yy, zz + gz, model[i+3]);
             }
         }
 
