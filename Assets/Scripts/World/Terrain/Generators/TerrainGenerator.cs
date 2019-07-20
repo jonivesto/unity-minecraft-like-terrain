@@ -18,7 +18,6 @@ public class TerrainGenerator
     internal List<int> allowOverride = new List<int>();
     
 
-
     public TerrainGenerator(TerrainEngine terrainEngine)
     {
         this.terrainEngine = terrainEngine;
@@ -175,9 +174,8 @@ public class TerrainGenerator
     {
         // This noise defines oceans and continents
         double continentNoise = simplex3.Evaluate(x / Config.CONTINENT_SIZE, y / Config.CONTINENT_SIZE) 
-                              * 70f // height multiplier
+                              * 60f // height multiplier
                               + Config.SEA_LEVEL;
-
         // Define hills
         double hillNoise = GetHillsAt(x, y);
 
@@ -189,13 +187,15 @@ public class TerrainGenerator
         return Mathf.FloorToInt((float)(continentNoise + hillNoise + terrainNoise));
     }
 
+    public virtual double GetFlatnessAt(int x, int y)
+    {
+        return Perlin.NoiseDistorted(x / Config.FLATNESS, y / Config.FLATNESS, 2.1f);
+    }
+
     public virtual double GetHillsAt(int x, int y)
     {
-        // Get flatness map
-        float flatness = Perlin.NoiseDistorted(x / Config.FLATNESS, y / Config.FLATNESS, 2.1f);
-
         double hillNoise = simplex1.Evaluate(x / Config.HILL_SIZE, y / Config.HILL_SIZE)
-                         * (flatness + 0.1f)
+                         * (GetFlatnessAt(x, y) + 0.1f)
                          * (simplex4.Evaluate(x / 100f, y / 100f) * Config.HILLS_MULTIPLIER);
 
         if (hillNoise < 0) hillNoise = 0;

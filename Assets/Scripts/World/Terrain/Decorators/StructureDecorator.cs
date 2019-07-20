@@ -43,8 +43,9 @@ public static class StructureDecorator
         // Get random structure from list of possible structures for this biome
         Structure structure = Config.STRUCTURES[biome.structures[r.Next(biome.structures.Length)]];
 
-        // Check if this biome is ok for the structure
-        if (!structure.spawnBiomes.Contains(biome.GetID())) return;
+        // Check if this flatness is in range for the structure
+        double flatness = t.GetFlatnessAt(gx, gz);
+        if (flatness < structure.minSpawnFlatness || flatness > structure.maxSpawnFlatness) return;
 
         // Ground based on structure properties
         // For ground level
@@ -55,15 +56,15 @@ public static class StructureDecorator
         // For underground
         else
         {
-            ground += Mathf.Abs(structure.spawnFix);
+            ground = Mathf.Abs(structure.spawnFix);
         }
 
         if (ground < 1) ground = 1;
 
-        if (t.simplex1.Evaluate(gx, gz) > 0.65)
+        if (t.simplex1.Evaluate(gx, gz) > 0.55)
         {
             // Spawn structure
-            int[] model = structure.GetModel();
+            int[] model = structure.GetModel(r);
             for (int i = 0; i < model.Length; i+=4)
             {
                 int xx = model[i];
@@ -76,10 +77,15 @@ public static class StructureDecorator
                     for (int j = ground; j > 0; j--)
                     {
                         int bid = t.terrainEngine.WorldGetBlock(xx + gx, j, zz + gz);
-                        if (bid==0||bid==5||bid==22)
+
+                        // Only air and liquid can be overwritten by foundations
+                        if (bid==0 || (Config.ID[bid] as Liquid) != null)
                         {
                             t.terrainEngine.WorldSetBlock(xx + gx, j, zz + gz, structure.foundationBlock);
-                            continue;
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
                 }

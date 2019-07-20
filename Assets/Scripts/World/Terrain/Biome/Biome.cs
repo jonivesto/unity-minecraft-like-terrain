@@ -33,7 +33,7 @@ public abstract class Biome
     // Structure index in Config.STRUCTURES[]
     public int[] structures =
     {
-        0, 0
+        0, 1
     };
 
     // Returns biome's index in Config.BIOMES[]

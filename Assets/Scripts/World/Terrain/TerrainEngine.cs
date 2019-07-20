@@ -27,7 +27,7 @@ public class TerrainEngine : MonoBehaviour
         worldName = "My world";
 
         //seed = new Seed();
-        seed = new Seed("8799887091982440");
+        seed = new Seed("8799855771982440");
 
         // 0 = default
         // 1 = alien

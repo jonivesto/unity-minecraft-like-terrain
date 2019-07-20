@@ -42,6 +42,7 @@
     public static Structure[] STRUCTURES =
     {
         new   DebugPyramidStructure(),   // 0
+        new             TombNetwork(),   // 1
     };
 
     // List of trees in the game

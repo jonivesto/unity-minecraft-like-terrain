@@ -1,12 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 
 public class FixedStructure : Structure
 {
-    public bool IsProcedual()
-    {
-        return false;
-    }
+    // Array of block types and coords
+    // x, y, z, blockID, x, y, z, blockID...
+    internal int[] model;
 
+    public override int[] GetModel(Random r)
+    {
+        return model;
+    }
 }

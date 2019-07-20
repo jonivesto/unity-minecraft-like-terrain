@@ -6,17 +6,11 @@ public class DebugPyramidStructure : FixedStructure
 {
     public DebugPyramidStructure()
     {
-        spawnFix = 14;
+        spawnFix = -4;
         foundationBlock = 2;
+        spawnFixedToGround = true;
 
-        spawnBiomes = new int[]
-        {
-            1, 2
-        };
-    }
-
-    public override int[] GetModel()
-    {
+        // Model
         List<int> modelList = new List<int>();
 
         int range = 13;
@@ -37,6 +31,7 @@ public class DebugPyramidStructure : FixedStructure
             range--;
         }
 
-        return modelList.ToArray();
+        model = modelList.ToArray();
     }
+
 }
