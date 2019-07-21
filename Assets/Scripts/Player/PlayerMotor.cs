@@ -8,8 +8,6 @@ public class PlayerMotor : MonoBehaviour
     TerrainEngine terrainEngine;
     Rigidbody rigidBody;
 
-    private Transform raycastIndicator;
-
     private Transform playerCamera;
     private Vector3 movement;
     private float lastRotation;
@@ -23,7 +21,6 @@ public class PlayerMotor : MonoBehaviour
         terrainEngine = GameObject.Find("/Environment/World").GetComponent<TerrainEngine>();
         rigidBody = GetComponent<Rigidbody>();
         playerCamera = transform.Find("Player Camera");
-        raycastIndicator = GameObject.Find("/Raycast target").transform;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -86,13 +83,12 @@ public class PlayerMotor : MonoBehaviour
                 Mathf.FloorToInt(hit.point.y + (hit.normal.y) / 2),
                 Mathf.FloorToInt(hit.point.z + (hit.normal.z) / 2));
 
-            raycastIndicator.position = selectedBlock;
         }
 
         int x = selectedBlock.x;
         int y = selectedBlock.y;
         int z = selectedBlock.z;
-        terrainEngine.WorldSetBlockRefresh(x, y, z, 1);
+        terrainEngine.WorldSetBlockRefresh(x, y, z, 3);
     }
 
     internal void ShootRaycast()
@@ -105,8 +101,6 @@ public class PlayerMotor : MonoBehaviour
                 Mathf.FloorToInt(hit.point.x - (hit.normal.x) / 2), 
                 Mathf.FloorToInt(hit.point.y - (hit.normal.y) / 2), 
                 Mathf.FloorToInt(hit.point.z - (hit.normal.z) / 2));
-
-            raycastIndicator.position = selectedBlock;
         }
     }
 }

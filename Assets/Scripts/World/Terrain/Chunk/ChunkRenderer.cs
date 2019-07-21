@@ -85,7 +85,7 @@ public class ChunkRenderer
 
                                     renderThisSide = false;
                                 }
-
+                                /*
                                 // Bottom face
                                 if (y - 1 >= 0) // Next in array bounds
                                 {
@@ -128,7 +128,7 @@ public class ChunkRenderer
 
                                     renderThisSide = false;
                                 }
-
+                                */
                                 // TODO: Other faces for liquid
 
 
@@ -515,7 +515,7 @@ public class ChunkRenderer
 
         renderer = chunkLiquids.GetComponent<MeshRenderer>();
         renderer.material = Resources.Load<Material>("Materials/Liquids");
-
+        
         // Display customs
         chunk.transform.GetChild(1).gameObject.SetActive(true);
     }
@@ -601,7 +601,8 @@ public class ChunkRenderer
             {
                 GameObject.Destroy(c.gameObject);
             }
-        }   
+        }
+
     }
 
 }

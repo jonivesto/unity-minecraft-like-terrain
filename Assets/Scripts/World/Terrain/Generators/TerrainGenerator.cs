@@ -97,7 +97,7 @@ public class TerrainGenerator
                     {
                         if(y == ground - s)
                         {
-                            if(chunk.GetBlock(x, y, z) != 0 || biome.GetID() == 0) // Skip if cave or ocean
+                            if(chunk.GetBlock(x, y, z) != 0) // Don't cover caves with surface material
                             {
                                 if(y == ground)
                                 {
