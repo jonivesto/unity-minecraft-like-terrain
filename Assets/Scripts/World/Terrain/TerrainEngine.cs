@@ -28,6 +28,7 @@ public class TerrainEngine : MonoBehaviour
 
         //seed = new Seed();
         seed = new Seed("8799855771982440");
+        Config.seed = seed;
 
         // 0 = default
         // 1 = alien
@@ -369,7 +370,7 @@ public class TerrainEngine : MonoBehaviour
         if (chunk != null && chunk.rendered && chunk.decorated)
         {
             chunkRenderer.Render(chunk);
-            chunk.pendingRefresh = false;
+            chunk.pendingRefresh = false;          
         }
         else
         {
@@ -519,5 +520,46 @@ public class TerrainEngine : MonoBehaviour
         }
     }
 
+    public void WorldSetBlockRefresh(int x, int y, int z, int blockId)
+    {
+        // Target chunk
+        int tx = x / 16;
+        int tz = z / 16;
+
+        // Local pos
+        int lx = x % 16;
+        int lz = z % 16;
+
+        if (lz < 0)
+        {
+            lz = 16 + lz;
+            tz = (z / 16) - 1;
+        }
+
+        if (lx < 0)
+        {
+            lx = 16 + lx;
+            tx = (x / 16) - 1;
+        }
+
+        Chunk chunk = GetChunk(tx, tz);
+
+        if (chunk != null)       
+        {
+            chunk.SetBlock(lx, y, lz, blockId);
+
+            x = chunk.chunkTransform.x;
+            z = chunk.chunkTransform.z;
+
+            RefreshChunk(x, z);
+            if (lx == 0) RefreshChunk(x-1, z);
+            else if (lx == 15) RefreshChunk(x + 1, z);
+
+            if (lz == 0) RefreshChunk(x, z - 1);
+            else if (lz == 15) RefreshChunk(x, z + 1);
+        }
+
+        
+    }
 }
 

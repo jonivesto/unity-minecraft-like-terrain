@@ -8,18 +8,22 @@ public class PlayerMotor : MonoBehaviour
     TerrainEngine terrainEngine;
     Rigidbody rigidBody;
 
+    private Transform raycastIndicator;
+
     private Transform playerCamera;
     private Vector3 movement;
     private float lastRotation;
     private float playerRotationX;
     private float playerRotationY;
     private float mouseLookSensitivity = 35f;
+    private Vector3Int selectedBlock;
 
     void Start()
     {
         terrainEngine = GameObject.Find("/Environment/World").GetComponent<TerrainEngine>();
         rigidBody = GetComponent<Rigidbody>();
         playerCamera = transform.Find("Player Camera");
+        raycastIndicator = GameObject.Find("/Raycast target").transform;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -36,6 +40,7 @@ public class PlayerMotor : MonoBehaviour
         lastRotation += playerRotationX * mouseLookSensitivity * Time.deltaTime;
         lastRotation = Mathf.Clamp(lastRotation, -clampAngle, clampAngle);
         playerCamera.localRotation = Quaternion.Euler(lastRotation, 0f, 0.0f);
+        ShootRaycast();
 
         // Player movement
         rigidBody.AddForce(transform.TransformDirection(movement) * 13f * 5f);
@@ -59,5 +64,49 @@ public class PlayerMotor : MonoBehaviour
     {
         playerRotationY = x;
         playerRotationX = y;
+    }
+
+    internal void PrimaryFire()
+    {
+        int x = selectedBlock.x;
+        int y = selectedBlock.y;
+        int z = selectedBlock.z;
+        terrainEngine.WorldSetBlockRefresh(x, y, z, 0);
+    }
+
+    internal void SecondaryFire()
+    {
+        RaycastHit hit;
+
+        // Setting block requires + normal, not -
+        if (Physics.Raycast(playerCamera.position, playerCamera.TransformDirection(Vector3.forward) * 1.1f, out hit, Mathf.Infinity))
+        {
+            selectedBlock = new Vector3Int(
+                Mathf.FloorToInt(hit.point.x + (hit.normal.x) / 2),
+                Mathf.FloorToInt(hit.point.y + (hit.normal.y) / 2),
+                Mathf.FloorToInt(hit.point.z + (hit.normal.z) / 2));
+
+            raycastIndicator.position = selectedBlock;
+        }
+
+        int x = selectedBlock.x;
+        int y = selectedBlock.y;
+        int z = selectedBlock.z;
+        terrainEngine.WorldSetBlockRefresh(x, y, z, 1);
+    }
+
+    internal void ShootRaycast()
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(playerCamera.position, playerCamera.TransformDirection(Vector3.forward) * 1.1f, out hit, Mathf.Infinity))
+        {
+            selectedBlock = new Vector3Int(
+                Mathf.FloorToInt(hit.point.x - (hit.normal.x) / 2), 
+                Mathf.FloorToInt(hit.point.y - (hit.normal.y) / 2), 
+                Mathf.FloorToInt(hit.point.z - (hit.normal.z) / 2));
+
+            raycastIndicator.position = selectedBlock;
+        }
     }
 }

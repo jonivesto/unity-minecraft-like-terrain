@@ -61,7 +61,8 @@
     public static bool UNLOAD_FAR_CHUNKS = false;
 
     // Terrain generation
-    public const  int WORLD_HEIGHT = 208;
+    public static Seed seed;
+    public const int WORLD_HEIGHT = 208;
     public const int CHUNK_SIZE = 16;
 
     public static int SEA_LEVEL = 80;

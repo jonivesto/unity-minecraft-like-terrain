@@ -25,11 +25,11 @@ public class PlayerInput : MonoBehaviour
         playerMotor.MouseLook(mouseX, mouseY);
 
         // Get right mouse button
-        if (Input.GetButtonDown("Fire2")) { }
+        if (Input.GetButtonDown("Fire2")) { playerMotor.SecondaryFire(); }
         if (Input.GetButtonUp("Fire2")) { }
 
         // Get Left mouse button
-        if (Input.GetButtonDown("Fire1")) { }
+        if (Input.GetButtonDown("Fire1")) { playerMotor.PrimaryFire(); }
         if (Input.GetButtonUp("Fire1")) { }
 
         // Get spacebar

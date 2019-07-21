@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class ProcedualStructureRoom
 {
-    internal int[] model;
-    internal int[] doors;
-
+    //internal int[] model;
+    //internal int[] doors;
 
     internal ProcedualStructureRoom()
     {

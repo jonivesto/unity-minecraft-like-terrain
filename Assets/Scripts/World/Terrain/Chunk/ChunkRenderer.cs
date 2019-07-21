@@ -156,15 +156,14 @@ public class ChunkRenderer
                                 customObj.AddComponent<MeshFilter>();
                                 customObj.AddComponent<MeshRenderer>();
                                 
-
                                 // Set parent and position
                                 customObj.transform.SetParent(chunk.transform.GetChild(1));
                                 if (custom.displaced)
                                 {
-                                    
-                                    customObj.transform.localPosition = new Vector3(x + 0.08f * ((Random.value <= .5) ? 1 : -1), 
+                                    System.Random r = Config.seed.ChunkBuild(chunk.chunkTransform);
+                                    customObj.transform.localPosition = new Vector3(x + 0.08f * ((r.Next(10) <= 5) ? 1 : -1), 
                                                                                     y, 
-                                                                                    z + 0.08f * ((Random.value <= .5) ? 1 : -1));
+                                                                                    z + 0.08f * ((r.Next(10) <= 5) ? 1 : -1));
                                 }
                                 else
                                 {
@@ -182,7 +181,6 @@ public class ChunkRenderer
                                     customObj.GetComponent<MeshCollider>().sharedMesh = m;
                                 }
                                     
-
                                 // Set material
                                 customObj.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Custom");
                             }
