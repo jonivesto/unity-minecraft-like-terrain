@@ -79,7 +79,7 @@ public static class StructureDecorator
                         int bid = t.terrainEngine.WorldGetBlock(xx + gx, j, zz + gz);
 
                         // Only air and liquid can be overwritten by foundations
-                        if (bid==0 || (Config.ID[bid] as Liquid) != null)
+                        if (bid == 0 || (Config.ID[bid] as Liquid) != null)
                         {
                             t.terrainEngine.WorldSetBlock(xx + gx, j, zz + gz, structure.foundationBlock);
                         }
