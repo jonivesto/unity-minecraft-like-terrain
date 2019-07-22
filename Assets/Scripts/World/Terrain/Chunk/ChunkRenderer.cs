@@ -39,37 +39,8 @@ public class ChunkRenderer
                             if (liquid.isStill)
                             {
                                 bool renderThisSide = false;
+                                float liquidLevel = 1f;
 
-                                // Top face
-                                if (y + 1 < Config.WORLD_HEIGHT) // Next in array bounds
-                                {
-                                    int next = chunk.GetBlock(x, y + 1, z);
-
-                                    if (next != currentBlockId) // Next is not same liquid
-                                    {
-                                        renderThisSide = true;
-                                    }
-                                }
-                                else // Next is out of array bounds
-                                {
-                                    renderThisSide = true;
-                                }
-
-                                // Top face
-                                if (renderThisSide)
-                                {
-                                    liquidVerts.Add(new Vector3(x, y + 0.9f, z));
-                                    liquidVerts.Add(new Vector3(x + 1, y + 0.9f, z));
-                                    liquidVerts.Add(new Vector3(x + 1, y + 0.9f, z + 1));
-                                    liquidVerts.Add(new Vector3(x, y + 0.9f, z + 1));
-
-                                    int vCount = liquidVerts.Count - 4;
-                                    AddTriangles(liquidTris, vCount, true);
-                                    AddUvs(liquidUvs, currentBlockId, 0);
-
-                                    renderThisSide = false;
-                                }
-                                
                                 // Bottom face
                                 if (y - 1 >= 0) // Next in array bounds
                                 {
@@ -97,6 +68,39 @@ public class ChunkRenderer
                                     renderThisSide = false;
                                 }
 
+                                // Top face
+                                if (y + 1 < Config.WORLD_HEIGHT) // Next in array bounds
+                                {
+                                    int next = chunk.GetBlock(x, y + 1, z);
+
+                                    if (next != currentBlockId) // Next is not same liquid
+                                    {
+                                        renderThisSide = true;
+                                        
+                                        // Set water level
+                                        liquidLevel = 0.9f;                                      
+                                    }
+                                }
+                                else // Next is out of array bounds
+                                {
+                                    renderThisSide = true;
+                                }
+
+                                // Top face
+                                if (renderThisSide)
+                                {
+                                    liquidVerts.Add(new Vector3(x, y + liquidLevel, z));
+                                    liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z));
+                                    liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z + 1));
+                                    liquidVerts.Add(new Vector3(x, y + liquidLevel, z + 1));
+
+                                    int vCount = liquidVerts.Count - 4;
+                                    AddTriangles(liquidTris, vCount, true);
+                                    AddUvs(liquidUvs, currentBlockId, 0);
+
+                                    renderThisSide = false;
+                                }
+
                                 // Right face  
                                 int nextH = (x + 1 < 16) // Get next from chunk it is in
                                     ? chunk.GetBlock(x + 1, y, z)
@@ -111,8 +115,8 @@ public class ChunkRenderer
                                 if (renderThisSide)
                                 {
                                     liquidVerts.Add(new Vector3(x + 1, y, z));
-                                    liquidVerts.Add(new Vector3(x + 1, y + 1, z));
-                                    liquidVerts.Add(new Vector3(x + 1, y + 1, z + 1));
+                                    liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z));
+                                    liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z + 1));
                                     liquidVerts.Add(new Vector3(x + 1, y, z + 1));
 
                                     int vCount = liquidVerts.Count - 4;
@@ -136,8 +140,8 @@ public class ChunkRenderer
                                 if (renderThisSide)
                                 {
                                     liquidVerts.Add(new Vector3(x, y, z));
-                                    liquidVerts.Add(new Vector3(x, y + 1, z));
-                                    liquidVerts.Add(new Vector3(x, y + 1, z + 1));
+                                    liquidVerts.Add(new Vector3(x, y + liquidLevel, z));
+                                    liquidVerts.Add(new Vector3(x, y + liquidLevel, z + 1));
                                     liquidVerts.Add(new Vector3(x, y, z + 1));
 
                                     int vCount = liquidVerts.Count - 4;
@@ -162,8 +166,8 @@ public class ChunkRenderer
                                 if (renderThisSide)
                                 {
                                     liquidVerts.Add(new Vector3(x, y, z + 1));
-                                    liquidVerts.Add(new Vector3(x, y + 1, z + 1));
-                                    liquidVerts.Add(new Vector3(x + 1, y + 1, z + 1));
+                                    liquidVerts.Add(new Vector3(x, y + liquidLevel, z + 1));
+                                    liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z + 1));
                                     liquidVerts.Add(new Vector3(x + 1, y, z + 1));
 
                                     int vCount = liquidVerts.Count - 4;
@@ -188,8 +192,8 @@ public class ChunkRenderer
                                 if (renderThisSide)
                                 {
                                     liquidVerts.Add(new Vector3(x, y, z));
-                                    liquidVerts.Add(new Vector3(x, y + 1, z));
-                                    liquidVerts.Add(new Vector3(x + 1, y + 1, z));
+                                    liquidVerts.Add(new Vector3(x, y + liquidLevel, z));
+                                    liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z));
                                     liquidVerts.Add(new Vector3(x + 1, y, z));
 
                                     int vCount = liquidVerts.Count - 4;
