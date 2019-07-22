@@ -46,9 +46,18 @@ public class ChunkRenderer
                                 {
                                     int next = chunk.GetBlock(x, y - 1, z);
 
-                                    if (next != currentBlockId) // Next is not same liquid
+                                    if (next != currentBlockId) // if next is not same liquid
                                     {
-                                        renderThisSide = true;
+                                        Block nextBlock = Config.ID[next] as Block;
+
+                                        if (nextBlock == null) // Next is not a block
+                                        {
+                                            renderThisSide = true;
+                                        }
+                                        else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                                        {
+                                            renderThisSide = true;
+                                        }
                                     }
                                 }
 
@@ -106,9 +115,18 @@ public class ChunkRenderer
                                     ? chunk.GetBlock(x + 1, y, z)
                                     : chunk.nextRight.GetBlock(0, y, z);
 
-                                if (nextH != currentBlockId) // Next is not same liquid
+                                if (nextH != currentBlockId) // if next is not same liquid
                                 {
-                                    renderThisSide = true;
+                                    Block nextBlock = Config.ID[nextH] as Block;
+
+                                    if (nextBlock == null) // Next is not a block
+                                    {
+                                        renderThisSide = true;
+                                    }
+                                    else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                                    {
+                                        renderThisSide = true;
+                                    }
                                 }
 
                                 // Right face      
@@ -132,9 +150,18 @@ public class ChunkRenderer
                                     ? chunk.nextLeft.GetBlock(15, y, z)
                                     : chunk.GetBlock(x - 1, y, z);
 
-                                if (nextH != currentBlockId) // Next is not same liquid
+                                if (nextH != currentBlockId) // if next is not same liquid
                                 {
-                                    renderThisSide = true;
+                                    Block nextBlock = Config.ID[nextH] as Block;
+
+                                    if (nextBlock == null) // Next is not a block
+                                    {
+                                        renderThisSide = true;
+                                    }
+                                    else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                                    {
+                                        renderThisSide = true;
+                                    }
                                 }
 
                                 if (renderThisSide)
@@ -157,9 +184,18 @@ public class ChunkRenderer
                                     ? chunk.GetBlock(x, y, z + 1)
                                     : chunk.nextFront.GetBlock(x, y, 0);
 
-                                if (nextH != currentBlockId) // Next is not same liquid
+                                if (nextH != currentBlockId) // if next is not same liquid
                                 {
-                                    renderThisSide = true;
+                                    Block nextBlock = Config.ID[nextH] as Block;
+
+                                    if (nextBlock == null) // Next is not a block
+                                    {
+                                        renderThisSide = true;
+                                    }
+                                    else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                                    {
+                                        renderThisSide = true;
+                                    }
                                 }
 
                                 // Front face  
@@ -183,9 +219,18 @@ public class ChunkRenderer
                                     ? chunk.nextBack.GetBlock(x, y, 15)
                                     : chunk.GetBlock(x, y, z - 1);
 
-                                if (nextH != currentBlockId) // Next is not same liquid
+                                if (nextH != currentBlockId) // if next is not same liquid
                                 {
-                                    renderThisSide = true;
+                                    Block nextBlock = Config.ID[nextH] as Block;
+
+                                    if (nextBlock == null) // Next is not a block
+                                    {
+                                        renderThisSide = true;
+                                    }
+                                    else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                                    {
+                                        renderThisSide = true;
+                                    }
                                 }
 
                                 // Back face
