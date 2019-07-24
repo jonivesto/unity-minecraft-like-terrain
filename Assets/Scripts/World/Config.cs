@@ -9,7 +9,7 @@
         new           GlassBlock(),     // 3
         new     BirchLeavesBlock(),     // 4
         new                Water(),     // 5
-        new            WaterFlow(),     // 6
+        new                Water(),     // !!! Duplicate !!!
         new            SandBlock(),     // 7
         new            DirtBlock(),     // 8
         new           GrassBlock(),     // 9
@@ -56,7 +56,6 @@
     };
 
     // Debug
-    public static bool SAVE_CHUNKS_ON_GENERATE = false;
     public static bool UPDATE_PLAYER_POSITION = true;
     public static bool UNLOAD_FAR_CHUNKS = false;
 

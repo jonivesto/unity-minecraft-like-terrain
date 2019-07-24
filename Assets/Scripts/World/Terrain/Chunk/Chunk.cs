@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Chunk : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class Chunk : MonoBehaviour
     internal Chunk nextRight, nextLeft, nextFront, nextBack;
     internal ChunkData chunkData;
     internal ChunkTransform chunkTransform;
+
+    public List<int[]> liquidSources = new List<int[]>();
 
 
     public void SetNext(Chunk right, Chunk left, Chunk front, Chunk back)
@@ -30,11 +33,17 @@ public class Chunk : MonoBehaviour
     public void SetBlock(int x, int y, int z, int blockId)
     {
         chunkData.blocks[x, y, z] = blockId;
+
+        // Pending re-render
         if(rendered) pendingRefresh = true;
+
+        // Pending save to file
+        unsaved = true;
     }
 
     public int GetBlock(int x, int y, int z)
     {
+        
         return chunkData.blocks[x, y, z];
     }
 

@@ -1,15 +1,14 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
-public class Save
+public class WorldSave
 {
     private string worldName;
     private byte terrainId;
     private Seed seed;
 
-    public Save(string worldName, Seed seed, byte terrainId)
+    public WorldSave(string worldName, Seed seed, byte terrainId)
     {
         this.terrainId = terrainId;
         this.seed = seed;
@@ -62,7 +61,6 @@ public class Save
             + "/" + terrainId
             + "/" + chunk.chunkTransform.ToString() 
             + ".chk";
-
 
 
         // Create file or find existing one

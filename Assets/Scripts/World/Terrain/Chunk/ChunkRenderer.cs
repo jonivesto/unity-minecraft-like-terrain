@@ -1,8 +1,15 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ChunkRenderer
+public class ChunkRenderer : MonoBehaviour
 {
+    private TerrainEngine t;
+
+    void Start()
+    {
+        t = GetComponent<TerrainEngine>();
+    }
+
     public void Render(Chunk chunk)
     {
         CleanCustoms(chunk);
@@ -35,225 +42,234 @@ public class ChunkRenderer
                         
                         if (liquid != null)
                         {
-                            // Current liquid is still
-                            if (liquid.isStill)
+
+                            bool addToSimulation = false;
+                            bool renderThisSide = false;
+                            float liquidLevel = 1f;
+
+                            // Bottom face
+                            if (y - 1 >= 0) // Next in array bounds
                             {
-                                bool renderThisSide = false;
-                                float liquidLevel = 1f;
+                                int next = chunk.GetBlock(x, y - 1, z);
 
-                                // Bottom face
-                                if (y - 1 >= 0) // Next in array bounds
+                                if (next != currentBlockId) // if next is not same liquid
                                 {
-                                    int next = chunk.GetBlock(x, y - 1, z);
+                                    if (next == 0) addToSimulation = true;
 
-                                    if (next != currentBlockId) // if next is not same liquid
-                                    {
-                                        Block nextBlock = Config.ID[next] as Block;
+                                    Block nextBlock = Config.ID[next] as Block;
 
-                                        if (nextBlock == null) // Next is not a block
-                                        {
-                                            renderThisSide = true;
-                                        }
-                                        else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
-                                        {
-                                            renderThisSide = true;
-                                        }
-                                    }
-                                }
-
-                                // Bottom face
-                                if (renderThisSide)
-                                {
-                                    liquidVerts.Add(new Vector3(x, y, z));
-                                    liquidVerts.Add(new Vector3(x + 1, y, z));
-                                    liquidVerts.Add(new Vector3(x + 1, y, z + 1));
-                                    liquidVerts.Add(new Vector3(x, y, z + 1));
-
-                                    int vCount = liquidVerts.Count - 4;
-                                    AddTriangles(liquidTris, vCount, false);
-
-                                    AddUvs(liquidUvs, currentBlockId, 1);
-
-                                    renderThisSide = false;
-                                }
-
-                                // Top face
-                                if (y + 1 < Config.WORLD_HEIGHT) // Next in array bounds
-                                {
-                                    int next = chunk.GetBlock(x, y + 1, z);
-
-                                    if (next != currentBlockId) // Next is not same liquid
+                                    if (nextBlock == null) // Next is not a block
                                     {
                                         renderThisSide = true;
-                                        
-                                        // Set water level
-                                        liquidLevel = 0.9f;                                      
+                                    }
+                                    else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                                    {
+                                        renderThisSide = true;
                                     }
                                 }
-                                else // Next is out of array bounds
+                            }
+
+                            // Bottom face
+                            if (renderThisSide)
+                            {
+                                liquidVerts.Add(new Vector3(x, y, z));
+                                liquidVerts.Add(new Vector3(x + 1, y, z));
+                                liquidVerts.Add(new Vector3(x + 1, y, z + 1));
+                                liquidVerts.Add(new Vector3(x, y, z + 1));
+
+                                int vCount = liquidVerts.Count - 4;
+                                AddTriangles(liquidTris, vCount, false);
+
+                                AddUvs(liquidUvs, currentBlockId, 1);
+
+                                renderThisSide = false;
+                            }
+
+                            // Top face
+                            if (y + 1 < Config.WORLD_HEIGHT) // Next in array bounds
+                            {
+                                int next = chunk.GetBlock(x, y + 1, z);
+
+                                if (next != currentBlockId) // Next is not same liquid
+                                {
+                                    renderThisSide = true;
+                                        
+                                    // Set water level
+                                    liquidLevel = 0.9f;                                      
+                                }
+                            }
+                            else // Next is out of array bounds
+                            {
+                                renderThisSide = true;
+                            }
+
+                            // Top face
+                            if (renderThisSide)
+                            {
+                                liquidVerts.Add(new Vector3(x, y + liquidLevel, z));
+                                liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z));
+                                liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z + 1));
+                                liquidVerts.Add(new Vector3(x, y + liquidLevel, z + 1));
+
+                                int vCount = liquidVerts.Count - 4;
+                                AddTriangles(liquidTris, vCount, true);
+                                AddUvs(liquidUvs, currentBlockId, 0);
+
+                                renderThisSide = false;
+                            }
+
+                            // Right face  
+                            int nextH = (x + 1 < 16) // Get next from chunk it is in
+                                ? chunk.GetBlock(x + 1, y, z)
+                                : chunk.nextRight.GetBlock(0, y, z);
+
+                            if (nextH != currentBlockId) // if next is not same liquid
+                            {
+                                if (nextH == 0) addToSimulation = true;
+
+                                Block nextBlock = Config.ID[nextH] as Block;
+
+                                if (nextBlock == null) // Next is not a block
                                 {
                                     renderThisSide = true;
                                 }
-
-                                // Top face
-                                if (renderThisSide)
+                                else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
                                 {
-                                    liquidVerts.Add(new Vector3(x, y + liquidLevel, z));
-                                    liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z));
-                                    liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z + 1));
-                                    liquidVerts.Add(new Vector3(x, y + liquidLevel, z + 1));
-
-                                    int vCount = liquidVerts.Count - 4;
-                                    AddTriangles(liquidTris, vCount, true);
-                                    AddUvs(liquidUvs, currentBlockId, 0);
-
-                                    renderThisSide = false;
+                                    renderThisSide = true;
                                 }
-
-                                // Right face  
-                                int nextH = (x + 1 < 16) // Get next from chunk it is in
-                                    ? chunk.GetBlock(x + 1, y, z)
-                                    : chunk.nextRight.GetBlock(0, y, z);
-
-                                if (nextH != currentBlockId) // if next is not same liquid
-                                {
-                                    Block nextBlock = Config.ID[nextH] as Block;
-
-                                    if (nextBlock == null) // Next is not a block
-                                    {
-                                        renderThisSide = true;
-                                    }
-                                    else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
-                                    {
-                                        renderThisSide = true;
-                                    }
-                                }
-
-                                // Right face      
-                                if (renderThisSide)
-                                {
-                                    liquidVerts.Add(new Vector3(x + 1, y, z));
-                                    liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z));
-                                    liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z + 1));
-                                    liquidVerts.Add(new Vector3(x + 1, y, z + 1));
-
-                                    int vCount = liquidVerts.Count - 4;
-                                    AddTriangles(liquidTris, vCount, false);
-
-                                    AddUvs(liquidUvs, currentBlockId, 2);
-
-                                    renderThisSide = false;
-                                }
-
-                                // Left face
-                                nextH = (x - 1 < 0) // Get next from chunk it is in
-                                    ? chunk.nextLeft.GetBlock(15, y, z)
-                                    : chunk.GetBlock(x - 1, y, z);
-
-                                if (nextH != currentBlockId) // if next is not same liquid
-                                {
-                                    Block nextBlock = Config.ID[nextH] as Block;
-
-                                    if (nextBlock == null) // Next is not a block
-                                    {
-                                        renderThisSide = true;
-                                    }
-                                    else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
-                                    {
-                                        renderThisSide = true;
-                                    }
-                                }
-
-                                if (renderThisSide)
-                                {
-                                    liquidVerts.Add(new Vector3(x, y, z));
-                                    liquidVerts.Add(new Vector3(x, y + liquidLevel, z));
-                                    liquidVerts.Add(new Vector3(x, y + liquidLevel, z + 1));
-                                    liquidVerts.Add(new Vector3(x, y, z + 1));
-
-                                    int vCount = liquidVerts.Count - 4;
-                                    AddTriangles(liquidTris, vCount, true);
-
-                                    AddUvs(liquidUvs, currentBlockId, 3);
-
-                                    renderThisSide = false;
-                                }
-
-                                // Front face   
-                                nextH = (z + 1 < 16) // Get next from chunk it is in
-                                    ? chunk.GetBlock(x, y, z + 1)
-                                    : chunk.nextFront.GetBlock(x, y, 0);
-
-                                if (nextH != currentBlockId) // if next is not same liquid
-                                {
-                                    Block nextBlock = Config.ID[nextH] as Block;
-
-                                    if (nextBlock == null) // Next is not a block
-                                    {
-                                        renderThisSide = true;
-                                    }
-                                    else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
-                                    {
-                                        renderThisSide = true;
-                                    }
-                                }
-
-                                // Front face  
-                                if (renderThisSide)
-                                {
-                                    liquidVerts.Add(new Vector3(x, y, z + 1));
-                                    liquidVerts.Add(new Vector3(x, y + liquidLevel, z + 1));
-                                    liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z + 1));
-                                    liquidVerts.Add(new Vector3(x + 1, y, z + 1));
-
-                                    int vCount = liquidVerts.Count - 4;
-                                    AddTriangles(liquidTris, vCount, true);
-
-                                    AddUvs(liquidUvs, currentBlockId, 4);
-
-                                    renderThisSide = false;
-                                }
-
-                                // Back face
-                                nextH = (z - 1 < 0) // Get next from chunk it is in                         
-                                    ? chunk.nextBack.GetBlock(x, y, 15)
-                                    : chunk.GetBlock(x, y, z - 1);
-
-                                if (nextH != currentBlockId) // if next is not same liquid
-                                {
-                                    Block nextBlock = Config.ID[nextH] as Block;
-
-                                    if (nextBlock == null) // Next is not a block
-                                    {
-                                        renderThisSide = true;
-                                    }
-                                    else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
-                                    {
-                                        renderThisSide = true;
-                                    }
-                                }
-
-                                // Back face
-                                if (renderThisSide)
-                                {
-                                    liquidVerts.Add(new Vector3(x, y, z));
-                                    liquidVerts.Add(new Vector3(x, y + liquidLevel, z));
-                                    liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z));
-                                    liquidVerts.Add(new Vector3(x + 1, y, z));
-
-                                    int vCount = liquidVerts.Count - 4;
-                                    AddTriangles(liquidTris, vCount, false);
-
-                                    AddUvs(liquidUvs, currentBlockId, 5);
-
-                                    renderThisSide = false;
-                                }
-
                             }
-                            // Current liquid is flowing
-                            else
+
+                            // Right face      
+                            if (renderThisSide)
                             {
-                                // TODO
+                                liquidVerts.Add(new Vector3(x + 1, y, z));
+                                liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z));
+                                liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z + 1));
+                                liquidVerts.Add(new Vector3(x + 1, y, z + 1));
+
+                                int vCount = liquidVerts.Count - 4;
+                                AddTriangles(liquidTris, vCount, false);
+
+                                AddUvs(liquidUvs, currentBlockId, 2);
+
+                                renderThisSide = false;
+                            }
+
+                            // Left face
+                            nextH = (x - 1 < 0) // Get next from chunk it is in
+                                ? chunk.nextLeft.GetBlock(15, y, z)
+                                : chunk.GetBlock(x - 1, y, z);
+
+                            if (nextH != currentBlockId) // if next is not same liquid
+                            {
+                                if (nextH == 0) addToSimulation = true;
+
+                                Block nextBlock = Config.ID[nextH] as Block;
+
+                                if (nextBlock == null) // Next is not a block
+                                {
+                                    renderThisSide = true;
+                                }
+                                else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                                {
+                                    renderThisSide = true;
+                                }
+                            }
+
+                            if (renderThisSide)
+                            {
+                                liquidVerts.Add(new Vector3(x, y, z));
+                                liquidVerts.Add(new Vector3(x, y + liquidLevel, z));
+                                liquidVerts.Add(new Vector3(x, y + liquidLevel, z + 1));
+                                liquidVerts.Add(new Vector3(x, y, z + 1));
+
+                                int vCount = liquidVerts.Count - 4;
+                                AddTriangles(liquidTris, vCount, true);
+
+                                AddUvs(liquidUvs, currentBlockId, 3);
+
+                                renderThisSide = false;
+                            }
+
+                            // Front face   
+                            nextH = (z + 1 < 16) // Get next from chunk it is in
+                                ? chunk.GetBlock(x, y, z + 1)
+                                : chunk.nextFront.GetBlock(x, y, 0);
+
+                            if (nextH != currentBlockId) // if next is not same liquid
+                            {
+                                if (nextH == 0) addToSimulation = true;
+
+                                Block nextBlock = Config.ID[nextH] as Block;
+
+                                if (nextBlock == null) // Next is not a block
+                                {
+                                    renderThisSide = true;
+                                }
+                                else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                                {
+                                    renderThisSide = true;
+                                }
+                            }
+
+                            // Front face  
+                            if (renderThisSide)
+                            {
+                                liquidVerts.Add(new Vector3(x, y, z + 1));
+                                liquidVerts.Add(new Vector3(x, y + liquidLevel, z + 1));
+                                liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z + 1));
+                                liquidVerts.Add(new Vector3(x + 1, y, z + 1));
+
+                                int vCount = liquidVerts.Count - 4;
+                                AddTriangles(liquidTris, vCount, true);
+
+                                AddUvs(liquidUvs, currentBlockId, 4);
+
+                                renderThisSide = false;
+                            }
+
+                            // Back face
+                            nextH = (z - 1 < 0) // Get next from chunk it is in                         
+                                ? chunk.nextBack.GetBlock(x, y, 15)
+                                : chunk.GetBlock(x, y, z - 1);
+
+                            if (nextH != currentBlockId) // if next is not same liquid
+                            {
+                                if (nextH == 0) addToSimulation = true;
+
+                                Block nextBlock = Config.ID[nextH] as Block;
+
+                                if (nextBlock == null) // Next is not a block
+                                {
+                                    renderThisSide = true;
+                                }
+                                else if (nextBlock.GetTransparency() != BlockTransparency.Opaque) // Next block is transparent
+                                {
+                                    renderThisSide = true;
+                                }
+                            }
+
+                            // Back face
+                            if (renderThisSide)
+                            {
+                                liquidVerts.Add(new Vector3(x, y, z));
+                                liquidVerts.Add(new Vector3(x, y + liquidLevel, z));
+                                liquidVerts.Add(new Vector3(x + 1, y + liquidLevel, z));
+                                liquidVerts.Add(new Vector3(x + 1, y, z));
+
+                                int vCount = liquidVerts.Count - 4;
+                                AddTriangles(liquidTris, vCount, false);
+
+                                AddUvs(liquidUvs, currentBlockId, 5);
+
+                                renderThisSide = false;
+                            }
+
+
+                            // Add to simulation
+                            if(addToSimulation)
+                            {
+                                chunk.liquidSources.Add(new int[] { x, y, z, currentBlockId });
                             }
                         }
                         #endregion
@@ -635,6 +651,9 @@ public class ChunkRenderer
         
         // Display customs
         chunk.transform.GetChild(1).gameObject.SetActive(true);
+
+        // Run liquid simulation
+        t.liquidSimulation.Simulate(chunk);
     }
 
     /*
@@ -710,6 +729,8 @@ public class ChunkRenderer
     // Call this before render/refresh
     private void CleanCustoms(Chunk chunk)
     {
+        chunk.liquidSources.Clear();
+
         Transform t = chunk.transform.GetChild(1);
 
         if (t!=null)

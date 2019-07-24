@@ -2,7 +2,6 @@
 using System.Collections;
 using UnityEngine;
 
-
 public class TerrainEngine : MonoBehaviour
 {
     public string worldName;
@@ -10,20 +9,25 @@ public class TerrainEngine : MonoBehaviour
     public Vector2Int playerChunk = new Vector2Int();
     
     TerrainGenerator terrainGenerator;
-    ChunkRenderer chunkRenderer = new ChunkRenderer();
+    ChunkRenderer chunkRenderer;
     ChunkTransform[] loadedChunks, renderedChunks;
     Vector3 playerAnchor;
     Vector3 facingDirection;
     Coroutine load;
-    Save save;
+    WorldSave save;
 
     Transform parentOfChunks;
     int renderDistance, preLoadDistance, unloadDistance, loadDimension;
     float sleepDistance;
 
+    internal LiquidSimulation liquidSimulation;
+
 
     void Start()
     {
+        chunkRenderer = GetComponent<ChunkRenderer>();
+        liquidSimulation = GetComponent<LiquidSimulation>();
+
         worldName = "My world";
 
         //seed = new Seed();
@@ -67,7 +71,7 @@ public class TerrainEngine : MonoBehaviour
         parentOfChunks = GameObject.Find("/Environment/World").transform;
 
         // Init save
-        save = new Save(worldName, seed, terrainId);
+        save = new WorldSave(worldName, seed, terrainId);
     }
 
     // Set all distances to the according to the renderdistance
@@ -242,13 +246,8 @@ public class TerrainEngine : MonoBehaviour
                 }
                 else
                 {
-                    // Generate and save to file
-                    terrainGenerator.Generate(chunk);
-                    if (Config.SAVE_CHUNKS_ON_GENERATE)
-                    {
-                        save.SaveChunk(chunk);
-                    }
-                    
+                    // Generate
+                    terrainGenerator.Generate(chunk);  
                 }
 
                 chunk.generated = true;                
@@ -374,13 +373,13 @@ public class TerrainEngine : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning(chunk + " cannot be updated. The chunk is not rendered yet");
+            Debug.LogWarning(chunk + " refresh skipped. The chunk is not rendered yet");
         }
     }
 
     // Returns chunk that is currently in the game hierarchy
     // Returns null if the chunk is not loaded
-    private Chunk GetChunk(ChunkTransform chunkTransform)
+    public Chunk GetChunk(ChunkTransform chunkTransform)
     {
         Transform t = parentOfChunks.transform.Find(chunkTransform.ToString());
 
@@ -390,7 +389,7 @@ public class TerrainEngine : MonoBehaviour
     }
 
     // Same as the method above, but with different params
-    private Chunk GetChunk(int x, int z)
+    public Chunk GetChunk(int x, int z)
     {
         Transform t = parentOfChunks.transform.Find(x + ", " + z);
 
@@ -515,8 +514,8 @@ public class TerrainEngine : MonoBehaviour
         }
         else
         {
-            //Debug.LogWarning("WorldGetBlock() chunk not found!");
-            return 0;
+            // Chunk is not loaded.
+            return -1;
         }
     }
 
