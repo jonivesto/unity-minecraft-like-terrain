@@ -123,13 +123,13 @@ public class TerrainGenerator
                     }
                     else
                     {
-                        chunk.SetBlock(x, 1, z, 22); // Lava
+                        chunk.SetBlock(x, 1, z, 6); // Lava
                     }
                 }
 
                 if (chunk.GetBlock(x, 2, z) == 0)
                 {
-                    chunk.SetBlock(x, 2, z, 22); // Lava
+                    chunk.SetBlock(x, 2, z, 6); // Lava
                 }
 
                 // Grass

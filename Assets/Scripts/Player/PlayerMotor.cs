@@ -88,7 +88,7 @@ public class PlayerMotor : MonoBehaviour
         int x = selectedBlock.x;
         int y = selectedBlock.y;
         int z = selectedBlock.z;
-        terrainEngine.WorldSetBlockRefresh(x, y, z, 5);
+        terrainEngine.WorldSetBlockRefresh(x, y, z, 1);
     }
 
     internal void ShootRaycast()

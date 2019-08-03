@@ -9,7 +9,7 @@
         new           GlassBlock(),     // 3
         new     BirchLeavesBlock(),     // 4
         new                Water(),     // 5
-        new                Water(),     // !!! Duplicate !!!
+        new                 Lava(),     // 6
         new            SandBlock(),     // 7
         new            DirtBlock(),     // 8
         new           GrassBlock(),     // 9
@@ -25,7 +25,6 @@
         new         CoalOreBlock(),     // 19
         new         LeadOreBlock(),     // 20
         new         IronOreBlock(),     // 21
-        new                 Lava(),     // 22
     };
 
     // List of biomes in the game

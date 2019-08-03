@@ -9,5 +9,9 @@ public class Lava : Liquid
         UVs = new Vector2[] {
             new Vector2(1,12)
         };
+
+        flowUVs = new Vector2[] {
+            new Vector2(1,11)
+        };
     }
 }

@@ -12,7 +12,7 @@ public class ChunkRenderer : MonoBehaviour
 
     public void Render(Chunk chunk)
     {
-        CleanCustoms(chunk);
+        ResetChunk(chunk);
 
         List<Vector3> blockVerts = new List<Vector3>();
         List<int> blockTris = new List<int>();
@@ -285,7 +285,7 @@ public class ChunkRenderer : MonoBehaviour
                             if (custom != null)
                             {
                                 // Create obj and add mesh components
-                                GameObject customObj = new GameObject("(" + x + ", " + y + ", " + z + ") " + custom.itemName);
+                                GameObject customObj = new GameObject(x + "," + y + "," + z + "|" + custom.itemName);
                                 customObj.AddComponent<MeshFilter>();
                                 customObj.AddComponent<MeshRenderer>();
                                 
@@ -725,22 +725,29 @@ public class ChunkRenderer : MonoBehaviour
         }
     }
 
-    // Remove custom items
     // Call this before render/refresh
-    private void CleanCustoms(Chunk chunk)
+    private void ResetChunk(Chunk chunk)
     {
+        // Liquids
         chunk.liquidSources.Clear();
-
-        Transform t = chunk.transform.GetChild(1);
-
-        if (t!=null)
+        Transform t = chunk.transform.GetChild(0);
+        if (t != null)
         {
             foreach (Transform c in t)
             {
-                GameObject.Destroy(c.gameObject);
+                Destroy(c.gameObject);
+            }
+        }
+
+        // Customs
+        t = chunk.transform.GetChild(1);
+        if (t != null)
+        {
+            foreach (Transform c in t)
+            {
+                Destroy(c.gameObject);
             }
         }
 
     }
-
 }

@@ -9,5 +9,9 @@ public class Water : Liquid
         UVs = new Vector2[] {
             new Vector2(0,12)
         };
+
+        flowUVs = new Vector2[] {
+            new Vector2(0,11)
+        };
     }
 }

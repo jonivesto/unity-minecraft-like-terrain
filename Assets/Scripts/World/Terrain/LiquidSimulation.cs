@@ -7,12 +7,16 @@ public class LiquidSimulation : MonoBehaviour
     //float speed = 0.6f;
     TerrainEngine terrainEngine;
     Chunk chunk;
+    Material liquidMaterial;
     Transform chunkLiquids;
+
+    public GameObject lavaFlow, waterFlow;
 
     void Start()
     {
         terrainEngine = GetComponent<TerrainEngine>();
         //InvokeRepeating("Simulate", speed, speed);
+        liquidMaterial = Resources.Load<Material>("Materials/Liquids");
     }
 
     public void Simulate(Chunk chunk)
@@ -92,12 +96,15 @@ public class LiquidSimulation : MonoBehaviour
 
         if (chunkLiquids.Find(name)==null)
         {
-            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            sphere.transform.position = new Vector3(x, y, z);
-            Destroy(sphere.GetComponent<Collider>());
-            sphere.name = name;
-            sphere.transform.SetParent(chunkLiquids);
+            GameObject prefab = waterFlow;
+            if (liquidId == 6){ prefab = lavaFlow; }
+
+            GameObject obj = Instantiate(prefab, new Vector3(x, y, z), Quaternion.identity);
+            obj.name = name;
+            obj.GetComponentInChildren<MeshRenderer>().material = liquidMaterial;
+            obj.transform.SetParent(chunkLiquids);
         }
     }
+    
     
 }

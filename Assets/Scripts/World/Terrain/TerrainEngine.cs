@@ -7,9 +7,11 @@ public class TerrainEngine : MonoBehaviour
     public string worldName;
     public Seed seed;
     public Vector2Int playerChunk = new Vector2Int();
-    
+
+    internal LiquidSimulation liquidSimulation;
+    internal ChunkRenderer chunkRenderer;
+
     TerrainGenerator terrainGenerator;
-    ChunkRenderer chunkRenderer;
     ChunkTransform[] loadedChunks, renderedChunks;
     Vector3 playerAnchor;
     Vector3 facingDirection;
@@ -20,8 +22,7 @@ public class TerrainEngine : MonoBehaviour
     int renderDistance, preLoadDistance, unloadDistance, loadDimension;
     float sleepDistance;
 
-    internal LiquidSimulation liquidSimulation;
-
+    
 
     void Start()
     {
