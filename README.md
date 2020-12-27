@@ -1,5 +1,5 @@
 # unity-minecraft-like-terrain
-Work in progress. Minecraft like terrain generation in Unity3D C#
+Minecraft like terrain generation in Unity3D C#
 
 Current Unity version: 2019.2
 
